@@ -1962,7 +1962,8 @@ function escapeHtml(str) {
 function connectScoringWebSocket() {
     if (!currentMatchId || typeof SockJS === 'undefined' || typeof Stomp === 'undefined') return;
     try {
-        const socket = new SockJS('/ws-cricket');
+        const wsUrl = typeof BACKEND_BASE_URL !== 'undefined' ? `${BACKEND_BASE_URL}/ws-cricket` : 'https://cricket-app-production-9e11.up.railway.app/ws-cricket';
+        const socket = new SockJS(wsUrl);
         const stompClient = Stomp.over(socket);
         stompClient.debug = null;
         stompClient.connect({}, () => {

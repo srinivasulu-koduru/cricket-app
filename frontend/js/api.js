@@ -3,8 +3,8 @@
  * Centralized fetch helper for backend REST API requests.
  */
 
-const API_BASE_URL = 'http://localhost:8080/api';
-const BACKEND_BASE_URL = 'http://localhost:8080';
+const API_BASE_URL = 'https://cricket-app-production-9e11.up.railway.app/api';
+const BACKEND_BASE_URL = 'https://cricket-app-production-9e11.up.railway.app';
 const TOKEN_KEY = 'cricketAppToken';
 
 class ApiService {

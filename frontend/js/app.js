@@ -2,7 +2,7 @@
  * Cricket App - Portal & Common App Logic
  */
 
-const BACKEND_HEALTH_URL = 'http://localhost:8080/api/health';
+const BACKEND_HEALTH_URL = 'https://cricket-app-production-9e11.up.railway.app/api/health';
 
 document.addEventListener('DOMContentLoaded', () => {
     initHealthCheck();

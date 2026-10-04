@@ -103,7 +103,7 @@ function connectWebSocket() {
 
     setConnectionStatus('connecting', 'Connecting...');
 
-    const wsUrl = typeof BACKEND_BASE_URL !== 'undefined' ? `${BACKEND_BASE_URL}/ws-cricket` : 'http://localhost:8080/ws-cricket';
+    const wsUrl = typeof BACKEND_BASE_URL !== 'undefined' ? `${BACKEND_BASE_URL}/ws-cricket` : 'https://cricket-app-production-9e11.up.railway.app/ws-cricket';
     const socket = new SockJS(wsUrl);
     stompClient = Stomp.over(socket);
     stompClient.debug = null; // Suppress verbose console logs
