@@ -1,0 +1,638 @@
+/* ==========================================================================
+   CRICKET APP — PREMIUM CELEBRATION ANIMATION SYSTEM
+   Matches Reference Image: Rocket Launch -> Arched Rise -> Burst & Reveal
+   Features:
+     - Type 1: SIX (Golden/Emerald Celestial Burst + Orbital Halo + Large 6)
+     - Type 2: FOUR (Electric Cyan Velocity Burst + Radiant Halo + Large 4)
+     - Type 3: WICKET (Dramatic Impact + Flying Bails/Stumps Shatter + Large WICKET)
+     - Mobile-First, Pointer-Events None, Zero Layout Shift, Reduced-Motion Safe
+   ========================================================================== */
+
+/* 1. Fullscreen Overlay Layer */
+#cricket-celebration-overlay {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 99999;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: opacity 0.35s ease-out;
+}
+
+#cricket-celebration-overlay.fading-out {
+    opacity: 0;
+}
+
+/* Ambient Radial Stadium Glow */
+.crk-ambient-glow {
+    position: absolute;
+    width: min(90vw, 600px);
+    height: min(90vw, 600px);
+    top: 25%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0;
+    animation: crkAmbientPulse 2.4s ease-out forwards;
+}
+
+.crk-ambient-glow.six {
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.32) 0%, rgba(5, 150, 105, 0.15) 45%, transparent 70%);
+}
+
+.crk-ambient-glow.four {
+    background: radial-gradient(circle, rgba(56, 189, 248, 0.32) 0%, rgba(14, 165, 233, 0.15) 45%, transparent 70%);
+}
+
+.crk-ambient-glow.wicket {
+    background: radial-gradient(circle, rgba(239, 68, 68, 0.38) 0%, rgba(185, 28, 28, 0.18) 45%, transparent 70%);
+}
+
+@keyframes crkAmbientPulse {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.4); }
+    30% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+    75% { opacity: 0.85; transform: translate(-50%, -50%) scale(1.0); }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+}
+
+/* ==========================================================================
+   2. ROCKET LAUNCH & RISE (STEP 1 & STEP 2)
+   ========================================================================== */
+.crk-rocket-container {
+    position: absolute;
+    bottom: -140px;
+    left: 50%;
+    width: 84px;
+    height: 140px;
+    margin-left: -42px;
+    pointer-events: none;
+    transform-origin: center bottom;
+    z-index: 10;
+}
+
+/* Launch and Arced Travel Animation toward top 25% target */
+.crk-rocket-container.launching {
+    animation: crkRocketFlight 1.15s cubic-bezier(0.18, 0.82, 0.28, 1) forwards;
+}
+
+@keyframes crkRocketFlight {
+    0% {
+        transform: translate3d(0, 0, 0) rotate(0deg) scale(0.9);
+        opacity: 0;
+    }
+    12% {
+        transform: translate3d(0, -60px, 0) rotate(3deg) scale(1.05);
+        opacity: 1;
+    }
+    45% {
+        transform: translate3d(24px, calc(-45vh), 0) rotate(16deg) scale(1.1);
+        opacity: 1;
+    }
+    82% {
+        transform: translate3d(8px, calc(-72vh), 0) rotate(8deg) scale(1.05);
+        opacity: 1;
+    }
+    96% {
+        transform: translate3d(0, calc(-76vh), 0) rotate(0deg) scale(1.0);
+        opacity: 1;
+    }
+    100% {
+        transform: translate3d(0, calc(-76vh), 0) scale(1.25);
+        opacity: 0;
+    }
+}
+
+/* Rocket Body (Detailed SVG wrapper) */
+.crk-rocket-svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 0 16px rgba(16, 185, 129, 0.75));
+    transition: filter 0.2s;
+}
+
+.crk-rocket-container.four .crk-rocket-svg {
+    filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.75));
+}
+
+.crk-rocket-container.wicket .crk-rocket-svg {
+    filter: drop-shadow(0 0 16px rgba(239, 68, 68, 0.8));
+}
+
+/* Rocket Thruster Flame */
+.crk-rocket-flame {
+    position: absolute;
+    bottom: -32px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 26px;
+    height: 48px;
+    background: radial-gradient(ellipse at top, #ffffff 0%, #fef08a 25%, #f97316 65%, rgba(239, 68, 68, 0) 100%);
+    border-radius: 50% 50% 60% 60%;
+    filter: drop-shadow(0 0 12px #fbbf24);
+    animation: crkFlameFlicker 0.12s infinite alternate ease-in-out;
+}
+
+@keyframes crkFlameFlicker {
+    0% { transform: translateX(-50%) scaleY(1.0) scaleX(0.9); opacity: 0.95; }
+    100% { transform: translateX(-50%) scaleY(1.35) scaleX(1.1); opacity: 1; filter: drop-shadow(0 0 18px #f59e0b); }
+}
+
+/* Launchpad Smoke Billows */
+.crk-launch-smoke {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 240px;
+    height: 90px;
+    background: radial-gradient(ellipse, rgba(255, 255, 255, 0.45) 0%, rgba(148, 163, 184, 0.2) 50%, transparent 80%);
+    filter: blur(14px);
+    opacity: 0;
+    animation: crkSmokePuff 1.0s ease-out forwards;
+}
+
+@keyframes crkSmokePuff {
+    0% { opacity: 0; transform: translateX(-50%) scale(0.4); }
+    20% { opacity: 0.8; transform: translateX(-50%) scale(1.1); }
+    100% { opacity: 0; transform: translateX(-50%) scale(1.6); }
+}
+
+/* Spark Exhaust Trail */
+.crk-rocket-exhaust-tail {
+    position: absolute;
+    top: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px;
+    height: 110px;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(245,158,11,0.6) 50%, transparent);
+    filter: blur(2px);
+    border-radius: 4px;
+    opacity: 0.85;
+}
+
+/* ==========================================================================
+   3. BURST & REVEAL (STEP 3)
+   ========================================================================== */
+.crk-burst-container {
+    position: absolute;
+    top: 24%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 20;
+    width: min(92vw, 480px);
+}
+
+/* Flash of light on impact */
+.crk-burst-flash {
+    position: absolute;
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #ffffff 0%, rgba(255,255,255,0.9) 30%, transparent 75%);
+    opacity: 0;
+    transform: scale(0.2);
+    animation: crkFlashBurst 0.65s 0.95s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+}
+
+@keyframes crkFlashBurst {
+    0% { opacity: 0; transform: scale(0.2); }
+    25% { opacity: 1; transform: scale(2.8); }
+    100% { opacity: 0; transform: scale(3.5); }
+}
+
+/* ORBITAL HALO RING (Iconic feature from Reference Image) */
+.crk-halo-ring {
+    position: absolute;
+    width: min(84vw, 360px);
+    height: min(24vw, 100px);
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.95);
+    box-shadow: 0 0 28px rgba(52, 211, 153, 0.95), inset 0 0 16px rgba(52, 211, 153, 0.7);
+    transform: rotate(-10deg) scale(0);
+    opacity: 0;
+    animation: crkHaloExpand 1.6s 1.05s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.crk-burst-container.four .crk-halo-ring {
+    border-color: #e0f2fe;
+    box-shadow: 0 0 28px rgba(56, 189, 248, 0.95), inset 0 0 16px rgba(56, 189, 248, 0.7);
+}
+
+.crk-burst-container.wicket .crk-halo-ring {
+    border-color: #fee2e2;
+    box-shadow: 0 0 32px rgba(239, 68, 68, 0.95), inset 0 0 18px rgba(239, 68, 68, 0.7);
+}
+
+@keyframes crkHaloExpand {
+    0% {
+        opacity: 0;
+        transform: rotate(-10deg) scale(0.2);
+    }
+    20% {
+        opacity: 1;
+        transform: rotate(-10deg) scale(1.15);
+    }
+    45% {
+        opacity: 0.95;
+        transform: rotate(-8deg) scale(1.0);
+    }
+    85% {
+        opacity: 0.7;
+        transform: rotate(-6deg) scale(1.05);
+    }
+    100% {
+        opacity: 0;
+        transform: rotate(-5deg) scale(1.15);
+    }
+}
+
+/* Secondary Outer Stardust Ring */
+.crk-halo-dust-ring {
+    position: absolute;
+    width: min(92vw, 410px);
+    height: min(28vw, 120px);
+    border-radius: 50%;
+    border: 1.5px dashed rgba(254, 240, 138, 0.7);
+    transform: rotate(6deg) scale(0);
+    opacity: 0;
+    animation: crkDustRingExpand 1.5s 1.1s ease-out forwards;
+}
+
+@keyframes crkDustRingExpand {
+    0% { opacity: 0; transform: rotate(6deg) scale(0.3); }
+    25% { opacity: 0.85; transform: rotate(10deg) scale(1.1); }
+    80% { opacity: 0.5; transform: rotate(15deg) scale(1.02); }
+    100% { opacity: 0; transform: rotate(18deg) scale(1.12); }
+}
+
+/* Explosive Sparkle Particles */
+.crk-particle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ffffff;
+    pointer-events: none;
+    opacity: 0;
+}
+
+/* Dynamic Radial Particle Animation */
+@keyframes crkParticleFly {
+    0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(1);
+    }
+    70% {
+        opacity: 0.9;
+        transform: translate(var(--tx), var(--ty)) scale(0.8);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(calc(var(--tx) * 1.25), calc(var(--ty) * 1.25)) scale(0.2);
+    }
+}
+
+/* ==========================================================================
+   4. LARGE CELEBRATION REVEAL (SIX & FOUR)
+   ========================================================================== */
+.crk-reveal-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 15;
+    opacity: 0;
+    transform: scale(0.2);
+    animation: crkRevealPop 1.5s 1.15s cubic-bezier(0.18, 1.25, 0.35, 1) forwards;
+}
+
+@keyframes crkRevealPop {
+    0% {
+        opacity: 0;
+        transform: scale(0.15);
+    }
+    25% {
+        opacity: 1;
+        transform: scale(1.18);
+    }
+    45% {
+        transform: scale(0.96);
+    }
+    60% {
+        transform: scale(1.03);
+    }
+    85% {
+        opacity: 1;
+        transform: scale(1.0);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.92);
+    }
+}
+
+/* Massive 3D Metallic Number (Matches 6 / 4 in Reference Image) */
+.crk-big-number {
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: min(34vw, 150px);
+    font-weight: 900;
+    line-height: 0.9;
+    letter-spacing: -2px;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+/* SIX Styling: Metallic Silver-Green Gradient with Glowing Aura */
+.crk-big-number.six {
+    background: linear-gradient(180deg, #ffffff 0%, #ecfdf5 28%, #a7f3d0 60%, #10b981 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 8px 24px rgba(16, 185, 129, 0.85)) drop-shadow(0 2px 4px rgba(0,0,0,0.6));
+    text-shadow: 0 0 35px rgba(52, 211, 153, 0.6);
+}
+
+/* FOUR Styling: Metallic Cyan-Ice Gradient with Electric Glow */
+.crk-big-number.four {
+    background: linear-gradient(180deg, #ffffff 0%, #f0f9ff 28%, #bae6fd 60%, #0284c7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 8px 24px rgba(56, 189, 248, 0.85)) drop-shadow(0 2px 4px rgba(0,0,0,0.6));
+    text-shadow: 0 0 35px rgba(56, 189, 248, 0.6);
+}
+
+/* Sports Celebration Pill Badge */
+.crk-celeb-pill-badge {
+    margin-top: 0.65rem;
+    padding: 0.5rem 1.4rem;
+    border-radius: 999px;
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(0.95rem, 3.8vw, 1.25rem);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+}
+
+.crk-celeb-pill-badge.six {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: #ffffff;
+    border: 1.5px solid #34d399;
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+}
+
+.crk-celeb-pill-badge.four {
+    background: linear-gradient(135deg, #0284c7, #0369a1);
+    color: #ffffff;
+    border: 1.5px solid #38bdf8;
+    box-shadow: 0 6px 20px rgba(56, 189, 248, 0.5);
+}
+
+.crk-celeb-pill-badge.wicket {
+    background: linear-gradient(135deg, #ef4444, #b91c1c);
+    color: #ffffff;
+    border: 1.5px solid #f87171;
+    box-shadow: 0 6px 24px rgba(239, 68, 68, 0.6);
+}
+
+.crk-badge-subtext {
+    font-size: 0.72rem;
+    font-weight: 800;
+    opacity: 0.9;
+    letter-spacing: 0.5px;
+    background: rgba(0, 0, 0, 0.25);
+    padding: 0.15rem 0.5rem;
+    border-radius: 12px;
+}
+
+/* ==========================================================================
+   5. TYPE 3 — DRAMATIC WICKET CELEBRATION (CRICKET STUMPS + IMPACT)
+   ========================================================================== */
+.crk-wicket-stage {
+    position: relative;
+    width: min(88vw, 360px);
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+}
+
+/* Stumps Visual & Shatter Effect */
+.crk-stumps-svg-wrap {
+    width: 140px;
+    height: 140px;
+    position: relative;
+    filter: drop-shadow(0 0 20px rgba(239, 68, 68, 0.85));
+}
+
+/* SVG Wicket Animation Parts */
+.crk-stump-off {
+    transform-origin: bottom center;
+    animation: crkStumpOffShatter 1.4s 1.1s cubic-bezier(0.12, 0.9, 0.2, 1) forwards;
+}
+
+.crk-stump-middle {
+    transform-origin: bottom center;
+    animation: crkStumpMidShatter 1.4s 1.1s cubic-bezier(0.12, 0.9, 0.2, 1) forwards;
+}
+
+.crk-stump-leg {
+    transform-origin: bottom center;
+    animation: crkStumpLegShatter 1.4s 1.1s cubic-bezier(0.12, 0.9, 0.2, 1) forwards;
+}
+
+.crk-bail-left {
+    transform-origin: center center;
+    animation: crkBailLeftFly 1.4s 1.1s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+}
+
+.crk-bail-right {
+    transform-origin: center center;
+    animation: crkBailRightFly 1.4s 1.1s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+}
+
+@keyframes crkStumpOffShatter {
+    0% { transform: rotate(0deg) translate(0, 0); }
+    30% { transform: rotate(26deg) translate(18px, -8px); }
+    70% { transform: rotate(38deg) translate(34px, 16px); }
+    100% { transform: rotate(45deg) translate(48px, 40px); opacity: 0; }
+}
+
+@keyframes crkStumpMidShatter {
+    0% { transform: rotate(0deg) translate(0, 0); }
+    25% { transform: rotate(-8deg) translate(-6px, -12px); }
+    60% { transform: rotate(-18deg) translate(-14px, 14px); }
+    100% { transform: rotate(-25deg) translate(-22px, 35px); opacity: 0; }
+}
+
+@keyframes crkStumpLegShatter {
+    0% { transform: rotate(0deg) translate(0, 0); }
+    28% { transform: rotate(-28deg) translate(-20px, -6px); }
+    68% { transform: rotate(-40deg) translate(-36px, 18px); }
+    100% { transform: rotate(-48deg) translate(-50px, 42px); opacity: 0; }
+}
+
+@keyframes crkBailLeftFly {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    35% { transform: translate(-38px, -68px) rotate(-220deg); }
+    75% { transform: translate(-65px, -15px) rotate(-460deg); }
+    100% { transform: translate(-85px, 40px) rotate(-640deg); opacity: 0; }
+}
+
+@keyframes crkBailRightFly {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    35% { transform: translate(44px, -74px) rotate(240deg); }
+    75% { transform: translate(72px, -20px) rotate(480deg); }
+    100% { transform: translate(95px, 35px) rotate(680deg); opacity: 0; }
+}
+
+/* Wicket Impact Shockwave Ring */
+.crk-wicket-shockwave {
+    position: absolute;
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    border: 3.5px solid #ef4444;
+    box-shadow: 0 0 25px #ef4444;
+    opacity: 0;
+    transform: scale(0.2);
+    animation: crkWicketShockwaveBurst 0.75s 1.05s ease-out forwards;
+}
+
+@keyframes crkWicketShockwaveBurst {
+    0% { opacity: 0; transform: scale(0.15); }
+    30% { opacity: 1; transform: scale(1.6); }
+    100% { opacity: 0; transform: scale(2.8); }
+}
+
+/* Big "WICKET" Typography */
+.crk-big-wicket-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(2.4rem, 10vw, 4.2rem);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: #ffffff;
+    background: linear-gradient(180deg, #ffffff 0%, #fee2e2 35%, #f87171 70%, #ef4444 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 4px 18px rgba(239, 68, 68, 0.9));
+    margin: 0;
+    line-height: 1;
+    text-align: center;
+}
+
+/* ==========================================================================
+   6. SCORER TOOLBAR CELEBRATION BUTTON & SETTINGS MODAL STYLING
+   ========================================================================== */
+.sc-action-btn-celeb {
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    color: #34d399;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.05rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sc-action-btn-celeb:hover {
+    background: #10b981;
+    color: #000000;
+    transform: scale(1.08);
+    box-shadow: 0 0 14px rgba(16, 185, 129, 0.5);
+}
+
+.crk-celeb-preview-btn {
+    padding: 0.45rem 0.85rem;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.crk-celeb-preview-btn.six {
+    background: rgba(16, 185, 129, 0.2);
+    border-color: #10b981;
+    color: #34d399;
+}
+.crk-celeb-preview-btn.six:hover {
+    background: #10b981;
+    color: #000000;
+}
+
+.crk-celeb-preview-btn.four {
+    background: rgba(56, 189, 248, 0.2);
+    border-color: #38bdf8;
+    color: #38bdf8;
+}
+.crk-celeb-preview-btn.four:hover {
+    background: #38bdf8;
+    color: #000000;
+}
+
+.crk-celeb-preview-btn.wicket {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: #ef4444;
+    color: #f87171;
+}
+.crk-celeb-preview-btn.wicket:hover {
+    background: #ef4444;
+    color: #ffffff;
+}
+
+/* ==========================================================================
+   7. ACCESSIBILITY — REDUCED MOTION SAFE MODE
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+    .crk-rocket-container,
+    .crk-rocket-flame,
+    .crk-launch-smoke,
+    .crk-burst-flash,
+    .crk-halo-ring,
+    .crk-halo-dust-ring,
+    .crk-particle,
+    .crk-stump-off,
+    .crk-stump-middle,
+    .crk-stump-leg,
+    .crk-bail-left,
+    .crk-bail-right,
+    .crkWicketShockwaveBurst {
+        animation: none !important;
+        display: none !important;
+    }
+
+    .crk-reveal-box {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: scale(1) !important;
+        transition: opacity 0.5s ease-in-out;
+    }
+}

@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - Cricket App</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        /* Bulletproof Scoped Styles for 50/50 Split Screen & Mobile Touch Interaction */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+        html, body.exact-login-body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            max-width: 100%;
+            min-height: 100vh;
+            min-height: 100dvh;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: #0d1b14;
+            color: #1e293b;
+            overflow-x: hidden;
+            touch-action: manipulation;
+        }
+
+        .exact-login-container {
+            display: flex;
+            flex-direction: row !important;
+            width: 100%;
+            max-width: 100%;
+            min-height: 100vh;
+            min-height: 100dvh;
+            overflow-x: hidden;
+        }
+
+        /* Left Visual Stadium Pane (Exactly 50% Width) */
+        .exact-visual-pane {
+            width: 50% !important;
+            flex: 0 0 50% !important;
+            position: relative;
+            background: linear-gradient(145deg, rgba(7, 34, 21, 0.94), rgba(4, 20, 14, 0.97)),
+                        url('https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?q=80&w=1600&auto=format&fit=crop') center/cover no-repeat;
+            padding: 3rem 3.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            box-sizing: border-box;
+            z-index: 1;
+        }
+
+        .exact-visual-pane::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at 30% 20%, rgba(16, 185, 129, 0.15), transparent 60%),
+                        radial-gradient(circle at 70% 80%, rgba(245, 158, 11, 0.08), transparent 50%);
+            pointer-events: none !important;
+        }
+
+        .exact-brand-header {
+            position: relative;
+            z-index: 2;
+        }
+
+        .exact-brand-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+        }
+
+        .exact-brand-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            flex-shrink: 0;
+        }
+
+        .exact-brand-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: -0.02em;
+        }
+
+        .exact-visual-content {
+            position: relative;
+            z-index: 2;
+            margin-top: auto;
+            margin-bottom: auto;
+            padding: 1.5rem 0;
+        }
+
+        .exact-platform-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 0.9rem;
+            background: rgba(245, 158, 11, 0.12);
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            border-radius: 6px;
+            color: #f59e0b;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
+
+        .exact-visual-headline {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3rem;
+            font-weight: 800;
+            color: #ffffff;
+            line-height: 1.15;
+            margin: 0 0 1.25rem 0;
+            letter-spacing: -0.02em;
+            word-break: break-word;
+        }
+
+        .highlight-emerald {
+            color: #10b981;
+        }
+
+        .highlight-gold-container {
+            position: relative;
+            display: inline-block;
+            color: #f59e0b;
+        }
+
+        .headline-underline {
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            max-width: 200px;
+            overflow: visible;
+        }
+
+        .exact-visual-subtext {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.75);
+            max-width: 520px;
+            line-height: 1.55;
+            margin-bottom: 2.5rem;
+        }
+
+        /* Feature Cards Row */
+        .exact-features-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .exact-feature-card {
+            background: rgba(12, 35, 23, 0.65);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.1rem;
+            transition: all 0.25s ease;
+        }
+
+        .exact-feature-card:hover {
+            background: rgba(16, 48, 31, 0.85);
+            border-color: rgba(16, 185, 129, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .exact-feature-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            margin-bottom: 0.75rem;
+            flex-shrink: 0;
+        }
+
+        .exact-feature-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin: 0 0 0.3rem 0;
+        }
+
+        .exact-feature-desc {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.4;
+            margin: 0;
+        }
+
+        /* Dots Grid Decorative */
+        .exact-dots-grid {
+            position: absolute;
+            width: 90px;
+            height: 90px;
+            background-image: radial-gradient(rgba(16, 185, 129, 0.3) 1.5px, transparent 1.5px);
+            background-size: 12px 12px;
+            pointer-events: none !important;
+            z-index: 1;
+        }
+
+        .left-dots { bottom: 20px; left: 20px; }
+        .top-right-dots { top: 30px; right: 30px; background-image: radial-gradient(rgba(16, 185, 129, 0.25) 1.5px, transparent 1.5px); }
+        .bottom-left-dots { bottom: 30px; left: 30px; background-image: radial-gradient(rgba(16, 185, 129, 0.25) 1.5px, transparent 1.5px); }
+
+        /* Right Form Pane (Exactly 50% Width) */
+        .exact-form-pane {
+            width: 50% !important;
+            flex: 0 0 50% !important;
+            background: linear-gradient(135deg, #eef9f3 0%, #f4fcf7 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2.5rem 2rem;
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
+            z-index: 2;
+        }
+
+        .exact-login-card {
+            width: 100%;
+            max-width: 440px;
+            background: #ffffff;
+            border-radius: 22px;
+            padding: 2.5rem 2.25rem;
+            box-shadow: 0 20px 45px -10px rgba(6, 45, 26, 0.08), 0 4px 16px -2px rgba(0, 0, 0, 0.03);
+            position: relative;
+            z-index: 5;
+            pointer-events: auto !important;
+            border: 1px solid rgba(16, 185, 129, 0.08);
+            box-sizing: border-box;
+        }
+
+        .exact-pill-tag {
+            display: inline-block;
+            padding: 0.25rem 0.65rem;
+            background: #e6f4ed;
+            color: #0d5c3a;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            border-radius: 5px;
+            margin-bottom: 1.25rem;
+        }
+
+        .exact-card-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.1rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0 0 0.5rem 0;
+            letter-spacing: -0.02em;
+        }
+
+        .exact-card-subtitle {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin: 0 0 2rem 0;
+            line-height: 1.5;
+        }
+
+        #login-form {
+            position: relative;
+            z-index: 6;
+            pointer-events: auto !important;
+        }
+
+        .exact-form-group {
+            margin-bottom: 1.15rem;
+            position: relative;
+            z-index: 6;
+        }
+
+        .exact-form-label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 0.4rem;
+        }
+
+        .exact-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            z-index: 6;
+        }
+
+        .exact-input-field {
+            width: 100%;
+            max-width: 100%;
+            padding: 0.75rem 2.5rem 0.75rem 0.9rem;
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 10px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            color: #0f172a;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+            position: relative;
+            z-index: 6;
+            touch-action: manipulation;
+        }
+
+        .exact-input-field:focus {
+            outline: none;
+            background: #ffffff;
+            border-color: #0d5c3a;
+            box-shadow: 0 0 0 4px rgba(13, 92, 58, 0.1);
+        }
+
+        .exact-input-field::placeholder { color: #94a3b8; }
+
+        .exact-input-icon {
+            position: absolute;
+            right: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            background: none;
+            border: none;
+            padding: 0;
+            z-index: 7;
+            pointer-events: none;
+        }
+
+        button.exact-input-icon {
+            pointer-events: auto !important;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+
+        button.exact-input-icon:hover { color: #0d5c3a; }
+
+        .exact-forgot-link {
+            display: inline-block;
+            font-size: 0.82rem;
+            color: #0d5c3a;
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.2s;
+            position: relative;
+            z-index: 10;
+            pointer-events: auto !important;
+            padding: 0.35rem 0;
+            touch-action: manipulation;
+            cursor: pointer;
+        }
+
+        .exact-forgot-link:hover {
+            color: #043823;
+            text-decoration: underline;
+        }
+
+        .exact-pill-btn {
+            width: 100%;
+            max-width: 100%;
+            min-height: 44px;
+            padding: 0.85rem 1.25rem;
+            background: linear-gradient(135deg, #09472d, #063d26);
+            color: #ffffff;
+            border: none;
+            border-radius: 9999px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 8px 20px -4px rgba(9, 71, 45, 0.4);
+            transition: all 0.25s ease;
+            box-sizing: border-box;
+            position: relative;
+            z-index: 10;
+            pointer-events: auto !important;
+            touch-action: manipulation;
+        }
+
+        .exact-pill-btn:hover {
+            background: linear-gradient(135deg, #0b5737, #08482d);
+            box-shadow: 0 12px 24px -4px rgba(9, 71, 45, 0.5);
+        }
+
+        .exact-card-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.85rem;
+            color: #475569;
+            position: relative;
+            z-index: 10;
+        }
+
+        .exact-create-link {
+            color: #0d5c3a;
+            font-weight: 700;
+            text-decoration: none;
+            margin-left: 0.25rem;
+            display: inline-block;
+            position: relative;
+            z-index: 10;
+            pointer-events: auto !important;
+            padding: 0.35rem 0;
+            touch-action: manipulation;
+            cursor: pointer;
+        }
+
+        .exact-create-link:hover { text-decoration: underline; }
+
+        /* ==========================================================================
+           RESPONSIVE BREAKPOINTS (DESKTOP -> TABLET -> MOBILE -> COMPACT)
+           ========================================================================== */
+
+        @media (max-width: 1024px) {
+            .exact-login-container {
+                flex-direction: column !important;
+                min-height: 100vh;
+                width: 100%;
+                max-width: 100%;
+                box-sizing: border-box;
+                align-items: center;
+                justify-content: center;
+                padding: 2rem 1.25rem;
+                overflow-x: hidden;
+            }
+
+            .exact-visual-pane {
+                width: 100% !important;
+                max-width: 480px;
+                flex: none !important;
+                padding: 1.5rem 0.5rem;
+                text-align: center;
+            }
+
+            .exact-brand-header {
+                justify-content: center;
+            }
+
+            .exact-visual-headline {
+                font-size: clamp(1.5rem, 5vw, 2.2rem);
+                line-height: 1.25;
+                margin-bottom: 0.5rem;
+            }
+
+            .exact-visual-subtext {
+                font-size: 0.88rem;
+                line-height: 1.45;
+                margin-bottom: 1.25rem;
+            }
+
+            .exact-features-row {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 0.65rem;
+            }
+
+            .exact-feature-card {
+                padding: 0.75rem 0.6rem;
+                border-radius: 10px;
+            }
+
+            .exact-dots-grid {
+                display: none !important;
+            }
+
+            .exact-form-pane {
+                width: 100% !important;
+                max-width: 440px;
+                flex: none !important;
+                padding: 0.5rem 0;
+            }
+
+            .exact-login-card {
+                width: 100%;
+                max-width: 440px;
+                padding: 2.25rem 1.75rem;
+                border-radius: 18px;
+                box-sizing: border-box;
+            }
+
+            .exact-card-title {
+                font-size: 1.6rem;
+            }
+
+            .exact-card-subtitle {
+                font-size: 0.88rem;
+                margin-bottom: 1.25rem;
+            }
+
+            .exact-input-field {
+                font-size: 1rem !important;
+                min-height: 46px;
+                padding: 0.75rem 2.4rem 0.75rem 0.85rem;
+                border-radius: 8px;
+            }
+
+            .exact-pill-btn {
+                min-height: 46px;
+                font-size: 0.95rem;
+                padding: 0.75rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .exact-login-container {
+                padding: 1.5rem 0.85rem;
+            }
+
+            .exact-features-row {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+
+            .exact-login-card {
+                padding: 1.75rem 1.25rem;
+            }
+
+            .exact-card-title {
+                font-size: 1.4rem;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .exact-login-container {
+                padding: 1rem 0.5rem;
+            }
+
+            .exact-visual-pane {
+                padding: 1rem 0;
+            }
+
+            .exact-visual-headline {
+                font-size: 1.35rem;
+            }
+
+            .exact-login-card {
+                padding: 1.25rem 0.85rem;
+                border-radius: 14px;
+            }
+
+            .exact-card-title {
+                font-size: 1.25rem;
+            }
+
+            .exact-pill-btn {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body class="exact-login-body">
+    <div class="exact-login-container">
+        <!-- Left Visual Stadium Pane -->
+        <div class="exact-visual-pane">
+            <!-- Brand Header -->
+            <div class="exact-brand-header">
+                <a href="../index.html" class="exact-brand-link">
+                    <div class="exact-brand-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M6 18L18 6M6 6l12 12"></path>
+                            <circle cx="12" cy="12" r="9"></circle>
+                        </svg>
+                    </div>
+                    <span class="exact-brand-title">Cricket App</span>
+                </a>
+            </div>
+
+            <!-- Main Headline Section -->
+            <div class="exact-visual-content">
+                <div class="exact-platform-badge">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg>
+                    <span>LIVE CRICKET PLATFORM</span>
+                </div>
+
+                <h1 class="exact-visual-headline">
+                    Your Game. Your Team.<br>
+                    Your <span class="highlight-emerald">Cricket</span> <span class="highlight-gold-container">Identity.<svg class="headline-underline" viewBox="0 0 160 12" fill="none"><path d="M2 9C40 3 120 3 158 9" stroke="#f59e0b" stroke-width="3" stroke-linecap="round"/></svg></span>
+                </h1>
+
+                <p class="exact-visual-subtext">
+                    Manage your player identity, teams and cricket community from one connected platform.
+                </p>
+
+                <!-- Bottom 3 Feature Cards Row -->
+                <div class="exact-features-row">
+                    <div class="exact-feature-card">
+                        <div class="exact-feature-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><text x="12" y="15.5" font-size="9" text-anchor="middle" fill="currentColor" stroke="none" font-weight="bold">A</text></svg>
+                        </div>
+                        <h4 class="exact-feature-title">Secure Player Identity</h4>
+                        <p class="exact-feature-desc">Permanent cricket player identity and secure account access.</p>
+                    </div>
+
+                    <div class="exact-feature-card">
+                        <div class="exact-feature-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 1 0 7.75"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                        </div>
+                        <h4 class="exact-feature-title">Team Management</h4>
+                        <p class="exact-feature-desc">Create teams, connect players and manage your cricket squads.</p>
+                    </div>
+
+                    <div class="exact-feature-card">
+                        <div class="exact-feature-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </div>
+                        <h4 class="exact-feature-title">Connected Cricket</h4>
+                        <p class="exact-feature-desc">Build your cricket network and stay connected with your teams.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dots Grid Decorative -->
+            <div class="exact-dots-grid left-dots"></div>
+        </div>
+
+        <!-- Right Form Pane -->
+        <div class="exact-form-pane">
+            <div class="exact-dots-grid top-right-dots"></div>
+            <div class="exact-dots-grid bottom-left-dots"></div>
+
+            <div class="exact-login-card">
+                <div class="exact-pill-tag">CRICKET APP</div>
+                <h2 class="exact-card-title">Welcome Back</h2>
+                <p class="exact-card-subtitle">Sign in to continue to your Cricket App account.</p>
+
+                <div id="login-alert" class="alert alert-error" style="display: none; margin-bottom: 1.25rem;"></div>
+
+                <form id="login-form">
+                    <div class="exact-form-group">
+                        <label for="email" class="exact-form-label">Email Address</label>
+                        <div class="exact-input-wrapper">
+                            <input type="email" id="email" class="exact-input-field" required placeholder="name@example.com" autocomplete="email">
+                            <span class="exact-input-icon">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="exact-form-group">
+                        <label for="password" class="exact-form-label">Password</label>
+                        <div class="exact-input-wrapper">
+                            <input type="password" id="password" class="exact-input-field" required placeholder="Enter your password" autocomplete="current-password">
+                            <button type="button" class="exact-input-icon password-toggle" id="toggle-password-btn" aria-label="Toggle password visibility">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="icon-eye-off"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="icon-eye" style="display:none;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div style="text-align: right; margin-bottom: 1.5rem;">
+                        <a href="forgot-password.html" class="exact-forgot-link">Forgot Password?</a>
+                    </div>
+
+                    <button type="submit" id="btn-login" class="exact-pill-btn">
+                        Sign In
+                    </button>
+                </form>
+
+                <div class="exact-card-footer">
+                    Don't have an account? <a href="register.html" class="exact-create-link">Create Account</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+</body>
+</html>
+

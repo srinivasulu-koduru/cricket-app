@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Match Squad & Playing XI - Cricket App</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        body {
+            background-color: #0b1329;
+            color: #f8fafc;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        .px-nav-bar {
+            background: #061124;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 0.85rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .px-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+
+        .px-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .px-sub-breadcrumb {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-bottom: 0.35rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .px-title-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .px-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin: 0;
+        }
+
+        .px-status-badge {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            text-transform: uppercase;
+        }
+
+        .px-info-strip {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 8px;
+            padding: 0.6rem 1rem;
+            font-size: 0.85rem;
+            color: #cbd5e1;
+            margin-top: 0.75rem;
+        }
+
+        .team-tabs-row {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 0.5rem;
+        }
+
+        .team-tab-btn {
+            background: rgba(255, 255, 255, 0.05);
+            color: #94a3b8;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 0.55rem 1.4rem;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .team-tab-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+        }
+
+        .team-tab-btn.active {
+            background: #1e293b;
+            color: #ffffff;
+            border-color: #10b981;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+        }
+
+        .px-grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 1.25fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 992px) {
+            .px-grid-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            padding: 1.25rem;
+        }
+
+        .selected-xi-container {
+            background: rgba(16, 185, 129, 0.04);
+            border: 2px solid rgba(16, 185, 129, 0.35);
+            border-radius: 14px;
+            padding: 1.25rem;
+        }
+
+        .search-input-box {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            padding: 0.65rem 1rem;
+            color: #ffffff;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            box-sizing: border-box;
+        }
+
+        .search-input-box:focus {
+            outline: none;
+            border-color: #10b981;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .player-item-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 0.75rem 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            margin-bottom: 0.6rem;
+            transition: background 0.2s;
+        }
+
+        .player-item-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .player-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #1e293b;
+            border: 1.5px solid #10b981;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .player-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .role-category-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #10b981;
+            font-weight: 700;
+            margin: 0.8rem 0 0.5rem 0;
+        }
+
+        .btn-add-player {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            border-radius: 6px;
+            padding: 0.35rem 0.8rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-add-player:hover {
+            background: #10b981;
+            color: #000000;
+        }
+
+        .btn-remove-player {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 6px;
+            padding: 0.3rem 0.7rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-remove-player:hover {
+            background: #ef4444;
+            color: #ffffff;
+        }
+
+        .btn-wk-toggle {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 6px;
+            padding: 0.3rem 0.6rem;
+            font-size: 0.72rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-wk-toggle.active {
+            background: #f59e0b;
+            color: #000000;
+        }
+
+        .rules-guidance-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 0.85rem 1rem;
+            margin-top: 1.25rem;
+            font-size: 0.82rem;
+            color: #94a3b8;
+        }
+
+        .rules-guidance-box ul {
+            margin: 0.4rem 0 0 1.2rem;
+            padding: 0;
+        }
+
+        .rules-guidance-box li {
+            margin-bottom: 0.25rem;
+        }
+
+        .action-bottom-bar {
+            margin-top: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Navigation Bar -->
+    <div class="px-nav-bar">
+        <div style="display: flex; align-items: center; gap: 0.6rem;">
+            <span style="font-size: 1.4rem;">🏏</span>
+            <span style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.2rem; color: #ffffff;">Cricket App</span>
+        </div>
+        <button onclick="goBackToMatchDetails()" class="btn btn-secondary btn-sm" style="color: #cbd5e1; border-color: rgba(255,255,255,0.2);">
+            &larr; Back to Match Details
+        </button>
+    </div>
+
+    <div class="px-container">
+        <!-- Match Header Info -->
+        <div class="px-header">
+            <div class="px-sub-breadcrumb">&larr; Manage Match Squad</div>
+            <div class="px-title-row">
+                <h1 class="px-title" id="teams-title">Lions vs Kings</h1>
+                <span style="color: #94a3b8;">&bull; Match ID: <strong id="match-id-badge" style="color: #ffffff;">MATCH------</strong></span>
+                <span class="px-status-badge" id="match-status-badge">SCHEDULED</span>
+            </div>
+            <div class="px-info-strip" id="match-info-bar">
+                Loading match details...
+            </div>
+        </div>
+
+        <div id="select-xi-alert" class="alert alert-error" style="display: none; margin-bottom: 1rem;"></div>
+
+        <!-- Read-Only Banner for non-captains -->
+        <div id="read-only-banner" style="display: none; background: rgba(234, 179, 8, 0.12); border: 1.5px solid rgba(234, 179, 8, 0.4); border-radius: 10px; padding: 0.85rem 1.25rem; margin-bottom: 1.25rem; color: #fef08a; font-size: 0.9rem; align-items: center; gap: 0.75rem;">
+            <span style="font-size: 1.2rem;">🔒</span>
+            <div>
+                <strong style="color: #fde047;" id="read-only-title">Read-Only View</strong>
+                <div id="read-only-text" style="font-size: 0.83rem; margin-top: 0.15rem; color: #fef9c3;">Only the captain or owner of this team can select or save the Playing XI.</div>
+            </div>
+        </div>
+
+        <!-- Team Switcher Tabs -->
+        <div class="team-tabs-row">
+            <button id="tab-team-a" class="team-tab-btn active" onclick="switchTeamTab('A')">Team A</button>
+            <button id="tab-team-b" class="team-tab-btn" onclick="switchTeamTab('B')">Team B</button>
+        </div>
+
+        <!-- Main 2-Column Interface -->
+        <div class="px-grid-layout">
+            <!-- Left Column: Available Players -->
+            <div class="panel-card">
+                <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.1rem; color: #ffffff; margin: 0 0 1rem 0;">
+                    Available Players (<span id="active-team-name">Team A</span>)
+                </h3>
+                <input type="text" id="player-search" class="search-input-box" placeholder="🔍 Search player name or CRK ID" oninput="filterAvailablePlayers()">
+
+                <div id="available-players-list" style="max-height: 600px; overflow-y: auto; padding-right: 0.3rem;">
+                    <p style="color: #94a3b8; font-size: 0.88rem;">Loading squad players...</p>
+                </div>
+            </div>
+
+            <!-- Right Column: Playing XI Selection Container -->
+            <div class="selected-xi-container">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; border-bottom: 1px solid rgba(16, 185, 129, 0.2); padding-bottom: 0.6rem;">
+                    <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.25rem; font-weight: 800; color: #ffffff; margin: 0;">
+                        Playing XI
+                    </h3>
+                    <span id="selected-count-badge" style="font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 800; color: #10b981;">
+                        0 / 11 Selected
+                    </span>
+                </div>
+
+                <div id="selected-xi-content" style="max-height: 550px; overflow-y: auto; padding-right: 0.3rem;">
+                    <!-- Captain Category -->
+                    <div id="sec-captain">
+                        <div class="role-category-title">Captain</div>
+                        <div id="cat-captain-list"><p style="font-size:0.8rem; color:#94a3b8;">No captain assigned yet</p></div>
+                    </div>
+
+                    <!-- Wicketkeeper Category -->
+                    <div id="sec-keeper">
+                        <div class="role-category-title">WicketKEEPER</div>
+                        <div id="cat-keeper-list"><p style="font-size:0.8rem; color:#94a3b8;">No wicketkeeper selected</p></div>
+                    </div>
+
+                    <!-- Batters Category -->
+                    <div id="sec-batters">
+                        <div class="role-category-title">Batters</div>
+                        <div id="cat-batters-list"><p style="font-size:0.8rem; color:#94a3b8;">No batters added</p></div>
+                    </div>
+
+                    <!-- All-Rounders Category -->
+                    <div id="sec-allrounders">
+                        <div class="role-category-title">All-Rounders</div>
+                        <div id="cat-allrounders-list"><p style="font-size:0.8rem; color:#94a3b8;">No all-rounders added</p></div>
+                    </div>
+
+                    <!-- Bowlers Category -->
+                    <div id="sec-bowlers">
+                        <div class="role-category-title">Bowlers</div>
+                        <div id="cat-bowlers-list"><p style="font-size:0.8rem; color:#94a3b8;">No bowlers added</p></div>
+                    </div>
+
+                    <!-- Other Selected Players Category -->
+                    <div id="sec-others">
+                        <div class="role-category-title">Other Selected Players</div>
+                        <div id="cat-others-list"></div>
+                    </div>
+                </div>
+
+                <!-- Guidance & Rules Box -->
+                <div class="rules-guidance-box">
+                    <div id="count-status-box" style="margin-bottom: 0.5rem; font-weight: 700; color: #ffffff;">
+                        0 / 11 players selected
+                    </div>
+                    <div id="count-guidance-text" style="color: #10b981; font-weight: 600; margin-bottom: 0.75rem;">
+                        Select 11 players to complete the Playing XI.
+                    </div>
+                    <strong style="color: #e2e8f0;">Team rules</strong>
+                    <ul>
+                        <li>Playing XI must contain 11 players.</li>
+                        <li>Players must belong to this team.</li>
+                        <li>Captain is automatically identified from Team Management.</li>
+                        <li>Wicketkeeper can be selected from eligible players.</li>
+                        <li>Do not allow duplicate players.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Footer -->
+        <div class="action-bottom-bar">
+            <button id="btn-save-xi" class="btn btn-primary" onclick="savePlayingXiSelection()" style="background: #10b981; color: #000000; font-weight: 800; font-size: 1rem; padding: 0.75rem 2rem; border-radius: 8px;">
+                Save Playing XI
+            </button>
+            <button class="btn btn-secondary" onclick="goBackToMatchDetails()" style="font-weight: 700; padding: 0.75rem 1.5rem; border-radius: 8px;">
+                Cancel
+            </button>
+        </div>
+        <div id="save-status-msg" style="display: none; text-align: center; color: #10b981; font-weight: 700; margin-top: 0.75rem; font-size: 0.95rem;">
+            Playing XI saved successfully
+        </div>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/select-playing-xi.js"></script>
+</body>
+</html>

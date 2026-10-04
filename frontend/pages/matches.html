@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Matches - Cricket App</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="dash-layout" id="matches-container">
+        <!-- Sidebar Navigation -->
+        <aside class="dash-sidebar">
+            <div>
+                <!-- Brand Header -->
+                <div class="dash-brand-header">
+                    <a href="../index.html" class="dash-brand-link">
+                        <div class="dash-brand-logo">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="9"></circle>
+                                <path d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </div>
+                        <span class="dash-brand-text">Cricket App</span>
+                    </a>
+                </div>
+
+                <!-- Navigation Menu -->
+                <nav class="dash-nav">
+                    <a href="dashboard.html" class="dash-nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="profile.html" class="dash-nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        <span>My Profile</span>
+                    </a>
+                    <a href="players.html" class="dash-nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <span>Search Players</span>
+                    </a>
+                    <a href="teams.html" class="dash-nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                        <span>My Teams</span>
+                    </a>
+                    <a href="matches.html" class="dash-nav-item active">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        <span>Matches</span>
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Sidebar User & Logout -->
+            <div class="dash-sidebar-footer">
+                <div class="dash-sidebar-user-pill">
+                    <div class="dash-user-avatar">
+                        <img src="" alt="User" class="user-avatar-img" style="display:none;">
+                        <span class="user-avatar-fallback">👤</span>
+                    </div>
+                    <span class="dash-sidebar-user-name" id="sidebar-user-name">Loading...</span>
+                </div>
+                <button id="btn-logout" class="dash-sidebar-logout-btn">Logout</button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="dash-main" id="matches-main">
+            <!-- Header Top Bar -->
+            <header class="dash-header">
+                <div>
+                    <h1 class="dash-welcome-title">Cricket Matches</h1>
+                    <p class="dash-welcome-subtext">View and manage your scheduled cricket fixtures and match details</p>
+                </div>
+
+                <div class="dash-header-actions" style="gap: 0.75rem;">
+                    <a href="create-match.html" class="btn btn-primary btn-sm">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        <span>Schedule Match</span>
+                    </a>
+                    <a href="profile.html" class="dash-header-avatar">
+                        <img src="" alt="User" class="user-avatar-img" style="display:none;">
+                        <span class="user-avatar-fallback">👤</span>
+                    </a>
+                </div>
+            </header>
+
+            <div id="matches-alert" class="alert alert-error" style="display: none; margin-bottom: 1.5rem;"></div>
+
+            <!-- Pending Match Invitations Notification Section -->
+            <div id="pending-invitations-container" style="display: none; margin-bottom: 1.5rem;">
+                <div class="prof-card" style="border: 1px solid #f59e0b; background: linear-gradient(135deg, rgba(245, 158, 11, 0.08), rgba(217, 119, 6, 0.02));">
+                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                        <div style="display: flex; align-items: center; gap: 0.6rem;">
+                            <div style="width: 36px; height: 36px; border-radius: 50%; background: #f59e0b; color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
+                                📩
+                            </div>
+                            <div>
+                                <h3 style="margin: 0; font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 700; color: #92400e;">Pending Match Invitations</h3>
+                                <p style="margin: 0; font-size: 0.82rem; color: #b45309;">Opponent captains have challenged your team to a match fixture</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="pending-invitations-list" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                        <!-- Dynamically populated -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="prof-card" style="padding: 1rem 1.25rem; margin-bottom: 1.5rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                    <div class="prof-stats-tabs" style="margin: 0;">
+                        <button class="stats-tab-btn active" data-filter="ALL">All Matches</button>
+                        <button class="stats-tab-btn" data-filter="PENDING_CONFIRMATION">Pending Confirmation</button>
+                        <button class="stats-tab-btn" data-filter="SCHEDULED">Scheduled</button>
+                        <button class="stats-tab-btn" data-filter="COMPLETED">Completed</button>
+                        <button class="stats-tab-btn" data-filter="CANCELLED">Cancelled</button>
+                    </div>
+
+                    <a href="create-match.html" class="prof-btn-primary" style="padding: 0.5rem 1rem; font-size: 0.85rem;">
+                        + New Match
+                    </a>
+                </div>
+            </div>
+
+            <!-- Matches List/Grid -->
+            <div id="matches-grid" class="players-cards-grid" style="grid-template-columns: repeat(2, 1fr);">
+                <!-- Populated dynamically -->
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/matches.js"></script>
+</body>
+</html>

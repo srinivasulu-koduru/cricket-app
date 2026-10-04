@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Email OTP - Cricket App</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="auth-split-container">
+        <!-- Visual Left Pane -->
+        <div class="auth-visual-pane">
+            <div class="auth-visual-header">
+                <a href="../index.html" class="brand-link">
+                    <div class="brand-icon">🏏</div>
+                    <span class="brand-title">Cricket <span>App</span></span>
+                </a>
+            </div>
+
+            <div class="auth-visual-content">
+                <span class="auth-visual-tag">🔐 Security Verification</span>
+                <h1 class="auth-visual-title">Verify Your <span>Email Address</span></h1>
+                <p class="auth-visual-subtitle">
+                    Enter the 6-digit OTP code sent to your email to verify account ownership and generate your permanent Cricket User ID.
+                </p>
+            </div>
+
+            <div class="auth-visual-footer" style="color: var(--text-muted); font-size: 0.85rem;">
+                Cricket App &copy; 2026 &bull; Real OTP Verification Module
+            </div>
+        </div>
+
+        <!-- Form Right Pane -->
+        <div class="auth-card-pane">
+            <div class="auth-card-box">
+                <!-- Section 1: OTP Input -->
+                <div id="otp-input-section">
+                    <div class="auth-card-header">
+                        <h2 class="auth-card-title">Verify Email OTP</h2>
+                        <p class="auth-card-subtitle">
+                            Enter the 6-digit code sent to <br>
+                            <strong id="display-email" style="color: var(--color-pitch-emerald);">name@example.com</strong>
+                        </p>
+                    </div>
+
+                    <div id="otp-alert" class="alert alert-error" style="display: none;"></div>
+
+                    <form id="verify-otp-form">
+                        <div class="form-group" style="text-align: center;">
+                            <label style="margin-bottom: 0.5rem; display: block;">6-Digit OTP Code</label>
+                            
+                            <!-- 6 Digit Individual Input Boxes -->
+                            <div class="otp-input-group">
+                                <input type="text" maxlength="1" class="otp-digit-input" id="otp-1" data-index="1" autofocus autocomplete="off">
+                                <input type="text" maxlength="1" class="otp-digit-input" id="otp-2" data-index="2" autocomplete="off">
+                                <input type="text" maxlength="1" class="otp-digit-input" id="otp-3" data-index="3" autocomplete="off">
+                                <input type="text" maxlength="1" class="otp-digit-input" id="otp-4" data-index="4" autocomplete="off">
+                                <input type="text" maxlength="1" class="otp-digit-input" id="otp-5" data-index="5" autocomplete="off">
+                                <input type="text" maxlength="1" class="otp-digit-input" id="otp-6" data-index="6" autocomplete="off">
+                            </div>
+                            <input type="hidden" id="otp" name="otp">
+                        </div>
+
+                        <button type="submit" id="btn-verify-otp" class="btn btn-primary btn-block" style="margin-top: 1rem;">
+                            ⚡ Verify OTP & Activate
+                        </button>
+                    </form>
+
+                    <div style="text-align: center; margin-top: 1.5rem; font-size: 0.88rem; color: var(--text-secondary);">
+                        <span>Didn't receive the code?</span>
+                        <button id="btn-resend-otp" class="btn btn-secondary btn-sm" style="margin-left: 0.4rem;">Resend OTP</button>
+                        <div id="cooldown-timer" style="margin-top: 0.5rem; font-size: 0.82rem; color: var(--text-muted);"></div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Registration Success & User ID Display -->
+                <div id="success-user-id-section" style="display: none; text-align: center;">
+                    <div style="font-size: 3rem; margin-bottom: 0.5rem;">🎉</div>
+                    <h2 class="auth-card-title">Account Verified!</h2>
+                    <p class="auth-card-subtitle" style="margin-bottom: 1.5rem;">Your permanent Cricket User ID has been generated:</p>
+                    
+                    <div style="background: rgba(13, 71, 42, 0.4); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem;">
+                        <span style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-secondary); letter-spacing: 0.05em; display: block; margin-bottom: 0.25rem;">Permanent Unique User ID</span>
+                        <h3 id="created-user-id" class="permanent-id-badge" style="font-size: 1.6rem; padding: 0.4rem 1.2rem;">CRK102847</h3>
+                    </div>
+
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem;">
+                        📧 A welcome email has been sent to your registered email address.<br>You can now log in using your email and password.
+                    </p>
+
+                    <a href="login.html" class="btn btn-primary btn-block">Continue to Login</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playing XI - Cricket App</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        body {
+            background-color: #0b1329;
+            color: #f8fafc;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        .pxi-nav-bar {
+            background: #061124;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 0.85rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .pxi-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.5rem 1rem;
+        }
+
+        .pxi-hero-banner {
+            background: linear-gradient(135deg, #0d5c3a, #0b1329);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 16px;
+            padding: 1.75rem 1.25rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .team-xi-card {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 1.25rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .team-xi-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 0.85rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            margin-bottom: 1rem;
+        }
+
+        .team-badge-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #1e293b;
+            color: #ffffff;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #10b981;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .team-badge-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .status-badge-confirmed {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            font-size: 0.72rem;
+            font-weight: 800;
+            padding: 0.2rem 0.65rem;
+            border-radius: 6px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .status-badge-pending {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            font-size: 0.72rem;
+            font-weight: 800;
+            padding: 0.2rem 0.65rem;
+            border-radius: 6px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .player-row-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.65rem 0.85rem;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            margin-bottom: 0.55rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .player-row-item:hover {
+            background: rgba(16, 185, 129, 0.12);
+            border-color: #10b981;
+            transform: translateX(3px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+        }
+
+        .player-row-number {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #64748b;
+            width: 24px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .player-avatar-sm {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #1e293b;
+            border: 1.5px solid #10b981;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .player-avatar-sm img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .badge-captain-gold {
+            background: #f59e0b;
+            color: #000000;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.72rem;
+            font-weight: 800;
+            width: 22px;
+            height: 22px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .badge-keeper-teal {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            font-size: 0.68rem;
+            font-weight: 800;
+            padding: 0.12rem 0.45rem;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+
+        .pxi-grid-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 1.75rem;
+        }
+
+        @media (max-width: 768px) {
+            .pxi-grid-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .bottom-summary-container {
+            background: linear-gradient(135deg, #061124, #0d5c3a);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 14px;
+            padding: 1rem 1.5rem;
+            margin-top: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Navigation Bar -->
+    <div class="pxi-nav-bar">
+        <div style="display: flex; align-items: center; gap: 0.65rem;">
+            <span style="font-size: 1.4rem;">🏏</span>
+            <span style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.2rem; color: #ffffff;">Cricket App</span>
+            <span id="pxi-format-tag" style="background: rgba(16,185,129,0.15); color: #10b981; font-size: 0.72rem; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 4px; margin-left: 0.4rem;">
+                T20
+            </span>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 0.6rem;">
+            <a id="btn-select-xi-nav" href="#" class="btn btn-primary btn-sm" style="background: #10b981; color: #000000; font-weight: 800; border: none; text-decoration: none; padding: 0.45rem 1rem; border-radius: 6px;">
+                ⚙ Manage Playing XI
+            </a>
+            <button onclick="window.close()" class="btn btn-secondary btn-sm" style="color: #cbd5e1; border-color: rgba(255,255,255,0.2);">
+                ✕ Close
+            </button>
+        </div>
+    </div>
+
+    <div class="pxi-container">
+
+        <div id="pxi-alert" class="alert alert-error" style="display: none; margin-bottom: 1.5rem;"></div>
+
+        <!-- Hero Match Fixture Banner -->
+        <section class="pxi-hero-banner">
+            <div style="display: flex; align-items: center; justify-content: space-around; gap: 1rem; flex-wrap: wrap; text-align: center;">
+                <!-- Team A -->
+                <div style="min-width: 140px;">
+                    <div style="width: 64px; height: 64px; border-radius: 14px; background: rgba(255,255,255,0.1); margin: 0 auto 0.5rem; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 2px solid #10b981;">
+                        <img id="pxi-team-a-logo" src="" alt="Team A" style="width:100%;height:100%;object-fit:cover;display:none;">
+                        <span id="pxi-team-a-fallback" style="font-size: 1.75rem;">🛡️</span>
+                    </div>
+                    <h3 id="pxi-team-a-name" style="font-family: 'Outfit', sans-serif; font-size: 1.25rem; font-weight: 800; color: #ffffff; margin: 0 0 0.2rem 0;">Team A</h3>
+                    <span id="pxi-team-a-id" style="font-size: 0.78rem; color: #10b981; font-weight: 700;">TEAM------</span>
+                </div>
+
+                <!-- VS & Match Info -->
+                <div>
+                    <div style="width: 46px; height: 46px; border-radius: 50%; background: #10b981; color: #0b1329; font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.05rem; display: flex; align-items: center; justify-content: center; margin: 0 auto; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);">
+                        VS
+                    </div>
+                    <span id="pxi-format-overs" style="display: block; font-size: 0.78rem; color: #cbd5e1; margin-top: 0.45rem; font-weight: 600;">T20 &bull; 20 OVERS</span>
+                    <span id="pxi-match-id" style="display: block; font-size: 0.72rem; color: #94a3b8; margin-top: 0.15rem;">MATCH------</span>
+                </div>
+
+                <!-- Team B -->
+                <div style="min-width: 140px;">
+                    <div style="width: 64px; height: 64px; border-radius: 14px; background: rgba(255,255,255,0.1); margin: 0 auto 0.5rem; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 2px solid #10b981;">
+                        <img id="pxi-team-b-logo" src="" alt="Team B" style="width:100%;height:100%;object-fit:cover;display:none;">
+                        <span id="pxi-team-b-fallback" style="font-size: 1.75rem;">🛡️</span>
+                    </div>
+                    <h3 id="pxi-team-b-name" style="font-family: 'Outfit', sans-serif; font-size: 1.25rem; font-weight: 800; color: #ffffff; margin: 0 0 0.2rem 0;">Team B</h3>
+                    <span id="pxi-team-b-id" style="font-size: 0.78rem; color: #10b981; font-weight: 700;">TEAM------</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Subheader Title Bar -->
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.5rem;">
+            <div>
+                <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 800; color: #ffffff; margin: 0;">Playing XI</h2>
+                <p style="margin: 0.15rem 0 0 0; font-size: 0.85rem; color: #94a3b8;" id="pxi-sub-status-desc">Official players for today's match</p>
+            </div>
+            <span id="pxi-match-confirmed-badge" class="status-badge-pending">
+                ⏳ PENDING ANNOUNCEMENT
+            </span>
+        </div>
+
+        <!-- Responsive Team Playing XI Grid -->
+        <div class="pxi-grid-layout">
+            <!-- Team A Card -->
+            <div class="team-xi-card">
+                <div class="team-xi-header">
+                    <div style="display: flex; align-items: center; gap: 0.65rem;">
+                        <div class="team-badge-circle" id="pxi-circle-a">
+                            <span id="pxi-circle-text-a">A</span>
+                        </div>
+                        <div>
+                            <h3 id="pxi-col-team-a-name" style="font-family: 'Outfit', sans-serif; font-size: 1.15rem; font-weight: 800; color: #ffffff; margin: 0;">Team A</h3>
+                            <div id="pxi-col-team-a-sub" style="font-size: 0.75rem; color: #94a3b8;">Playing 11 &bull; 0 announced</div>
+                        </div>
+                    </div>
+                    <span id="pxi-col-team-a-badge" class="status-badge-pending">
+                        UNCONFIRMED
+                    </span>
+                </div>
+
+                <div id="pxi-squad-team-a">
+                    <p style="color: #94a3b8; font-size: 0.9rem;">Loading squad...</p>
+                </div>
+            </div>
+
+            <!-- Team B Card -->
+            <div class="team-xi-card">
+                <div class="team-xi-header">
+                    <div style="display: flex; align-items: center; gap: 0.65rem;">
+                        <div class="team-badge-circle" id="pxi-circle-b">
+                            <span id="pxi-circle-text-b">B</span>
+                        </div>
+                        <div>
+                            <h3 id="pxi-col-team-b-name" style="font-family: 'Outfit', sans-serif; font-size: 1.15rem; font-weight: 800; color: #ffffff; margin: 0;">Team B</h3>
+                            <div id="pxi-col-team-b-sub" style="font-size: 0.75rem; color: #94a3b8;">Playing 11 &bull; 0 announced</div>
+                        </div>
+                    </div>
+                    <span id="pxi-col-team-b-badge" class="status-badge-pending">
+                        UNCONFIRMED
+                    </span>
+                </div>
+
+                <div id="pxi-squad-team-b">
+                    <p style="color: #94a3b8; font-size: 0.9rem;">Loading squad...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Summary Footer Container -->
+        <div class="bottom-summary-container">
+            <div>
+                <strong style="font-family: 'Outfit', sans-serif; font-size: 1.05rem; color: #ffffff;" id="pxi-bottom-summary-title">0 Players Announced</strong>
+                <div style="font-size: 0.8rem; color: #cbd5e1; margin-top: 0.15rem;" id="pxi-bottom-summary-desc">Playing XI confirmation pending captain selections</div>
+            </div>
+            <div id="pxi-bottom-summary-icon" style="width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+                ⏳
+            </div>
+        </div>
+
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/playing-xi.js"></script>
+</body>
+</html>

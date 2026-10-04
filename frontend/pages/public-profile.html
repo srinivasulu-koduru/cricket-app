@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Profile - Cricket App</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="dash-layout" id="public-profile-container">
+        <!-- Sidebar Navigation -->
+        <aside class="dash-sidebar">
+            <div>
+                <!-- Brand Header -->
+                <div class="dash-brand-header">
+                    <a href="../index.html" class="dash-brand-link">
+                        <div class="dash-brand-logo">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="9"></circle>
+                                <path d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </div>
+                        <span class="dash-brand-text">Cricket App</span>
+                    </a>
+                </div>
+
+                <!-- Navigation Menu -->
+                <nav class="dash-nav">
+                    <a href="dashboard.html" class="dash-nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="profile.html" class="dash-nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        <span>My Profile</span>
+                    </a>
+                    <a href="players.html" class="dash-nav-item active">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <span>Search Players</span>
+                    </a>
+                    <a href="teams.html" class="dash-nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                        <span>My Teams</span>
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Sidebar User & Logout -->
+            <div class="dash-sidebar-footer">
+                <div class="dash-sidebar-user-pill">
+                    <div class="dash-user-avatar">
+                        <img src="" alt="User" class="user-avatar-img" style="display:none;">
+                        <span class="user-avatar-fallback">👤</span>
+                    </div>
+                    <span class="dash-sidebar-user-name" id="sidebar-user-name">Loading...</span>
+                </div>
+                <button id="btn-logout" class="dash-sidebar-logout-btn">Logout</button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="dash-main" id="public-profile-main">
+            <!-- Header Top Bar -->
+            <header class="dash-header">
+                <div>
+                    <a href="players.html" style="display: inline-flex; align-items: center; gap: 0.4rem; color: #0d5c3a; font-size: 0.85rem; font-weight: 600; text-decoration: none; margin-bottom: 0.25rem;">
+                        &larr; Back to Search Players
+                    </a>
+                    <h1 class="dash-welcome-title" id="pub-page-title">Player Profile</h1>
+                </div>
+
+                <div class="dash-header-actions">
+                    <a href="profile.html" class="dash-header-avatar">
+                        <img src="" alt="User" class="user-avatar-img" style="display:none;">
+                        <span class="user-avatar-fallback">👤</span>
+                    </a>
+                </div>
+            </header>
+
+            <div id="public-profile-alert" class="alert alert-error" style="display: none; margin-bottom: 1.5rem;"></div>
+
+            <!-- Playing XI Match Context Banner (Visible when opened from Playing XI) -->
+            <div id="pxi-context-banner" style="display: none; background: linear-gradient(135deg, #0f172a, #0d5c3a); border: 1.5px solid #10b981; color: #ffffff; padding: 1.1rem 1.4rem; border-radius: 16px; margin-bottom: 1.75rem; box-shadow: 0 8px 20px rgba(13, 92, 58, 0.25);">
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.78rem; font-weight: 800; color: #10b981; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.2rem;">
+                            <span>🏏 Currently in Playing XI</span>
+                        </div>
+                        <h3 id="pxi-banner-match-title" style="margin: 0 0 0.3rem 0; font-family: 'Outfit', sans-serif; font-size: 1.15rem; font-weight: 800; color: #ffffff;">Match Fixture</h3>
+                        <div style="font-size: 0.85rem; color: #cbd5e1; display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap;">
+                            <span>Match ID: <strong id="pxi-banner-match-id" style="color: #10b981;">MATCH------</strong></span>
+                            <span>&bull;</span>
+                            <span>Playing for: <strong id="pxi-banner-team" style="color: #ffffff;">Team</strong></span>
+                            <span>&bull;</span>
+                            <span>Role: <strong id="pxi-banner-role" style="color: #ffffff;">Player</strong></span>
+                        </div>
+                    </div>
+                    <a id="pxi-banner-match-link" href="#" target="_blank" style="background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid #10b981; padding: 0.5rem 1rem; border-radius: 10px; font-size: 0.82rem; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; transition: background 0.2s;">
+                        <span>View Match Details</span>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Profile Identity Hero Card -->
+            <section class="prof-hero-card">
+                <div class="prof-hero-top">
+                    <!-- Photo Box -->
+                    <div class="prof-photo-wrapper">
+                        <div class="prof-avatar-box">
+                            <img id="pub-photo-img" src="" alt="Profile Photo" style="display: none;">
+                            <span id="pub-avatar-fallback" class="prof-avatar-fallback">👤</span>
+                        </div>
+                    </div>
+
+                    <!-- Player Core Specs & Badges -->
+                    <div class="prof-identity-info">
+                        <div class="prof-badge-row">
+                            <span class="prof-id-pill" id="pub-user-id">CRK-------</span>
+                            <span class="prof-role-pill" id="pub-playing-role-badge">ALL-ROUNDER</span>
+                            <span class="prof-verified-pill">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                Verified Player
+                            </span>
+                        </div>
+
+                        <h2 class="prof-player-name" id="pub-name">Loading Player...</h2>
+
+                        <div class="prof-quick-meta">
+                            <div class="prof-meta-item">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                                <span id="pub-location">Location Not Specified</span>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="prof-actions-row">
+                            <button id="btn-share-pub-profile" class="prof-btn-secondary">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                                <span>Share Profile</span>
+                            </button>
+                            <button id="btn-copy-pub-link" class="prof-btn-secondary">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                                <span>Copy Profile Link</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2-Column Main Profile Grid -->
+            <div class="prof-main-grid">
+                <!-- Left Column -->
+                <div class="prof-left-col">
+                    <!-- Career Statistics Card -->
+                    <section class="prof-card">
+                        <div class="prof-card-header">
+                            <div class="prof-card-title-group">
+                                <div class="prof-card-icon emerald">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                                </div>
+                                <div>
+                                    <h3 class="prof-card-title">Career Statistics</h3>
+                                    <p class="prof-card-subtitle">Official match statistics &amp; averages</p>
+                                </div>
+                            </div>
+
+                            <div class="prof-stats-tabs">
+                                <button class="stats-tab-btn active" data-tab="batting">Batting</button>
+                                <button class="stats-tab-btn" data-tab="bowling">Bowling</button>
+                                <button class="stats-tab-btn" data-tab="fielding">Fielding</button>
+                            </div>
+                        </div>
+
+                        <!-- Batting Stats View -->
+                        <div id="stats-tab-batting" class="stats-tab-pane active">
+                            <div class="prof-stats-grid" id="pub-batting-grid">
+                                <!-- Populated dynamically or empty state -->
+                            </div>
+                        </div>
+
+                        <!-- Bowling Stats View -->
+                        <div id="stats-tab-bowling" class="stats-tab-pane" style="display: none;">
+                            <div class="prof-stats-grid" id="pub-bowling-grid">
+                                <!-- Populated dynamically or empty state -->
+                            </div>
+                        </div>
+
+                        <!-- Fielding Stats View -->
+                        <div id="stats-tab-fielding" class="stats-tab-pane" style="display: none;">
+                            <div class="prof-stats-grid" id="pub-fielding-grid">
+                                <!-- Populated dynamically or empty state -->
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Match History Card -->
+                    <section class="prof-card">
+                        <div class="prof-card-header">
+                            <div class="prof-card-title-group">
+                                <div class="prof-card-icon navy">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                </div>
+                                <div>
+                                    <h3 class="prof-card-title">Match History</h3>
+                                    <p class="prof-card-subtitle">Official completed match records</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="pub-match-history-container">
+                            <!-- Match table or empty state -->
+                        </div>
+                    </section>
+
+                    <!-- Teams Played For Card -->
+                    <section class="prof-card">
+                        <div class="prof-card-header">
+                            <div class="prof-card-title-group">
+                                <div class="prof-card-icon gold">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                                </div>
+                                <div>
+                                    <h3 class="prof-card-title">Teams Played For</h3>
+                                    <p class="prof-card-subtitle">Official team affiliations &amp; rosters</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="prof-teams-list" id="pub-teams-list">
+                            <!-- Team list or empty state -->
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Right Column -->
+                <div class="prof-right-col">
+                    <!-- Achievements Card -->
+                    <section class="prof-card">
+                        <div class="prof-card-header">
+                            <div class="prof-card-title-group">
+                                <div class="prof-card-icon gold">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>
+                                </div>
+                                <div>
+                                    <h3 class="prof-card-title">Achievements</h3>
+                                    <p class="prof-card-subtitle">Verified career milestones</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="pub-achievements-container">
+                            <!-- Achievements list or empty state -->
+                        </div>
+                    </section>
+
+                    <!-- Player Information Card -->
+                    <section class="prof-card">
+                        <div class="prof-card-header">
+                            <div class="prof-card-title-group">
+                                <div class="prof-card-icon emerald">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                </div>
+                                <div>
+                                    <h3 class="prof-card-title">Player Information</h3>
+                                    <p class="prof-card-subtitle">Personal and playing profile specs</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="prof-info-list">
+                            <div class="prof-info-item">
+                                <span class="info-label">Full Name</span>
+                                <strong class="info-value" id="pub-info-full-name">Loading...</strong>
+                            </div>
+                            <div class="prof-info-item">
+                                <span class="info-label">Cricket User ID</span>
+                                <strong class="info-value text-emerald" id="pub-info-user-id">CRK-------</strong>
+                            </div>
+                            <div class="prof-info-item">
+                                <span class="info-label">Playing Role</span>
+                                <span class="info-value" id="pub-info-role">All-Rounder</span>
+                            </div>
+                            <div class="prof-info-item">
+                                <span class="info-label">Batting Style</span>
+                                <span class="info-value" id="pub-info-batting">Not Specified</span>
+                            </div>
+                            <div class="prof-info-item">
+                                <span class="info-label">Bowling Style</span>
+                                <span class="info-value" id="pub-info-bowling">Not Specified</span>
+                            </div>
+                            <div class="prof-info-item">
+                                <span class="info-label">Date of Birth</span>
+                                <span class="info-value" id="pub-info-dob">Not Specified</span>
+                            </div>
+                            <div class="prof-info-item">
+                                <span class="info-label">Gender</span>
+                                <span class="info-value" id="pub-info-gender">Not Specified</span>
+                            </div>
+                            <div class="prof-info-item">
+                                <span class="info-label">Location</span>
+                                <span class="info-value" id="pub-info-location">Not Specified</span>
+                            </div>
+                        </div>
+
+                        <div class="prof-bio-box">
+                            <span class="info-label" style="margin-bottom: 0.4rem; display: block; font-weight: 600; color: #475569;">About Player / Bio</span>
+                            <p class="prof-bio-text" id="pub-bio">No bio provided by player.</p>
+                        </div>
+
+                        <!-- Profile Completion Progress Widget -->
+                        <div style="margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid #e2e8f0;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+                                <span style="font-size: 0.8rem; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.04em;">Profile Completion</span>
+                                <strong style="font-size: 0.9rem; font-weight: 800; color: #0d5c3a;" id="pub-completion-percent">100%</strong>
+                            </div>
+                            <div style="width: 100%; background: #e2e8f0; border-radius: 999px; height: 8px; overflow: hidden; position: relative;">
+                                <div id="pub-completion-bar" style="width: 100%; background: linear-gradient(90deg, #0d5c3a, #10b981); height: 100%; border-radius: 999px; transition: width 0.4s ease;"></div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/public-profile.js"></script>
+</body>
+</html>

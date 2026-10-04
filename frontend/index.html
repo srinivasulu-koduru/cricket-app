@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Cricket App - Official Team Management and Sports Player Platform.">
+    <title>Cricket App - Sports Platform & Player Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="app-background">
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+        <div class="glow-orb orb-3"></div>
+    </div>
+
+    <div class="container">
+        <!-- Navigation Header -->
+        <header class="header">
+            <a href="index.html" class="brand-link">
+                <div class="brand-icon">🏏</div>
+                <h1 class="brand-title">Cricket <span>App</span></h1>
+            </a>
+            
+            <div class="header-nav-actions" style="display: flex; align-items: center; gap: 1rem;">
+                <span class="role-badge">Official Platform</span>
+                <a href="pages/login.html" class="btn btn-secondary">Sign In</a>
+                <a href="pages/register.html" class="btn btn-primary">Create Account</a>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <main class="main-content">
+            <section class="hero-card">
+                <div class="hero-badge">⚡ Sports Team & Player Hub</div>
+                <h2 class="hero-title">Cricket Team Management & Player Profiles</h2>
+                <p class="hero-subtitle">
+                    Register to receive your permanent Cricket User ID (<code>CRKXXXXXX</code>), create cricket teams with permanent Team IDs (<code>TEAMXXXXXX</code>), invite players via CRK IDs, and manage squad memberships.
+                </p>
+
+                <!-- Quick Action Hub -->
+                <div class="status-box" style="background: rgba(11, 19, 41, 0.85); border-color: rgba(16, 185, 129, 0.3);">
+                    <div class="status-header">
+                        <div class="status-title" style="font-size: 1.15rem; color: var(--color-pitch-emerald); font-family: var(--font-heading); font-weight: 700;">
+                            🛡️ Cricket App Actions Hub
+                        </div>
+                    </div>
+                    <p style="font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
+                        Sign in or register to access player identity details, team rosters, and player invitations.
+                    </p>
+                    <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+                        <a href="pages/register.html" class="btn btn-primary">
+                            <span style="font-size: 1.1rem;">📝</span> Create Account
+                        </a>
+                        <a href="pages/login.html" class="btn btn-secondary">
+                            <span style="font-size: 1.1rem;">🔑</span> Sign In
+                        </a>
+                        <a href="pages/dashboard.html" class="btn btn-secondary">
+                            <span style="font-size: 1.1rem;">👤</span> User Dashboard
+                        </a>
+                        <a href="pages/teams.html" class="btn btn-gold">
+                            <span style="font-size: 1.1rem;">🏏</span> My Teams & Create Team
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Backend Health Monitor -->
+                <div class="status-box" id="status-card">
+                    <div class="status-header">
+                        <div class="section-title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>
+                            Backend Server Connectivity
+                        </div>
+                        <span class="role-badge" id="connection-pill">
+                            <span id="connection-text">Checking status...</span>
+                        </span>
+                    </div>
+
+                    <div id="status-details">
+                        <p id="status-message" style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 1rem;">
+                            Initiating HTTP request to Spring Boot health endpoint...
+                        </p>
+                        <div class="grid-2col" style="font-size: 0.88rem; color: var(--text-muted); background: rgba(0,0,0,0.2); padding: 0.85rem; border-radius: var(--radius-md); margin-bottom: 1rem;">
+                            <div>
+                                <span style="display: block; font-size: 0.78rem; text-transform: uppercase;">Backend Health URL</span>
+                                <strong style="color: var(--text-primary);">http://localhost:8080/api/health</strong>
+                            </div>
+                            <div>
+                                <span style="display: block; font-size: 0.78rem; text-transform: uppercase;">Last Checked</span>
+                                <strong id="last-checked-time" style="color: var(--text-primary);">--:--:--</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <button id="btn-recheck" class="btn btn-secondary btn-sm">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"></path><path d="M1 20v-6h6"></path><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                            Recheck Server Endpoint
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Platform Highlights Grid -->
+                <div style="margin-top: 2.5rem;">
+                    <h3 class="section-title" style="margin-bottom: 1.25rem;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path></svg>
+                        Platform Features & Specifications
+                    </h3>
+                    <div class="stack-grid">
+                        <div class="stack-card">
+                            <div style="font-size: 2rem; margin-bottom: 0.5rem;">🛡️</div>
+                            <h4 style="font-family: var(--font-heading); font-size: 1.1rem; color: #fff; margin-bottom: 0.4rem;">Spring Security & JWT</h4>
+                            <p style="font-size: 0.88rem; color: var(--text-secondary);">Stateless JWT token authentication, BCrypt password hashing, and server-side role authorization.</p>
+                        </div>
+                        <div class="stack-card">
+                            <div style="font-size: 2rem; margin-bottom: 0.5rem;">🏏</div>
+                            <h4 style="font-family: var(--font-heading); font-size: 1.1rem; color: #fff; margin-bottom: 0.4rem;">Permanent Team IDs</h4>
+                            <p style="font-size: 0.88rem; color: var(--text-secondary);">Server-side generated <code>TEAMXXXXXX</code> IDs, team logos, and shareable join links.</p>
+                        </div>
+                        <div class="stack-card">
+                            <div style="font-size: 2rem; margin-bottom: 0.5rem;">👥</div>
+                            <h4 style="font-family: var(--font-heading); font-size: 1.1rem; color: #fff; margin-bottom: 0.4rem;">Player Invitations</h4>
+                            <p style="font-size: 0.88rem; color: var(--text-secondary);">Invite players via permanent <code>CRKXXXXXX</code> IDs with real email notifications & in-app Accept/Reject workflow.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Cricket App &copy; 2026 &bull; Stage 4 Team Management & Player Platform</p>
+        </footer>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

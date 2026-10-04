@@ -1,0 +1,1497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scorer Control Room - Cricket App</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/celebration.css">
+    <style>
+        body {
+            background: #06110b;
+            color: #f8fafc;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+        .sc-container {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 1.25rem 1rem;
+        }
+        /* Top Header Card */
+        .sc-header-card {
+            background: linear-gradient(135deg, #0b1a13 0%, #08291a 100%);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            border-radius: 16px;
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.25rem;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        }
+        .sc-top-pill {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 0.5rem 1rem;
+            text-align: center;
+            min-width: 90px;
+        }
+        .sc-top-pill-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: #94a3b8;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        .sc-top-pill-val {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #ffffff;
+            line-height: 1.1;
+        }
+        /* Metrics Bar */
+        .sc-metrics-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+        .sc-metric-card {
+            background: rgba(11, 26, 19, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 0.85rem 1.1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .sc-metric-label {
+            font-size: 0.82rem;
+            color: #94a3b8;
+            font-weight: 600;
+        }
+        .sc-metric-val {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #10b981;
+        }
+
+        /* 3 Column Main Scoring Grid */
+        .sc-main-grid {
+            display: grid;
+            grid-template-columns: 280px 1fr 300px;
+            gap: 1.25rem;
+        }
+        @media (max-width: 1024px) {
+            .sc-main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Left Column Cards */
+        .player-status-card {
+            background: rgba(11, 26, 19, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            padding: 1.1rem;
+            margin-bottom: 1rem;
+            position: relative;
+            transition: border 0.2s ease;
+        }
+        .player-status-card.active-striker {
+            border: 2px solid #10b981;
+            box-shadow: 0 0 16px rgba(16, 185, 129, 0.25);
+        }
+        .player-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+        .player-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #0d5c3a;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            overflow: hidden;
+            border: 1px solid #10b981;
+        }
+        .player-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .player-name-group {
+            flex: 1;
+            overflow: hidden;
+        }
+        .player-name {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .player-subrole {
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+        .striker-badge {
+            background: #10b981;
+            color: #000;
+            font-size: 0.68rem;
+            font-weight: 800;
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+            text-transform: uppercase;
+        }
+        .big-player-runs {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #10b981;
+            line-height: 1;
+            margin-bottom: 0.75rem;
+        }
+        .player-mini-stats {
+            display: flex;
+            justify-content: space-between;
+            background: rgba(0,0,0,0.25);
+            border-radius: 8px;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.8rem;
+        }
+
+        /* Center Quick Scoring Panel */
+        .sc-scoring-card {
+            background: rgba(11, 26, 19, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 1.5rem;
+        }
+        .btn-runs-top-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.85rem;
+            margin-bottom: 0.85rem;
+        }
+        .btn-runs-boundary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.85rem;
+            margin-bottom: 0.85rem;
+        }
+        .btn-extras-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.85rem;
+            margin-bottom: 1.25rem;
+        }
+        .sc-btn-run {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.85rem;
+            font-weight: 800;
+            padding: 1.1rem 0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            text-align: center;
+        }
+        .sc-btn-run:hover, .sc-btn-run:active {
+            background: #10b981;
+            color: #000;
+            transform: translateY(-2px);
+        }
+        .sc-btn-boundary-four {
+            background: rgba(14, 165, 233, 0.15);
+            border: 2px solid #0ea5e9;
+            color: #60a5fa;
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            padding: 1.5rem 0;
+            border-radius: 14px;
+            cursor: pointer;
+            text-align: center;
+        }
+        .sc-btn-boundary-four:hover { background: #0ea5e9; color: #fff; }
+        .sc-btn-boundary-six {
+            background: rgba(168, 85, 247, 0.15);
+            border: 2px solid #a855f7;
+            color: #c084fc;
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            padding: 1.5rem 0;
+            border-radius: 14px;
+            cursor: pointer;
+            text-align: center;
+        }
+        .sc-btn-boundary-six:hover { background: #a855f7; color: #fff; }
+        .sc-btn-extra {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1.5px solid rgba(255, 255, 255, 0.12);
+            color: #e2e8f0;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 800;
+            padding: 0.95rem 0;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+        }
+        .sc-btn-extra:hover { background: #f59e0b; color: #000; }
+        .sc-btn-wicket-large {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.25), rgba(185, 28, 28, 0.35));
+            border: 2px solid #ef4444;
+            color: #ffffff;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 900;
+            padding: 1.25rem;
+            border-radius: 14px;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+            margin-bottom: 1rem;
+            letter-spacing: 1px;
+        }
+        .sc-btn-wicket-large:hover { background: #ef4444; color: #fff; }
+
+        /* Right Column (This Over & Stats) */
+        .sc-right-card {
+            background: rgba(11, 26, 19, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            padding: 1.1rem;
+        }
+        .ball-log-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.6rem 0.75rem;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            font-size: 0.84rem;
+        }
+        .ball-icon-pill {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #10b981;
+            color: #000;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.82rem;
+            flex-shrink: 0;
+        }
+        .ball-icon-pill.wicket { background: #ef4444; color: #fff; }
+        .ball-icon-pill.four { background: #0ea5e9; color: #fff; }
+        .ball-icon-pill.six { background: #a855f7; color: #fff; }
+        .ball-icon-pill.extra { background: #f59e0b; color: #000; }
+
+        /* Form Controls Switch */
+        .switch-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .switch-group label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+
+        /* Scorer Dashboard Header Action Buttons */
+        .sc-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+        }
+        .sc-action-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.45rem;
+            padding: 0.5rem 0.95rem;
+            border-radius: 9999px;
+            font-size: 0.84rem;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            white-space: nowrap;
+            line-height: 1.2;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+            user-select: none;
+            width: auto;
+            height: auto;
+            text-decoration: none;
+        }
+        .sc-action-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+        }
+        .sc-action-btn:active {
+            transform: translateY(0);
+        }
+        .sc-action-btn-pause {
+            background: rgba(239, 68, 68, 0.15);
+            border-color: rgba(239, 68, 68, 0.5);
+            color: #fca5a5;
+        }
+        .sc-action-btn-pause:hover {
+            background: rgba(239, 68, 68, 0.25);
+            border-color: #ef4444;
+            color: #ffffff;
+            box-shadow: 0 0 12px rgba(239, 68, 68, 0.35);
+        }
+        .sc-action-btn-resume {
+            background: #10b981;
+            border-color: #34d399;
+            color: #064e3b;
+            font-weight: 800;
+        }
+        .sc-action-btn-resume:hover {
+            background: #34d399;
+            border-color: #10b981;
+            color: #022c22;
+            box-shadow: 0 0 14px rgba(16, 185, 129, 0.5);
+        }
+        .sc-action-btn-batter {
+            background: rgba(245, 158, 11, 0.15);
+            border-color: rgba(245, 158, 11, 0.5);
+            color: #fbbf24;
+        }
+        .sc-action-btn-batter:hover {
+            background: rgba(245, 158, 11, 0.25);
+            border-color: #f59e0b;
+            color: #ffffff;
+            box-shadow: 0 0 12px rgba(245, 158, 11, 0.35);
+        }
+        .sc-action-btn-keeper {
+            background: rgba(16, 185, 129, 0.15);
+            border-color: rgba(16, 185, 129, 0.5);
+            color: #34d399;
+        }
+        .sc-action-btn-keeper:hover {
+            background: rgba(16, 185, 129, 0.25);
+            border-color: #10b981;
+            color: #ffffff;
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.35);
+        }
+        .sc-action-btn-settings {
+            width: 38px;
+            height: 38px;
+            padding: 0;
+            border-radius: 50%;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.5);
+            color: #34d399;
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+            user-select: none;
+        }
+        .sc-action-btn-settings:hover {
+            background: rgba(16, 185, 129, 0.28);
+            border-color: #10b981;
+            color: #ffffff;
+            transform: rotate(30deg);
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.35);
+        }
+        .sc-action-btn-celeb {
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            color: #fbbf24;
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 0.55rem 0.95rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            text-decoration: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+            user-select: none;
+        }
+        .sc-action-btn-celeb:hover {
+            background: rgba(245, 158, 11, 0.28);
+            border-color: #f59e0b;
+            color: #ffffff;
+            box-shadow: 0 0 14px rgba(245, 158, 11, 0.4);
+        }
+        .celeb-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+        input:checked + .celeb-slider {
+            background-color: #10b981 !important;
+        }
+        input:checked + .celeb-slider:before {
+            transform: translateX(22px);
+        }
+
+        /* Mobile and Tablet Responsive Optimization */
+        @media (max-width: 768px) {
+            .sc-container {
+                padding: 1rem 0.75rem;
+            }
+            .sc-header-card {
+                padding: 1rem;
+                gap: 0.75rem;
+            }
+            .sc-top-pill {
+                min-width: 75px;
+                padding: 0.45rem 0.75rem;
+            }
+            .sc-top-pill-val {
+                font-size: 1.2rem;
+            }
+            .sc-metrics-bar {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.75rem;
+            }
+            .sc-metric-card {
+                padding: 0.75rem 0.85rem;
+            }
+            .sc-header-actions {
+                gap: 0.45rem;
+            }
+            .sc-action-btn {
+                padding: 0.45rem 0.75rem;
+                font-size: 0.8rem;
+                min-height: 44px;
+            }
+            .sc-scoring-card {
+                padding: 1.15rem;
+            }
+            .sc-btn-run {
+                font-size: 1.6rem;
+                padding: 0.95rem 0;
+                min-height: 48px;
+            }
+            .sc-btn-boundary-four,
+            .sc-btn-boundary-six {
+                font-size: 2.1rem;
+                padding: 1.15rem 0;
+                min-height: 52px;
+            }
+            .sc-btn-extra {
+                font-size: 1rem;
+                padding: 0.8rem 0;
+                min-height: 44px;
+            }
+            .sc-btn-wicket-large {
+                font-size: 1.4rem;
+                padding: 1.05rem;
+                min-height: 48px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .sc-container {
+                padding: 0.75rem 0.5rem;
+            }
+            .sc-header-card {
+                padding: 0.85rem 0.75rem;
+                border-radius: 12px;
+            }
+            .sc-top-pill {
+                min-width: 68px;
+                padding: 0.35rem 0.55rem;
+                border-radius: 10px;
+                flex: 1 1 calc(50% - 0.75rem);
+            }
+            .sc-top-pill-label {
+                font-size: 0.65rem;
+            }
+            .sc-top-pill-val {
+                font-size: 1.1rem;
+            }
+            .sc-metrics-bar {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.5rem;
+            }
+            .sc-metric-card {
+                padding: 0.6rem 0.7rem;
+            }
+            .sc-metric-label {
+                font-size: 0.75rem;
+            }
+            .sc-metric-val {
+                font-size: 1rem;
+            }
+            .sc-scoring-card {
+                padding: 0.9rem;
+                border-radius: 12px;
+            }
+            .btn-runs-top-grid,
+            .btn-runs-boundary-grid,
+            .btn-extras-grid {
+                gap: 0.55rem;
+                margin-bottom: 0.65rem;
+            }
+            .sc-btn-run {
+                font-size: 1.45rem;
+                padding: 0.8rem 0;
+                min-height: 46px;
+                border-radius: 10px;
+            }
+            .sc-btn-boundary-four,
+            .sc-btn-boundary-six {
+                font-size: 1.85rem;
+                padding: 0.95rem 0;
+                min-height: 50px;
+                border-radius: 10px;
+            }
+            .sc-btn-extra {
+                font-size: 0.9rem;
+                padding: 0.7rem 0;
+                min-height: 44px;
+                border-radius: 8px;
+            }
+            .sc-btn-wicket-large {
+                font-size: 1.25rem;
+                padding: 0.9rem;
+                min-height: 46px;
+                border-radius: 10px;
+            }
+            .sc-btn-ball-deliver {
+                font-size: 1.05rem;
+                padding: 0.75rem;
+                min-height: 46px;
+            }
+            .player-status-card {
+                padding: 0.9rem;
+                border-radius: 12px;
+            }
+            .player-avatar {
+                width: 38px;
+                height: 38px;
+                font-size: 0.95rem;
+            }
+            .player-name {
+                font-size: 0.95rem;
+            }
+            .big-player-runs {
+                font-size: 1.85rem;
+            }
+            .sc-right-card {
+                padding: 0.9rem;
+                border-radius: 12px;
+            }
+            .sc-action-btn {
+                padding: 0.4rem 0.65rem;
+                font-size: 0.75rem;
+                min-height: 44px;
+            }
+            .modal-card {
+                width: min(95vw, 440px) !important;
+                padding: 1rem !important;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .sc-container {
+                padding: 0.5rem 0.35rem;
+            }
+            .sc-header-card {
+                padding: 0.75rem 0.5rem;
+            }
+            .sc-top-pill {
+                min-width: 60px;
+                padding: 0.3rem 0.45rem;
+            }
+            .sc-top-pill-val {
+                font-size: 1rem;
+            }
+            .sc-btn-run {
+                font-size: 1.3rem;
+                padding: 0.7rem 0;
+            }
+            .sc-btn-boundary-four,
+            .sc-btn-boundary-six {
+                font-size: 1.6rem;
+                padding: 0.85rem 0;
+            }
+            .sc-btn-extra {
+                font-size: 0.82rem;
+                padding: 0.65rem 0;
+            }
+            .sc-btn-wicket-large {
+                font-size: 1.15rem;
+                padding: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sc-container">
+        <!-- Header Navigation Bar -->
+        <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
+            <div>
+                <a href="dashboard.html" style="color: #10b981; font-weight: 700; font-size: 0.88rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; margin-bottom: 0.25rem;">
+                    &larr; Back to Dashboard
+                </a>
+                <h1 style="font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 800; color: #ffffff; margin: 0;" id="sc-match-title">
+                    Official Scorer Dashboard
+                </h1>
+            </div>
+
+            <div class="sc-header-actions">
+                <button type="button" id="btn-pause-match" class="sc-action-btn sc-action-btn-pause" title="Pause Match" style="display: none;">
+                    ⏸️ Pause Match
+                </button>
+                <button type="button" id="btn-resume-match" class="sc-action-btn sc-action-btn-resume" title="Resume Match" style="display: none;">
+                    ▶️ Resume Match
+                </button>
+                <button type="button" id="btn-open-retire-modal" class="sc-action-btn sc-action-btn-batter" title="Retire / Change Batter">
+                    🔄 Change Batter
+                </button>
+                <button type="button" id="btn-open-keeper-modal" class="sc-action-btn sc-action-btn-keeper" title="Change Wicketkeeper">
+                    🧤 Change Keeper
+                </button>
+                <button type="button" id="btn-open-celeb-settings" class="sc-action-btn-celeb" title="Celebration Animations Settings &amp; Preview">
+                    🎉 Animations
+                </button>
+                <button type="button" id="btn-open-settings" class="sc-action-btn-settings" title="Match Scoring Settings">
+                    ⚙️
+                </button>
+            </div>
+        </header>
+
+        <div id="scoring-alert" class="alert alert-error" style="display: none; margin-bottom: 1rem;"></div>
+
+        <!-- Read-Only Banner -->
+        <div id="sc-readonly-banner" style="display: none; background: #fffbeb; border: 1px solid #fde68a; border-radius: 12px; padding: 1rem; margin-bottom: 1rem; color: #b45309; font-size: 0.9rem;">
+            ⚠️ <strong>Read-Only Mode:</strong> Spectator view. Only the official assigned Match Scorer (<span id="sc-assigned-scorer-name">...</span>) or team captains can operate scoring controls.
+        </div>
+
+        <!-- Match Paused Banner -->
+        <div id="sc-pause-banner" style="display: none; background: rgba(239, 68, 68, 0.15); border: 1.5px solid #ef4444; border-radius: 12px; padding: 0.85rem 1.25rem; margin-bottom: 1.25rem; color: #fca5a5; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <span style="font-size: 1.5rem;">⏸️</span>
+                <div>
+                    <strong style="color: #ffffff; font-size: 1rem; display: block;">MATCH PAUSED</strong>
+                    <div style="font-size: 0.88rem; color: #fca5a5;" id="sc-pause-reason-text">Reason: Rain</div>
+                </div>
+            </div>
+            <button id="btn-banner-resume" style="background: #10b981; border: none; color: #000; font-family: 'Outfit', sans-serif; font-weight: 800; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-size: 0.88rem; display: flex; align-items: center; gap: 0.35rem;">
+                ▶️ Resume Match
+            </button>
+        </div>
+
+        <!-- Header Score Card -->
+        <section class="sc-header-card">
+            <div style="display: flex; align-items: center; gap: 0.85rem;">
+                <div style="width: 44px; height: 44px; border-radius: 50%; background: #145a37; border: 2px solid #10b981; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; font-weight: 800;">
+                    🏏
+                </div>
+                <div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.35rem; font-weight: 800; color: #ffffff; margin: 0;" id="sc-match-teams">Team A vs Team B</h2>
+                        <span id="sc-status-badge" style="background: #334155; color: #cbd5e1; font-size: 0.72rem; font-weight: 800; padding: 0.15rem 0.5rem; border-radius: 12px; border: 1px solid #475569;">SCHEDULED</span>
+                    </div>
+                    <p style="margin: 0.15rem 0 0 0; font-size: 0.82rem; color: #94a3b8;" id="sc-match-venue">Venue &bull; Innings 1</p>
+                </div>
+            </div>
+
+            <!-- 4 Top Score Pills -->
+            <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+                <div class="sc-top-pill">
+                    <div class="sc-top-pill-label">SCORE</div>
+                    <div class="sc-top-pill-val" id="sc-pill-score">0/0</div>
+                </div>
+                <div class="sc-top-pill">
+                    <div class="sc-top-pill-label">OVERS</div>
+                    <div class="sc-top-pill-val" id="sc-pill-overs">0.0 /20</div>
+                </div>
+                <div class="sc-top-pill">
+                    <div class="sc-top-pill-label">CRR</div>
+                    <div class="sc-top-pill-val" id="sc-pill-crr">0.00</div>
+                </div>
+                <div class="sc-top-pill" id="sc-pill-target-box" style="display: none;">
+                    <div class="sc-top-pill-label">TARGET</div>
+                    <div class="sc-top-pill-val" id="sc-pill-target">---</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 1: PRE-MATCH CHECKLIST (DISABLED / HIDDEN) -->
+        <div id="view-pre-match" class="prof-card" style="display: none; margin-bottom: 1.5rem;">
+            <div class="prof-card-header">
+                <div class="prof-card-title-group">
+                    <div class="prof-card-icon emerald">📋</div>
+                    <div>
+                        <h3 class="prof-card-title">Pre-Match Setup Checklist</h3>
+                        <p class="prof-card-subtitle">Verify all requirements before starting the match</p>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;" id="checklist-items">
+                <div style="display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0.85rem; background: rgba(15, 23, 42, 0.6); border-radius: 8px;">
+                    <span id="chk-team-a" style="font-size: 1.1rem; color: #10b981;">✓</span>
+                    <span style="font-size: 0.9rem; color: #e2e8f0;">Team A Confirmed</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0.85rem; background: rgba(15, 23, 42, 0.6); border-radius: 8px;">
+                    <span id="chk-team-b" style="font-size: 1.1rem; color: #10b981;">✓</span>
+                    <span style="font-size: 0.9rem; color: #e2e8f0;">Team B Confirmed</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0.85rem; background: rgba(15, 23, 42, 0.6); border-radius: 8px;">
+                    <span id="chk-pxi-a" style="font-size: 1.1rem; color: #10b981;">✓</span>
+                    <span style="font-size: 0.9rem; color: #e2e8f0;">Team A Playing XI Ready</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0.85rem; background: rgba(15, 23, 42, 0.6); border-radius: 8px;">
+                    <span id="chk-pxi-b" style="font-size: 1.1rem; color: #10b981;">✓</span>
+                    <span style="font-size: 0.9rem; color: #e2e8f0;">Team B Playing XI Ready</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0.85rem; background: rgba(15, 23, 42, 0.6); border-radius: 8px;">
+                    <span id="chk-scorer" style="font-size: 1.1rem; color: #10b981;">✓</span>
+                    <span style="font-size: 0.9rem; color: #e2e8f0;">Match Scorer Assigned</span>
+                </div>
+            </div>
+
+            <button id="btn-start-match-trigger" class="btn btn-primary btn-block" style="background: #10b981; color: #000; font-weight: 800; padding: 0.85rem; font-size: 1.05rem;">
+                🚀 Start Match (Change to LIVE)
+            </button>
+        </div>
+
+        <!-- VIEW 2: TOSS SETUP CARD (DEFAULT) -->
+        <div id="view-toss" class="prof-card" style="margin-bottom: 1.5rem;">
+            <div class="prof-card-header">
+                <div class="prof-card-title-group">
+                    <div class="prof-card-icon emerald">🪙</div>
+                    <div>
+                        <h3 class="prof-card-title">Match Toss</h3>
+                        <p class="prof-card-subtitle">Record toss winner and decision</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row" style="margin-bottom: 1.25rem;">
+                <div class="form-group">
+                    <label class="form-label" style="font-weight: 700; color: #10b981;">Toss Winner Team <span class="required">*</span></label>
+                    <select id="toss-winner-select" class="input-field" style="width: 100%; margin-top: 0.35rem;">
+                        <option value="">-- Select Toss Winner --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" style="font-weight: 700; color: #10b981;">Elected To <span class="required">*</span></label>
+                    <select id="toss-decision-select" class="input-field" style="width: 100%; margin-top: 0.35rem;">
+                        <option value="BAT">Bat First</option>
+                        <option value="BOWLING">Bowl First</option>
+                    </select>
+                </div>
+            </div>
+
+            <button id="btn-confirm-toss" class="btn btn-primary btn-block" style="background: #10b981; color: #000; font-weight: 800; padding: 0.75rem;">
+                Confirm Toss
+            </button>
+        </div>
+
+        <!-- VIEW 3: INNINGS SETUP CARD -->
+        <div id="view-innings-setup" class="prof-card" style="display: none; margin-bottom: 1.5rem;">
+            <div class="prof-card-header">
+                <div class="prof-card-title-group">
+                    <div class="prof-card-icon emerald">🏏</div>
+                    <div>
+                        <h3 class="prof-card-title" id="inn-setup-title">First Innings Setup</h3>
+                        <p class="prof-card-subtitle" id="inn-setup-subtitle">Select opening batters and opening bowler</p>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 1rem; margin-bottom: 1.25rem;">
+                <div style="display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; font-size: 0.9rem;">
+                    <div>Batting Team: <strong style="color: #10b981;" id="inn-batting-team-name">Loading...</strong></div>
+                    <div>Bowling Team: <strong style="color: #3b82f6;" id="inn-bowling-team-name">Loading...</strong></div>
+                </div>
+            </div>
+
+            <div class="form-row" style="margin-bottom: 1rem;">
+                <div class="form-group">
+                    <label class="form-label" style="font-weight: 700; color: #cbd5e1;">Striker Batter (On Strike) <span class="required">*</span></label>
+                    <select id="select-striker" class="input-field" style="width: 100%; margin-top: 0.35rem;">
+                        <option value="">-- Select Striker --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" style="font-weight: 700; color: #cbd5e1;">Non-Striker Batter <span class="required">*</span></label>
+                    <select id="select-non-striker" class="input-field" style="width: 100%; margin-top: 0.35rem;">
+                        <option value="">-- Select Non-Striker --</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1.25rem;">
+                <label class="form-label" style="font-weight: 700; color: #cbd5e1;">Opening Bowler <span class="required">*</span></label>
+                <select id="select-bowler" class="input-field" style="width: 100%; margin-top: 0.35rem;">
+                    <option value="">-- Select Opening Bowler --</option>
+                </select>
+            </div>
+
+            <button id="btn-start-innings" class="btn btn-primary btn-block" style="background: #10b981; color: #000; font-weight: 800; padding: 0.75rem;">
+                Start Innings Scoring
+            </button>
+        </div>
+
+        <!-- VIEW 3.5: INNINGS BREAK VIEW -->
+        <div id="view-innings-break" style="display: none; text-align: center; background: rgba(11, 26, 19, 0.85); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 2.5rem 1.5rem; max-width: 650px; margin: 2rem auto;">
+            <div style="font-size: 3.5rem; margin-bottom: 0.5rem;">☕</div>
+            <div style="font-size: 0.85rem; font-weight: 800; color: #f59e0b; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.25rem;">INNINGS BREAK</div>
+            <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.8rem; font-weight: 800; color: #ffffff; margin-bottom: 1rem;">
+                First Innings Completed
+            </h2>
+
+            <div style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 14px; padding: 1.25rem; max-width: 420px; margin: 0 auto 1.5rem auto;">
+                <div style="font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 800; color: #38bdf8; margin-bottom: 0.35rem;" id="sc-break-team-name">Team A</div>
+                <div style="font-family: 'Outfit', sans-serif; font-size: 2.8rem; font-weight: 900; color: #ffffff; line-height: 1;" id="sc-break-score">0/0</div>
+                <div style="font-size: 1rem; color: #94a3b8; font-weight: 600; margin-top: 0.4rem;" id="sc-break-overs">0 Overs</div>
+            </div>
+
+            <p style="font-size: 1.05rem; color: #e2e8f0; margin-bottom: 1.5rem; line-height: 1.5;" id="sc-break-summary">
+                Waiting for the second innings to begin...
+            </p>
+            <div style="display: inline-flex; background: rgba(16, 185, 129, 0.15); border: 1.5px solid #10b981; border-radius: 12px; padding: 0.85rem 1.75rem; margin-bottom: 1.75rem; text-align: center;">
+                <div>
+                    <span style="font-size: 0.78rem; color: #94a3b8; font-weight: 700; text-transform: uppercase; display: block;">TARGET FOR 2ND INNINGS</span>
+                    <span style="font-family: 'Outfit', sans-serif; font-size: 2.2rem; font-weight: 900; color: #10b981;" id="sc-break-target">0</span>
+                </div>
+            </div>
+
+            <div id="sc-break-scorer-controls">
+                <button type="button" id="btn-trigger-start-innings2" class="btn btn-primary btn-block" style="background: #10b981; color: #000; font-family: 'Outfit', sans-serif; font-size: 1.15rem; font-weight: 900; padding: 0.9rem; border-radius: 12px; max-width: 320px; margin: 0 auto;">
+                    🚀 Start 2nd Innings
+                </button>
+            </div>
+        </div>
+
+        <!-- VIEW 3.8: COMPLETED MATCH VIEW (SHOWING ONLY SCORECARD & WINNER) -->
+        <div id="view-completed-match" style="display: none; margin-bottom: 2rem;">
+            <!-- Winner Announcement Banner -->
+            <div style="background: linear-gradient(135deg, #064e3b, #022c22); border: 2px solid #10b981; border-radius: 16px; padding: 2.25rem 1.5rem; text-align: center; margin-bottom: 1.5rem; box-shadow: 0 10px 30px rgba(16, 185, 129, 0.25);">
+                <div style="font-size: 3.2rem; margin-bottom: 0.5rem;">🏆</div>
+                <div style="font-size: 0.85rem; font-weight: 800; color: #34d399; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.35rem;">MATCH COMPLETED</div>
+                <h2 style="font-family: 'Outfit', sans-serif; font-size: 2.2rem; font-weight: 900; color: #ffffff; margin-bottom: 0.5rem;" id="sc-completed-winner-text">
+                    Match Completed
+                </h2>
+                <div style="font-size: 0.95rem; color: #cbd5e1;" id="sc-completed-match-subtext">
+                    Full match scorecard and performance statistics below
+                </div>
+            </div>
+
+            <!-- Full Match Scorecards Container -->
+            <div id="sc-full-scorecard-container">
+            </div>
+        </div>
+
+        <!-- VIEW 4: SCORING WORKSPACE (MATCHING MOCKUP DESIGN) -->
+        <div id="view-scoring-workspace" style="display: none;">
+            <!-- Sub-header Metrics Bar -->
+            <div class="sc-metrics-bar">
+                <div class="sc-metric-card">
+                    <span class="sc-metric-label">Partnership</span>
+                    <span class="sc-metric-val" id="metric-partnership">0 (0)</span>
+                </div>
+                <div class="sc-metric-card">
+                    <span class="sc-metric-label">Last 5 Overs</span>
+                    <span class="sc-metric-val" id="metric-last5-rr">0.00 RR</span>
+                </div>
+                <div class="sc-metric-card">
+                    <span class="sc-metric-label">Required RR</span>
+                    <span class="sc-metric-val" id="metric-required-rr">0.00</span>
+                </div>
+                <div class="sc-metric-card">
+                    <span class="sc-metric-label">Balls Left</span>
+                    <span class="sc-metric-val" id="metric-balls-left">120</span>
+                </div>
+            </div>
+
+            <!-- 3 Column Scoring Grid -->
+            <div class="sc-main-grid">
+                <!-- Left Column: Striker, Non-Striker, Bowler Status Cards -->
+                <div>
+                    <!-- Striker Card -->
+                    <div class="player-status-card active-striker" id="card-striker">
+                        <div class="player-header">
+                            <div class="player-avatar" id="avatar-striker">👤</div>
+                            <div class="player-name-group">
+                                <div class="player-name" id="name-striker">Striker</div>
+                                <div class="player-subrole" id="subrole-striker">Right-hand bat</div>
+                            </div>
+                            <span class="striker-badge">STRIKER</span>
+                        </div>
+                        <div class="big-player-runs" id="runs-striker">0 <span style="font-size: 1rem; color: #94a3b8; font-weight: 600;" id="balls-striker">(0 balls)</span></div>
+                        <div class="player-mini-stats">
+                            <div>4s: <strong id="fours-striker">0</strong></div>
+                            <div>6s: <strong id="sixes-striker">0</strong></div>
+                            <div>SR: <strong id="sr-striker">0.0</strong></div>
+                        </div>
+                    </div>
+
+                    <!-- Non-Striker Card -->
+                    <div class="player-status-card" id="card-non-striker">
+                        <div class="player-header">
+                            <div class="player-avatar" id="avatar-non-striker">👤</div>
+                            <div class="player-name-group">
+                                <div class="player-name" id="name-non-striker">Non-Striker</div>
+                                <div class="player-subrole" id="subrole-non-striker">Left-hand bat &bull; Non-striker</div>
+                            </div>
+                        </div>
+                        <div style="font-family: 'Outfit', sans-serif; font-size: 1.6rem; font-weight: 800; color: #ffffff;" id="runs-non-striker">0 <span style="font-size: 0.9rem; color: #94a3b8;" id="balls-non-striker">(0 balls)</span></div>
+                    </div>
+
+                    <!-- Bowler Card -->
+                    <div class="player-status-card" id="card-bowler" style="border-top: 3px solid #0ea5e9;">
+                        <div class="player-header">
+                            <div class="player-avatar" id="avatar-bowler" style="border-color: #0ea5e9;">⚾</div>
+                            <div class="player-name-group">
+                                <div class="player-name" id="name-bowler">Bowler</div>
+                                <div class="player-subrole" id="subrole-bowler">Right-arm fast</div>
+                            </div>
+                        </div>
+                        <div style="font-family: 'Outfit', sans-serif; font-size: 1.8rem; font-weight: 800; color: #0ea5e9;" id="figs-bowler">0 / 0</div>
+                        <div class="player-mini-stats">
+                            <div>Overs: <strong id="overs-bowler">0.0</strong></div>
+                            <div>Econ: <strong id="econ-bowler">0.0</strong></div>
+                            <div>Mdn: <strong id="maidens-bowler">0</strong></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Center Column: Quick Delivery Scoring Panel -->
+                <div class="sc-scoring-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h4 style="font-family: 'Outfit', sans-serif; font-size: 0.9rem; color: #94a3b8; font-weight: 700; text-transform: uppercase; margin: 0;">QUICK DELIVERY SCORING</h4>
+                        <span style="font-size: 0.8rem; color: #10b981; font-weight: 700;" id="this-ball-indicator">This Ball: 0.1</span>
+                    </div>
+
+                    <!-- Ball Delivery Action Button -->
+                    <button class="sc-btn-ball-deliver" id="btn-deliver-ball" style="background: linear-gradient(135deg, #10b981, #059669); border: 2px solid #34d399; color: #000; font-family: 'Outfit', sans-serif; font-size: 1.2rem; font-weight: 900; padding: 0.85rem; border-radius: 12px; cursor: pointer; width: 100%; text-align: center; margin-bottom: 0.85rem; letter-spacing: 0.5px; box-shadow: 0 0 15px rgba(16, 185, 129, 0.25); transition: all 0.2s ease;">
+                        ⚾ BALL
+                    </button>
+
+                    <!-- Live Ball Delivery Status Banner -->
+                    <div id="ball-in-progress-banner" style="display: none; background: rgba(245, 158, 11, 0.15); border: 1px solid #f59e0b; border-radius: 10px; padding: 0.65rem 0.85rem; text-align: center; color: #f59e0b; font-size: 0.88rem; font-weight: 800; margin-bottom: 0.85rem;">
+                        ⚡ Ball in progress! Select outcome (Runs / Extra / Wicket) below.
+                    </div>
+
+                    <!-- Top Run Buttons (0, 1, 2, 3) -->
+                    <div class="btn-runs-top-grid">
+                        <button class="sc-btn-run" data-runs="0">0</button>
+                        <button class="sc-btn-run" data-runs="1">1</button>
+                        <button class="sc-btn-run" data-runs="2">2</button>
+                        <button class="sc-btn-run" data-runs="3">3</button>
+                    </div>
+
+                    <!-- Boundary Buttons (4 FOUR, 6 SIX) -->
+                    <div class="btn-runs-boundary-grid">
+                        <button class="sc-btn-boundary-four" data-runs="4">
+                            4 <span style="display: block; font-size: 0.75rem; font-weight: 700; letter-spacing: 1px;">FOUR</span>
+                        </button>
+                        <button class="sc-btn-boundary-six" data-runs="6">
+                            6 <span style="display: block; font-size: 0.75rem; font-weight: 700; letter-spacing: 1px;">SIX</span>
+                        </button>
+                    </div>
+
+                    <!-- Extras Buttons (Wd, Nb, Bye, L-Bye) -->
+                    <div class="btn-extras-grid">
+                        <button class="sc-btn-extra" data-extra="WIDE">Wd</button>
+                        <button class="sc-btn-extra" data-extra="NO_BALL">Nb</button>
+                        <button class="sc-btn-extra" data-extra="BYE">Bye</button>
+                        <button class="sc-btn-extra" data-extra="LEG_BYE">L-Bye</button>
+                    </div>
+
+                    <!-- Red Wicket Button -->
+                    <button class="sc-btn-wicket-large" id="btn-trigger-wicket">
+                        ⚠️ WICKET
+                    </button>
+
+                    <!-- Undo Last Ball Button -->
+                    <button id="btn-undo-last-ball" class="btn btn-secondary btn-block" style="background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.15); color: #e2e8f0; font-weight: 700; padding: 0.75rem;">
+                        🔄 UNDO LAST BALL
+                    </button>
+                </div>
+
+                <!-- Right Column: This Over Ball Log & Stats -->
+                <div class="sc-right-card">
+                    <h4 style="font-family: 'Outfit', sans-serif; font-size: 0.9rem; color: #ffffff; margin: 0 0 0.85rem 0; font-weight: 700; text-transform: uppercase;" id="this-over-title">THIS OVER - 1ST</h4>
+
+                    <!-- Over Ball Events Log List -->
+                    <div id="this-over-log-list" style="max-height: 220px; overflow-y: auto; margin-bottom: 1.25rem;">
+                        <div style="font-size: 0.8rem; color: #64748b; text-align: center; padding: 0.75rem;">No balls bowled in this over yet</div>
+                    </div>
+
+                    <!-- Over Summary Balls Pills -->
+                    <div style="margin-bottom: 1.25rem;">
+                        <span style="font-size: 0.75rem; color: #94a3b8; font-weight: 700; text-transform: uppercase; display: block; margin-bottom: 0.5rem;">Over Summary</span>
+                        <div id="over-summary-pills" style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                            <span style="font-size: 0.8rem; color: #64748b;">-</span>
+                        </div>
+                    </div>
+
+                    <!-- Extras & Fall of Wickets Summary -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; background: rgba(0,0,0,0.3); border-radius: 10px; padding: 0.75rem;">
+                        <div>
+                            <span style="font-size: 0.7rem; color: #94a3b8; font-weight: 700; text-transform: uppercase;">EXTRAS</span>
+                            <div style="font-family: 'Outfit', sans-serif; font-size: 1.35rem; font-weight: 800; color: #f59e0b;" id="summary-extras">0</div>
+                        </div>
+                        <div>
+                            <span style="font-size: 0.7rem; color: #94a3b8; font-weight: 700; text-transform: uppercase;">FALL OF WICKETS</span>
+                            <div style="font-family: 'Outfit', sans-serif; font-size: 1.35rem; font-weight: 800; color: #ef4444;" id="summary-fow">0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 1: MATCH SETTINGS MODAL (⚙️) -->
+    <div id="match-settings-modal" class="modal-backdrop" style="display: none;">
+        <div class="modal-card" style="max-width: 500px; width: 92%;">
+            <div class="modal-header">
+                <h3 class="modal-title" style="color: #fff;">⚙️ Match Rules &amp; Scoring Settings</h3>
+                <button class="modal-close-btn" id="btn-close-settings-modal">&times;</button>
+            </div>
+            <div class="modal-body" style="padding-top: 1rem;">
+                <div class="switch-group">
+                    <label>Wide Ball Extra (+1 Run)</label>
+                    <input type="checkbox" id="set-wide-run" checked style="width: 20px; height: 20px; cursor: pointer;">
+                </div>
+                <div class="switch-group">
+                    <label>No Ball Extra (+1 Run)</label>
+                    <input type="checkbox" id="set-noball-run" style="width: 20px; height: 20px; cursor: pointer;">
+                </div>
+                <div class="switch-group">
+                    <label>No Ball Free Hit</label>
+                    <input type="checkbox" id="set-freehit" style="width: 20px; height: 20px; cursor: pointer;">
+                </div>
+                <div class="switch-group">
+                    <label>Byes &amp; Leg Byes Extra Runs</label>
+                    <input type="checkbox" id="set-byes-run" checked style="width: 20px; height: 20px; cursor: pointer;">
+                </div>
+                <div class="switch-group">
+                    <label>Allow Consecutive Overs by Same Bowler</label>
+                    <input type="checkbox" id="set-consecutive-overs" style="width: 20px; height: 20px; cursor: pointer;">
+                </div>
+                <div class="form-group" style="margin-top: 1rem;">
+                    <label class="form-label" style="font-weight: 700; color: #10b981;">Max Overs Per Bowler Limit</label>
+                    <input type="number" id="set-max-overs-bowler" min="1" max="25" class="input-field" placeholder="e.g. 4 overs in T20" style="width: 100%; margin-top: 0.35rem;">
+                </div>
+
+                <!-- Celebration Settings Section in Match Settings -->
+                <div style="margin-top: 1.25rem; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 1rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                        <div>
+                            <div style="font-weight: 700; color: #fbbf24; font-size: 0.92rem;">🎉 Celebration Animations</div>
+                            <div style="font-size: 0.76rem; color: #94a3b8;">Trigger animated rockets &amp; bursts on 6, 4, Wicket</div>
+                        </div>
+                        <label style="position: relative; display: inline-block; width: 44px; height: 24px; margin: 0; cursor: pointer;">
+                            <input type="checkbox" id="set-celeb-enabled-toggle" checked style="opacity: 0; width: 0; height: 0;">
+                            <span class="celeb-slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #334155; transition: .3s; border-radius: 34px;"></span>
+                        </label>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-top: 0.75rem;">
+                        <button type="button" class="btn-celeb-preview-six" style="background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; color: #34d399; font-weight: 800; padding: 0.55rem 0.25rem; border-radius: 8px; cursor: pointer; font-size: 0.8rem; text-align: center; transition: all 0.2s ease;">🚀 Preview 6</button>
+                        <button type="button" class="btn-celeb-preview-four" style="background: rgba(14, 165, 233, 0.15); border: 1px solid #0ea5e9; color: #38bdf8; font-weight: 800; padding: 0.55rem 0.25rem; border-radius: 8px; cursor: pointer; font-size: 0.8rem; text-align: center; transition: all 0.2s ease;">🚀 Preview 4</button>
+                        <button type="button" class="btn-celeb-preview-wicket" style="background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #f87171; font-weight: 800; padding: 0.55rem 0.25rem; border-radius: 8px; cursor: pointer; font-size: 0.8rem; text-align: center; transition: all 0.2s ease;">⚡ Preview W</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.25rem;">
+                <button type="button" id="btn-cancel-settings" class="btn btn-secondary">Cancel</button>
+                <button type="button" id="btn-save-settings" class="btn btn-primary" style="background: #10b981; color: #000; font-weight: 800;">Save Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: CELEBRATION SETTINGS & PREVIEWS -->
+    <div id="celebration-settings-modal" class="modal-backdrop" style="display: none;">
+        <div class="modal-card" style="max-width: 460px; width: 92%;">
+            <div class="modal-header">
+                <h3 class="modal-title" style="color: #fbbf24; display: flex; align-items: center; gap: 0.5rem;">
+                    <span>🎉</span> Celebration Animations
+                </h3>
+                <button class="modal-close-btn" id="btn-close-celeb-modal">&times;</button>
+            </div>
+            <div class="modal-body" style="padding-top: 1rem;">
+                <p style="font-size: 0.88rem; color: #cbd5e1; margin-bottom: 1.25rem;">
+                    Configure celebration animations for scoring events. Celebrations trigger automatically when recording SIX, FOUR, or WICKET.
+                </p>
+
+                <!-- Enable / Disable Toggle -->
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.85rem 1rem; background: rgba(255,255,255,0.04); border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 1.25rem;">
+                    <div>
+                        <div style="font-weight: 700; color: #ffffff; font-size: 0.95rem;">Celebration Animations</div>
+                        <div style="font-size: 0.78rem; color: #94a3b8;">Show animations on big scoring moments</div>
+                    </div>
+                    <label style="position: relative; display: inline-block; width: 48px; height: 26px; margin: 0; cursor: pointer;">
+                        <input type="checkbox" id="celeb-modal-toggle-enabled" checked style="opacity: 0; width: 0; height: 0;">
+                        <span class="celeb-slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #334155; transition: .3s; border-radius: 34px;"></span>
+                    </label>
+                </div>
+
+                <!-- Preview Controls -->
+                <div style="margin-top: 1.25rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.25rem;">
+                    <label class="form-label" style="font-weight: 700; color: #10b981; font-size: 0.88rem; margin-bottom: 0.75rem; display: block;">
+                        🧪 Test Celebration Animations (Preview)
+                    </label>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.65rem;">
+                        <button type="button" class="btn-celeb-preview-six" style="background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; color: #34d399; font-weight: 800; padding: 0.75rem 0.5rem; border-radius: 10px; cursor: pointer; font-size: 0.85rem; text-align: center; transition: all 0.2s ease;">
+                            🚀 Preview 6
+                        </button>
+                        <button type="button" class="btn-celeb-preview-four" style="background: rgba(14, 165, 233, 0.15); border: 1px solid #0ea5e9; color: #38bdf8; font-weight: 800; padding: 0.75rem 0.5rem; border-radius: 10px; cursor: pointer; font-size: 0.85rem; text-align: center; transition: all 0.2s ease;">
+                            🚀 Preview 4
+                        </button>
+                        <button type="button" class="btn-celeb-preview-wicket" style="background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #f87171; font-weight: 800; padding: 0.75rem 0.5rem; border-radius: 10px; cursor: pointer; font-size: 0.85rem; text-align: center; transition: all 0.2s ease;">
+                            ⚡ Preview WICKET
+                        </button>
+                    </div>
+                    <div style="font-size: 0.76rem; color: #64748b; margin-top: 0.75rem; text-align: center;">
+                        Preview runs instant full-screen demonstration without modifying any match score or data.
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="display: flex; justify-content: flex-end; margin-top: 1.25rem;">
+                <button type="button" id="btn-close-celeb-modal-footer" class="btn btn-secondary">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: SELECT NEXT BOWLER (OVER COMPLETION) -->
+    <div id="next-bowler-modal" class="modal-backdrop" style="display: none;">
+        <div class="modal-card" style="max-width: 480px; width: 90%;">
+            <div class="modal-header">
+                <h3 class="modal-title" style="color: #fff;">⚾ Select Next Bowler</h3>
+            </div>
+            <div class="modal-body" style="padding-top: 1rem;">
+                <p style="font-size: 0.88rem; color: #cbd5e1; margin-bottom: 1rem;">
+                    Over completed! Select the bowler for the next over. <em>(Previous over bowler is locked per cricket rules)</em>.
+                </p>
+
+                <div class="form-group">
+                    <label class="form-label" style="font-weight: 700; color: #10b981;">Available Bowlers</label>
+                    <select id="select-next-bowler-dropdown" class="input-field" style="width: 100%; margin-top: 0.35rem;">
+                        <option value="">-- Select Next Bowler --</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer" style="margin-top: 1.25rem;">
+                <button type="button" id="btn-confirm-next-bowler" class="btn btn-primary btn-block" style="background: #10b981; color: #000; font-weight: 800;">Confirm Bowler</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: SELECT NEXT BATTER (WICKET FALL) -->
+    <div id="next-batter-modal" class="modal-backdrop" style="display: none;">
+        <div class="modal-card" style="max-width: 480px; width: 90%;">
+            <div class="modal-header">
+                <h3 class="modal-title" style="color: #fff;">🏏 Select Next Batter</h3>
+            </div>
+            <div class="modal-body" style="padding-top: 1rem;">
+                <p style="font-size: 0.88rem; color: #cbd5e1; margin-bottom: 1rem;">
+                    Wicket fell! Select the new batsman entering the crease. <em>(Already out and currently playing batters are excluded to prevent duplicates)</em>.
+                </p>
+
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label class="form-label" style="font-weight: 700; color: #ef4444;">Wicket Type</label>
+                    <select id="select-wicket-type" class="input-field" style="width: 100%; margin-top: 0.35rem;">
+                        <option value="BOWLED">Bowled</option>
+                        <option value="CAUGHT">Caught</option>
+                        <option value="LBW">LBW</option>
+                        <option value="RUN_OUT">Run Out</option>
+                        <option value="STUMPED">Stumped</option>
+                        <option value="HIT_WICKET">Hit Wicket</option>
+                    </select>
+                </div>
+
+                <!-- Run Out Dismissed Batter Selection (Shown only on RUN_OUT) -->
+                <div class="form-group" id="group-dismissed-player" style="display: none; margin-bottom: 1rem;">
+                    <label class="form-label" style="font-weight: 700; color: #f59e0b;">Who is Out? (Run Out)</label>
+                    <select id="select-dismissed-player-dropdown" class="input-field" style="width: 100%; margin-top: 0.35rem;">
+                        <option value="">-- Select Dismissed Batter --</option>
+                    </select>
+                </div>
+
+                <!-- Catcher Fielder Selection (Shown only on CAUGHT) -->
+                <div class="form-group" id="group-catcher-player" style="display: none; margin-bottom: 1rem;">
+                    <label class="form-label" style="font-weight: 700; color: #10b981;">Who Caught It? (Opponent Fielder)</label>
+                    <select id="select-catcher-player-dropdown" class="input-field" style="width: 100%; margin-top: 0.35rem;">
+                        <option value="">-- Select Fielder who took Catch --</option>
+                    </select>
+                </div>
+
+                <!-- Runs Scored on Wicket Ball (Shown only on RUN_OUT) -->
+                <div class="form-group" id="group-wicket-runs" style="display: none; margin-bottom: 1rem;">
+                    <label class="form-label" style="font-weight: 700; color: #38bdf8;">Runs Scored on Wicket Delivery (Run Out)</label>
+                    <select id="select-wicket-runs" class="input-field" style="width: 100%; margin-top: 0.35rem;">
+                        <option value="0" selected>0 Runs (W)</option>
+                        <option value="1">1 Run (W+1)</option>
+                        <option value="2">2 Runs (W+2)</option>
+                        <option value="3">3 Runs (W+3)</option>
+                        <option value="4">4 Runs (W+4)</option>
+                    </select>
+                </div>
+
+                <!-- Crossing Status on Run Out -->
+                <div class="form-group" id="group-wicket-crossed" style="display: none; margin-bottom: 1rem;">
+                    <label class="form-label" style="font-weight: 700; color: #f59e0b;">Had Batters Crossed at Instant of Dismissal?</label>
+                    <select id="select-wicket-crossed" class="input-field" style="width: 100%; margin-top: 0.35rem;">
+                        <option value="false" selected>No (Did not cross)</option>
+                        <option value="true">Yes (Batters crossed)</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="group-next-batter-select">
+                    <label class="form-label" style="font-weight: 700; color: #10b981;">Available Next Batter</label>
+                    <select id="select-next-batter-dropdown" class="input-field" style="width: 100%; margin-top: 0.35rem;">
+                        <option value="">-- Select Next Batter --</option>
+                    </select>
+                </div>
+
+                <div id="msg-all-out-warning" style="display: none; background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #ef4444; border-radius: 8px; padding: 0.75rem; font-weight: 800; text-align: center; margin-top: 0.75rem;">
+                    ⚡ All Out! 10 Wickets fallen. Innings completed.
+                </div>
+            </div>
+            <div class="modal-footer" style="margin-top: 1.25rem;">
+                <button type="button" id="btn-confirm-next-batter" class="btn btn-primary btn-block" style="background: #10b981; color: #000; font-weight: 800;">Confirm New Batter</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: NO BALL RUN OPTIONS MODAL -->
+    <div id="no-ball-modal" class="modal-backdrop" style="display: none;">
+        <div class="modal-card" style="max-width: 460px; width: 92%;">
+            <div class="modal-header">
+                <h3 class="modal-title" style="color: #f59e0b;">⚠️ No Ball — Select Runs off Bat</h3>
+                <button class="modal-close-btn" id="btn-close-no-ball-modal">&times;</button>
+            </div>
+            <div class="modal-body" style="padding-top: 1rem;">
+                <p style="font-size: 0.88rem; color: #cbd5e1; margin-bottom: 1.25rem;">
+                    Choose the runs scored off the bat on this No Ball delivery:
+                </p>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.85rem;">
+                    <button type="button" class="btn-noball-option" data-runs="0" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); color: #fff; font-size: 1.15rem; font-weight: 800; padding: 0.9rem; border-radius: 10px; cursor: pointer;">NB + 0</button>
+                    <button type="button" class="btn-noball-option" data-runs="1" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); color: #fff; font-size: 1.15rem; font-weight: 800; padding: 0.9rem; border-radius: 10px; cursor: pointer;">NB + 1</button>
+                    <button type="button" class="btn-noball-option" data-runs="2" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); color: #fff; font-size: 1.15rem; font-weight: 800; padding: 0.9rem; border-radius: 10px; cursor: pointer;">NB + 2</button>
+                    <button type="button" class="btn-noball-option" data-runs="3" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); color: #fff; font-size: 1.15rem; font-weight: 800; padding: 0.9rem; border-radius: 10px; cursor: pointer;">NB + 3</button>
+                    <button type="button" class="btn-noball-option" data-runs="4" style="background: rgba(14, 165, 233, 0.2); border: 1.5px solid #0ea5e9; color: #60a5fa; font-size: 1.15rem; font-weight: 800; padding: 0.9rem; border-radius: 10px; cursor: pointer;">NB + 4</button>
+                    <button type="button" class="btn-noball-option" data-runs="6" style="background: rgba(168, 85, 247, 0.2); border: 1.5px solid #a855f7; color: #c084fc; font-size: 1.15rem; font-weight: 800; padding: 0.9rem; border-radius: 10px; cursor: pointer;">NB + 6</button>
+                </div>
+            </div>
+            <div class="modal-footer" style="margin-top: 1.25rem;">
+                <button type="button" id="btn-cancel-no-ball-modal" class="btn btn-secondary btn-block">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- START MATCH CONFIRMATION MODAL -->
+    <div id="start-match-modal" class="modal-backdrop" style="display: none;">
+        <div class="modal-card" style="max-width: 440px; text-align: center;">
+            <div style="font-size: 3rem; margin-bottom: 0.5rem;">🚀</div>
+            <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.3rem; color: #ffffff; margin-bottom: 0.5rem;">Start This Match?</h3>
+            <p style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 1.5rem;" id="start-modal-match-name">
+                Are you sure you want to officially start this match? The status will change to LIVE.
+            </p>
+            <div style="display: flex; gap: 0.75rem; justify-content: center;">
+                <button type="button" id="btn-cancel-start-modal" class="btn btn-secondary" style="flex: 1;">Cancel</button>
+                <button type="button" id="btn-confirm-start-match" class="btn btn-primary" style="flex: 1; background: #10b981; color: #000; font-weight: 800;">Yes, Start Match</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHANGE WICKETKEEPER MODAL -->
+    <div id="change-keeper-modal" class="modal-backdrop" style="display: none;">
+        <div class="modal-card" style="max-width: 480px; width: 90%;">
+            <div class="modal-header">
+                <h3 class="modal-title" style="color: #fff;">🧤 Select New Wicketkeeper</h3>
+                <button class="modal-close-btn" id="btn-close-keeper-modal">&times;</button>
+            </div>
+            <div class="modal-body" style="padding-top: 1rem;">
+                <p style="font-size: 0.88rem; color: #cbd5e1; margin-bottom: 1rem;" id="change-keeper-prompt-text">
+                    Select a player from the fielding team to take over as Wicketkeeper.
+                </p>
+
+                <div class="form-group">
+                    <label class="form-label" style="font-weight: 700; color: #10b981;">Fielding Team Players</label>
+                    <select id="select-new-keeper-dropdown" class="input-field" style="width: 100%; margin-top: 0.35rem;">
+                        <option value="">-- Select New Wicketkeeper --</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer" style="display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.25rem;">
+                <button type="button" id="btn-cancel-change-keeper" class="btn btn-secondary">Cancel</button>
+                <button type="button" id="btn-confirm-change-keeper" class="btn btn-primary" style="background: #10b981; color: #000; font-weight: 800;">Confirm Wicketkeeper</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- RETIRE / CHANGE BATTER MODAL -->
+    <div id="retire-batter-modal" class="modal-backdrop" style="display: none;">
+        <div class="modal-card" style="max-width: 480px; width: 90%;">
+            <div class="modal-header">
+                <h3 class="modal-title" style="color: #fff;">🔄 Change / Retire Batter</h3>
+                <button class="modal-close-btn" id="btn-close-retire-modal">&times;</button>
+            </div>
+            <div class="modal-body" style="padding-top: 1rem;">
+                <p style="font-size: 0.88rem; color: #cbd5e1; margin-bottom: 1rem;">
+                    Select the active batter who is coming off and choose their replacement.
+                </p>
+
+                <!-- Retiring Batter Selection (Striker or Non-Striker only) -->
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label class="form-label" style="font-weight: 700; color: #f59e0b;">Batter to Retire / Replace <span class="required">*</span></label>
+                    <select id="select-retiring-batter-dropdown" class="input-field" style="width: 100%; margin-top: 0.35rem;">
+                        <option value="">-- Select Active Batter --</option>
+                    </select>
+                </div>
+
+                <!-- Retirement Reason / Type -->
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label class="form-label" style="font-weight: 700; color: #cbd5e1;">Retirement Type</label>
+                    <select id="select-retire-type-dropdown" class="input-field" style="width: 100%; margin-top: 0.35rem;">
+                        <option value="RETIRED_OUT" selected>Retired Out</option>
+                        <option value="RETIRED_HURT">Retired Hurt</option>
+                    </select>
+                </div>
+
+                <!-- Incoming Batter Selection -->
+                <div class="form-group" id="group-incoming-batter-select" style="margin-bottom: 1rem;">
+                    <label class="form-label" style="font-weight: 700; color: #10b981;">New Incoming Batter <span class="required">*</span></label>
+                    <select id="select-incoming-batter-dropdown" class="input-field" style="width: 100%; margin-top: 0.35rem;">
+                        <option value="">-- Select New Batter --</option>
+                    </select>
+                </div>
+
+                <div id="msg-retire-no-batters-warning" style="display: none; background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #ef4444; border-radius: 8px; padding: 0.75rem; font-weight: 800; text-align: center; margin-top: 0.75rem;">
+                    ⚡ No available replacement batters remaining in squad.
+                </div>
+            </div>
+            <div class="modal-footer" style="display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.25rem;">
+                <button type="button" id="btn-cancel-retire-batter" class="btn btn-secondary">Cancel</button>
+                <button type="button" id="btn-confirm-retire-batter" class="btn btn-primary" style="background: #f59e0b; color: #000; font-weight: 800;">Confirm Batter Change</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAUSE MATCH MODAL -->
+    <div id="pause-match-modal" class="modal-backdrop" style="display: none;">
+        <div class="modal-card" style="max-width: 480px; width: 90%;">
+            <div class="modal-header">
+                <h3 class="modal-title" style="color: #f87171;">⏸️ Pause Match</h3>
+                <button class="modal-close-btn" id="btn-close-pause-modal">&times;</button>
+            </div>
+            <div class="modal-body" style="padding-top: 1rem;">
+                <p style="font-size: 0.88rem; color: #cbd5e1; margin-bottom: 1.25rem;">
+                    Select the official reason for pausing this match:
+                </p>
+
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                    <label class="form-label" style="font-weight: 700; color: #fca5a5;">Reason <span class="required">*</span></label>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem;" id="pause-reason-radio-group">
+                        <label style="display: flex; align-items: center; gap: 0.6rem; font-size: 0.9rem; cursor: pointer; color: #e2e8f0;">
+                            <input type="radio" name="pause-reason-opt" value="Rain" checked> Rain
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.6rem; font-size: 0.9rem; cursor: pointer; color: #e2e8f0;">
+                            <input type="radio" name="pause-reason-opt" value="Ball damaged / ball broken"> Ball damaged / ball broken
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.6rem; font-size: 0.9rem; cursor: pointer; color: #e2e8f0;">
+                            <input type="radio" name="pause-reason-opt" value="Player injury"> Player injury
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.6rem; font-size: 0.9rem; cursor: pointer; color: #e2e8f0;">
+                            <input type="radio" name="pause-reason-opt" value="Ground issue"> Ground issue
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.6rem; font-size: 0.9rem; cursor: pointer; color: #e2e8f0;">
+                            <input type="radio" name="pause-reason-opt" value="Technical issue"> Technical issue
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.6rem; font-size: 0.9rem; cursor: pointer; color: #e2e8f0;">
+                            <input type="radio" name="pause-reason-opt" value="Light issue"> Light issue
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.6rem; font-size: 0.9rem; cursor: pointer; color: #e2e8f0;">
+                            <input type="radio" name="pause-reason-opt" value="Umpire decision"> Umpire decision
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.6rem; font-size: 0.9rem; cursor: pointer; color: #e2e8f0;">
+                            <input type="radio" name="pause-reason-opt" value="Other"> Other
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group" id="group-pause-custom-reason" style="display: none; margin-bottom: 1rem;">
+                    <label class="form-label" style="font-weight: 700; color: #fca5a5;">Specify Custom Reason <span class="required">*</span></label>
+                    <input type="text" id="input-custom-pause-reason" class="input-field" placeholder="e.g., Floodlight power failure" style="width: 100%; margin-top: 0.35rem;" maxlength="150">
+                </div>
+            </div>
+            <div class="modal-footer" style="display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.25rem;">
+                <button type="button" id="btn-cancel-pause-modal" class="btn btn-secondary">Cancel</button>
+                <button type="button" id="btn-confirm-pause-match" class="btn btn-primary" style="background: #ef4444; border-color: #ef4444; color: #ffffff; font-weight: 800;">Confirm Pause</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESUME MATCH CONFIRMATION MODAL -->
+    <div id="resume-match-modal" class="modal-backdrop" style="display: none;">
+        <div class="modal-card" style="max-width: 440px; text-align: center;">
+            <div style="font-size: 3rem; margin-bottom: 0.5rem;">▶️</div>
+            <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.35rem; color: #ffffff; margin-bottom: 0.5rem;">Resume Match?</h3>
+            <p style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 1.5rem;">
+                Are you ready to resume the match? Scoring controls will be re-enabled and viewers will be notified.
+            </p>
+            <div style="display: flex; gap: 0.75rem; justify-content: center;">
+                <button type="button" id="btn-cancel-resume-modal" class="btn btn-secondary" style="flex: 1;">Cancel</button>
+                <button type="button" id="btn-confirm-resume-match" class="btn btn-primary" style="flex: 1; background: #10b981; color: #000; font-weight: 800;">Yes, Resume Match</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SockJS and STOMP Client dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/celebration.js"></script>
+    <script src="../js/scoring-dashboard.js?v=2.6"></script>
+</body>
+</html>

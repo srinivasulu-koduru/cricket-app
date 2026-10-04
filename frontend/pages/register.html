@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account - Cricket App</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="auth-split-container">
+        <!-- Visual Left Pane -->
+        <div class="auth-visual-pane">
+            <div class="auth-visual-header">
+                <a href="../index.html" class="brand-link">
+                    <div class="brand-icon">🏏</div>
+                    <span class="brand-title">Cricket <span>App</span></span>
+                </a>
+            </div>
+
+            <div class="auth-visual-content">
+                <span class="auth-visual-tag">🚀 Join the Platform</span>
+                <h1 class="auth-visual-title">Obtain Your Official <span>Cricket User ID</span></h1>
+                <p class="auth-visual-subtitle">
+                    Register with real email OTP verification to receive your permanent Cricket User ID (`CRKXXXXXX`). Use it across teams, squads, and official matches.
+                </p>
+
+                <div class="auth-feature-list">
+                    <div class="auth-feature-item">
+                        <div class="auth-feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        </div>
+                        <span>Real Email Verification & OTP Expiry Protection</span>
+                    </div>
+                    <div class="auth-feature-item">
+                        <div class="auth-feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        </div>
+                        <span>Automatic Welcome Email Delivery</span>
+                    </div>
+                    <div class="auth-feature-item">
+                        <div class="auth-feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        </div>
+                        <span>Cricket Player Profile & Team Management Roster</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="auth-visual-footer" style="color: var(--text-muted); font-size: 0.85rem;">
+                Cricket App &copy; 2026 &bull; Stage 4 Player Registration System
+            </div>
+        </div>
+
+        <!-- Form Right Pane -->
+        <div class="auth-card-pane">
+            <div class="auth-card-box">
+                <div class="auth-card-header">
+                    <h2 class="auth-card-title">Create Player Account</h2>
+                    <p class="auth-card-subtitle">Register to obtain your permanent Cricket User ID</p>
+                </div>
+
+                <div id="register-alert" class="alert alert-error" style="display: none;"></div>
+
+                <form id="register-form">
+                    <div class="form-group">
+                        <label for="name">Full Name <span class="required">*</span></label>
+                        <input type="text" id="name" class="input-field" required placeholder="e.g. Rahul Kumar" autocomplete="name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address <span class="required">*</span></label>
+                        <input type="email" id="email" class="input-field" required placeholder="name@example.com" autocomplete="email">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password <span class="required">*</span></label>
+                        <input type="password" id="password" class="input-field" required placeholder="At least 8 chars (A-Z, a-z, 0-9)" autocomplete="new-password">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password <span class="required">*</span></label>
+                        <input type="password" id="confirmPassword" class="input-field" required placeholder="Re-enter password" autocomplete="new-password">
+                    </div>
+
+                    <button type="submit" id="btn-register" class="btn btn-primary btn-block" style="margin-top: 0.5rem;">
+                        ⚡ Create Account & Send OTP
+                    </button>
+                </form>
+
+                <div style="text-align: center; margin-top: 1.5rem; font-size: 0.9rem; color: var(--text-secondary);">
+                    Already have an account? <a href="login.html" style="color: var(--color-pitch-emerald); font-weight: 600; text-decoration: none;">Sign In</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Cricket App</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="dash-layout" id="dashboard-content">
+        <!-- Sidebar Navigation -->
+        <aside class="dash-sidebar">
+            <div>
+                <!-- Brand Header -->
+                <div class="dash-brand-header">
+                    <a href="../index.html" class="dash-brand-link">
+                        <div class="dash-brand-logo">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="9"></circle>
+                                <path d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </div>
+                        <span class="dash-brand-text">Cricket App</span>
+                    </a>
+                </div>
+
+                <!-- Navigation Menu -->
+                <nav class="dash-nav">
+                    <a href="dashboard.html" class="dash-nav-item active">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="profile.html" class="dash-nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        <span>My Profile</span>
+                    </a>
+                    <a href="players.html" class="dash-nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <span>Search Players</span>
+                    </a>
+                    <a href="teams.html" class="dash-nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                        <span>My Teams</span>
+                    </a>
+                    <a href="matches.html" class="dash-nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        <span>Matches</span>
+                    </a>
+                    <a href="teams.html" class="dash-nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="17" y1="11" x2="23" y2="11"></line></svg>
+                        <span>Invitations</span>
+                        <span class="dash-nav-badge" id="invitation-count-badge" style="display: none;">0</span>
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Sidebar User & Logout -->
+            <div class="dash-sidebar-footer">
+                <div class="dash-sidebar-user-pill">
+                    <div class="dash-user-avatar">
+                        <img src="" alt="User" class="user-avatar-img" style="display:none;">
+                        <span class="user-avatar-fallback">👤</span>
+                    </div>
+                    <span class="dash-sidebar-user-name" id="sidebar-user-name">Loading...</span>
+                </div>
+                <button id="btn-logout" class="dash-sidebar-logout-btn">Logout</button>
+            </div>
+        </aside>
+
+        <!-- Main Dashboard View -->
+        <main class="dash-main">
+            <!-- Header Top Bar -->
+            <header class="dash-header">
+                <div>
+                    <h1 class="dash-welcome-title">Welcome back, <span id="dash-welcome-name">Player</span></h1>
+                    <p class="dash-welcome-subtext">Manage your cricket profile, teams and player connections</p>
+                </div>
+
+                <div class="dash-header-actions">
+                    <button class="dash-icon-btn" aria-label="Notifications">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                    </button>
+
+                    <a href="profile.html" class="dash-header-avatar">
+                        <img src="" alt="User" class="user-avatar-img" style="display:none;">
+                        <span class="user-avatar-fallback">👤</span>
+                    </a>
+                </div>
+            </header>
+
+            <!-- Hero Banner ("YOUR CRICKET JOURNEY → Build. Play. Connect.") -->
+            <section class="dash-hero-banner">
+                <div class="dash-hero-tag">
+                    <span>YOUR CRICKET JOURNEY &rarr;</span>
+                </div>
+                <h2 class="dash-hero-title">Build. Play. Connect.</h2>
+                <p class="dash-hero-subtitle">
+                    Everything you need to manage your cricket identity and teams in one place.
+                </p>
+            </section>
+
+            <!-- 2-Column Main Dashboard Grid -->
+            <div class="dash-grid">
+                <!-- Left/Center Column -->
+                <div class="dash-left-col">
+                    <!-- Assigned Matches (Scorer) Section -->
+                    <section id="dash-scorer-matches-section" style="display: none; margin-bottom: 2rem;">
+                        <div class="dash-section-header">
+                            <h3 class="dash-section-title" style="display: flex; align-items: center; gap: 0.55rem; color: #10b981;">
+                                <span style="font-size: 1.15rem;">📋</span> Assigned Matches (Scorer)
+                            </h3>
+                        </div>
+
+                        <div id="dash-scorer-matches-container" style="display: flex; flex-direction: column; gap: 1rem;">
+                            <!-- Populated dynamically via dashboard.js -->
+                        </div>
+                    </section>
+
+                    <!-- Live Matches Section -->
+                    <section style="margin-bottom: 2rem;">
+                        <div class="dash-section-header">
+                            <h3 class="dash-section-title" style="display: flex; align-items: center; gap: 0.55rem;">
+                                <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #ef4444; box-shadow: 0 0 10px #ef4444;"></span>
+                                Live Matches
+                            </h3>
+                            <a href="matches.html" class="dash-view-all-link">View All Matches</a>
+                        </div>
+
+                        <div id="dash-live-matches-container" style="display: flex; flex-direction: column; gap: 1rem;">
+                            <!-- Populated dynamically via dashboard.js -->
+                        </div>
+                    </section>
+
+                    <!-- Quick Actions -->
+                    <section style="margin-bottom: 2rem;">
+                        <div class="dash-section-header">
+                            <h3 class="dash-section-title">Quick Actions</h3>
+                        </div>
+
+                        <div class="dash-quick-actions-grid">
+                            <a href="profile.html" class="dash-quick-card">
+                                <div>
+                                    <div class="dash-quick-card-icon">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                    </div>
+                                    <h4 class="dash-quick-card-title">My Profile</h4>
+                                    <p class="dash-quick-card-desc">Manage your cricket identity.</p>
+                                </div>
+                                <div class="dash-quick-card-arrow">&rarr;</div>
+                            </a>
+
+                            <a href="teams.html" class="dash-quick-card">
+                                <div>
+                                    <div class="dash-quick-card-icon">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                                    </div>
+                                    <h4 class="dash-quick-card-title">My Teams</h4>
+                                    <p class="dash-quick-card-desc">Create and manage your cricket teams.</p>
+                                </div>
+                                <div class="dash-quick-card-arrow">&rarr;</div>
+                            </a>
+
+                            <a href="teams.html" class="dash-quick-card">
+                                <div>
+                                    <div class="dash-quick-card-icon">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="17" y1="11" x2="23" y2="11"></line></svg>
+                                    </div>
+                                    <h4 class="dash-quick-card-title">Invitations</h4>
+                                    <p class="dash-quick-card-desc">Connect with cricket teams.</p>
+                                </div>
+                                <div class="dash-quick-card-arrow">&rarr;</div>
+                            </a>
+                        </div>
+                    </section>
+
+                    <!-- My Teams -->
+                    <section>
+                        <div class="dash-section-header">
+                            <h3 class="dash-section-title">My Teams</h3>
+                            <a href="teams.html" class="dash-view-all-link">View All</a>
+                        </div>
+
+                        <div class="dash-teams-grid" id="dash-teams-grid">
+                            <div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #64748b;">Loading your teams...</div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Right Side Panel -->
+                <div class="dash-right-col">
+                    <!-- Profile Summary Card (Top Right) -->
+                    <div class="dash-profile-card">
+                        <div class="dash-profile-card-body">
+                            <div class="dash-profile-card-avatar">
+                                <img src="" alt="User" class="user-avatar-img" style="display:none;">
+                                <span class="user-avatar-fallback">👤</span>
+                            </div>
+                            <div>
+                                <h3 class="dash-profile-card-name" id="card-user-name">Loading...</h3>
+                                <span class="dash-profile-card-id" id="card-user-id">CRK-------</span>
+                            </div>
+                        </div>
+
+                        <div class="dash-profile-pills-row">
+                            <span class="dash-pill-attr" id="card-playing-role">All-Rounder</span>
+                            <span class="dash-pill-attr" id="card-batting-style">Right-Handed</span>
+                        </div>
+                    </div>
+
+                    <!-- Wickets & Bat Empty State Card / Quick Create Team Card -->
+                    <div class="dash-empty-card" id="empty-teams-card">
+                        <div class="dash-wickets-illustration">
+                            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><circle cx="12" cy="11" r="3"></circle></svg>
+                        </div>
+                        <h4 class="dash-empty-card-title">No teams yet</h4>
+                        <p class="dash-empty-card-subtext">Create your first cricket team and start connecting with players.</p>
+                        <a href="teams.html" class="dash-green-btn">Create Team</a>
+                    </div>
+
+                    <!-- Team Invitations Panel (Bottom Right) -->
+                    <div class="dash-invitations-panel">
+                        <div class="dash-section-header" style="margin-bottom: 0.85rem;">
+                            <h3 class="dash-section-title">Team Invitations</h3>
+                        </div>
+
+                        <div id="dash-invitations-container">
+                            <div style="text-align: center; color: #94a3b8; padding: 1rem; font-size: 0.85rem;">Loading pending invitations...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/dashboard.js"></script>
+</body>
+</html>

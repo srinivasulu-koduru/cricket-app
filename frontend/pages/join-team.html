@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join Team - Cricket App</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="app-background">
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+        <div class="glow-orb orb-3"></div>
+    </div>
+
+    <div class="auth-split-container" style="justify-content: center; align-items: center; padding: 2rem;">
+        <div class="auth-card-box" style="max-width: 480px; text-align: center;">
+            <div class="auth-card-header">
+                <a href="../index.html" class="brand-link" style="justify-content: center; margin-bottom: 1rem;">
+                    <div class="brand-icon">🏏</div>
+                    <span class="brand-title">Cricket <span>App</span></span>
+                </a>
+                <h2 class="auth-card-title">Team Invitation Link</h2>
+                <p class="auth-card-subtitle">You have been invited to join a cricket team</p>
+            </div>
+
+            <div id="join-alert" class="alert alert-error" style="display: none;"></div>
+
+            <!-- Team Preview Card -->
+            <div id="team-preview-box" style="background: rgba(11, 19, 41, 0.8); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.5rem; margin-bottom: 1.5rem;">
+                <div style="width: 80px; height: 80px; border-radius: var(--radius-md); background: rgba(22, 35, 71, 0.9); border: 2px solid var(--color-pitch-emerald); display: flex; align-items: center; justify-content: center; overflow: hidden; margin: 0 auto 1rem;">
+                    <img id="preview-logo-img" src="" alt="Team Logo" style="display: none; width:100%; height:100%; object-fit:cover;">
+                    <span id="preview-logo-fallback" style="font-size: 2.5rem;">🛡️</span>
+                </div>
+
+                <h3 id="preview-team-name" style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 800; color: #fff; margin-bottom: 0.25rem;">Loading Team...</h3>
+                <span id="preview-team-id" class="permanent-id-badge small" style="margin-bottom: 0.75rem;">TEAM-------</span>
+                <p id="preview-team-desc" style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">...</p>
+                
+                <div style="font-size: 0.85rem; color: var(--text-muted); background: rgba(0,0,0,0.2); padding: 0.6rem; border-radius: var(--radius-sm);">
+                    Captain / Manager: <strong id="preview-captain" style="color: var(--color-pitch-emerald);">...</strong> &bull; Members: <strong id="preview-members" style="color: #fff;">0</strong>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div id="join-actions-box">
+                <button id="btn-join-team" class="btn btn-primary btn-block">
+                    ⚡ Join Team Now
+                </button>
+
+                <div id="login-required-notice" style="display: none; background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: var(--radius-md); padding: 1rem; color: #fef08a; font-size: 0.9rem; margin-top: 1rem;">
+                    You must sign in to your Cricket App account to join this team.<br><br>
+                    <a href="login.html" class="btn btn-primary btn-sm">Sign In to Join</a> or <a href="register.html" class="btn btn-secondary btn-sm">Create Account</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/join-team.js"></script>
+</body>
+</html>

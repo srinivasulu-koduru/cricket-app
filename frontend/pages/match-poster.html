@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Match Poster - Cricket App</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        @media print {
+            body { background: #ffffff !important; }
+            .no-print { display: none !important; }
+            .poster-card { box-shadow: none !important; border: 2px solid #0d5c3a !important; }
+        }
+        @media (max-width: 600px) {
+            .poster-card {
+                padding: 1.5rem 1rem !important;
+                border-radius: 16px !important;
+            }
+            #mp-match-title {
+                font-size: clamp(1.4rem, 6vw, 2rem) !important;
+            }
+            #mp-format-spec {
+                font-size: 0.9rem !important;
+                margin-bottom: 1.25rem !important;
+            }
+        }
+        @media (max-width: 360px) {
+            .poster-card {
+                padding: 1.25rem 0.65rem !important;
+            }
+        }
+    </style>
+</head>
+<body style="background: #0f172a; color: #ffffff; min-height: 100vh; font-family: 'Inter', sans-serif;">
+    <div style="max-width: 900px; margin: 0 auto; padding: 1.5rem 1rem;">
+        <!-- Top Toolbar -->
+        <header class="no-print" style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 2rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem;">
+            <a id="poster-back-btn" href="match-details.html" style="color: #10b981; font-weight: 600; font-size: 0.9rem; text-decoration: none; display: flex; align-items: center; gap: 0.4rem;">
+                &larr; Back to Match Details
+            </a>
+            <div style="display: flex; gap: 0.75rem;">
+                <button onclick="window.print()" class="btn btn-primary btn-sm" style="background: #0d5c3a; display: flex; align-items: center; gap: 0.4rem;">
+                    🖨️ Print / Download Poster
+                </button>
+            </div>
+        </header>
+
+        <div id="mp-alert" class="alert alert-error" style="display: none; margin-bottom: 1.5rem;"></div>
+
+        <!-- Premium Cricket Match Poster -->
+        <div class="poster-card" style="background: linear-gradient(145deg, #062a1b 0%, #0b1329 50%, #0d422a 100%); border: 3px solid #10b981; border-radius: 24px; padding: 2.5rem 2rem; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6); position: relative; overflow: hidden; text-align: center;">
+            
+            <!-- Background Decorative Orbs -->
+            <div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(16, 185, 129, 0.15); border-radius: 50%; filter: blur(40px); pointer-events: none;"></div>
+            <div style="position: absolute; bottom: -50px; left: -50px; width: 200px; height: 200px; background: rgba(13, 92, 58, 0.25); border-radius: 50%; filter: blur(40px); pointer-events: none;"></div>
+
+            <!-- Poster Header -->
+            <div style="display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; padding: 0.35rem 1.1rem; border-radius: 20px; color: #10b981; font-weight: 700; font-size: 0.85rem; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 1.5rem;">
+                🏏 Official Cricket Match Fixture
+            </div>
+
+            <!-- Match Title & Format -->
+            <h1 id="mp-match-title" style="font-family: 'Outfit', sans-serif; font-size: 2.5rem; font-weight: 900; color: #ffffff; text-transform: uppercase; margin: 0 0 0.5rem 0; letter-spacing: 0.02em; text-shadow: 0 2px 10px rgba(0,0,0,0.5);">
+                Loading Match...
+            </h1>
+            <div id="mp-format-spec" style="font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 700; color: #f59e0b; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 2rem;">
+                T20 MATCH &bull; 20 OVERS
+            </div>
+
+            <!-- Face-Off Teams Box -->
+            <div style="background: rgba(11, 19, 41, 0.7); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 20px; padding: 2rem 1.5rem; margin-bottom: 2rem; display: flex; align-items: center; justify-content: space-around; gap: 1rem; flex-wrap: wrap; backdrop-filter: blur(10px);">
+                <!-- Team A -->
+                <div style="flex: 1; min-width: 140px; text-align: center;">
+                    <div style="width: 90px; height: 90px; border-radius: 20px; background: #0d5c3a; margin: 0 auto 0.75rem; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 3px solid #10b981; box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);">
+                        <img id="mp-team-a-logo" src="" alt="Team A" style="width:100%;height:100%;object-fit:cover;display:none;">
+                        <span id="mp-team-a-fallback" style="font-size: 2.75rem;">🛡️</span>
+                    </div>
+                    <h2 id="mp-team-a-name" style="font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 900; color: #ffffff; margin: 0 0 0.2rem 0; text-transform: uppercase;">Team A</h2>
+                    <span id="mp-team-a-id" style="font-size: 0.85rem; color: #10b981; font-weight: 700;">TEAM------</span>
+                </div>
+
+                <!-- VS Center Circle -->
+                <div style="text-align: center; margin: 0 1rem;">
+                    <div style="width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #10b981, #0d5c3a); color: #ffffff; font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 1.35rem; display: flex; align-items: center; justify-content: center; margin: 0 auto; box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5); border: 2px solid #ffffff;">
+                        VS
+                    </div>
+                </div>
+
+                <!-- Team B -->
+                <div style="flex: 1; min-width: 140px; text-align: center;">
+                    <div style="width: 90px; height: 90px; border-radius: 20px; background: #0d5c3a; margin: 0 auto 0.75rem; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 3px solid #10b981; box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);">
+                        <img id="mp-team-b-logo" src="" alt="Team B" style="width:100%;height:100%;object-fit:cover;display:none;">
+                        <span id="mp-team-b-fallback" style="font-size: 2.75rem;">🛡️</span>
+                    </div>
+                    <h2 id="mp-team-b-name" style="font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 900; color: #ffffff; margin: 0 0 0.2rem 0; text-transform: uppercase;">Team B</h2>
+                    <span id="mp-team-b-id" style="font-size: 0.85rem; color: #10b981; font-weight: 700;">TEAM------</span>
+                </div>
+            </div>
+
+            <!-- Key Fixture Details Grid -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 2rem; background: rgba(255,255,255,0.04); border-radius: 16px; padding: 1.25rem 1rem; border: 1px solid rgba(255,255,255,0.08);">
+                <div>
+                    <span style="display: block; font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; font-weight: 700; margin-bottom: 0.2rem;">📅 Match Date</span>
+                    <strong id="mp-date" style="font-size: 1.05rem; color: #ffffff;">-</strong>
+                </div>
+                <div>
+                    <span style="display: block; font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; font-weight: 700; margin-bottom: 0.2rem;">⏰ Start Time</span>
+                    <strong id="mp-time" style="font-size: 1.05rem; color: #ffffff;">-</strong>
+                </div>
+                <div>
+                    <span style="display: block; font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; font-weight: 700; margin-bottom: 0.2rem;">📍 Venue / Ground</span>
+                    <strong id="mp-venue" style="font-size: 1.05rem; color: #ffffff;">-</strong>
+                </div>
+            </div>
+
+            <!-- Poster Footer Branding -->
+            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem; flex-wrap: wrap; gap: 0.5rem; font-size: 0.82rem; color: #94a3b8;">
+                <div>Match ID: <strong id="mp-match-id" style="color: #10b981;">MATCH------</strong></div>
+                <div style="font-weight: 700; color: #ffffff;">Cricket App &bull; Official Fixture Poster</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/match-poster.js"></script>
+</body>
+</html>

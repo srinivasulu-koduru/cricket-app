@@ -1,0 +1,1612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Match Center - Cricket App</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/celebration.css">
+    <style>
+        body {
+            background-color: #0b1727;
+            color: #f8fafc;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        .ls-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 1.5rem 1rem;
+        }
+
+        .ls-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .ls-back-btn {
+            color: #10b981;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: color 0.2s ease;
+        }
+        .ls-back-btn:hover {
+            color: #34d399;
+        }
+
+        .ls-conn-badge {
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 0.35rem 0.8rem;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .ls-conn-badge.connected {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .ls-conn-badge.connecting {
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        .ls-conn-badge.disconnected {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        .ls-conn-badge.completed {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            border: 1.5px solid rgba(16, 185, 129, 0.5);
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+        }
+
+        .ls-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .ls-dot.green {
+            background: #10b981;
+            box-shadow: 0 0 8px #10b981;
+            animation: pulse-dot 1.5s infinite;
+        }
+        .ls-dot.amber { background: #f59e0b; }
+        .ls-dot.red { background: #ef4444; }
+        .ls-dot.completed-dot {
+            background: #10b981;
+            box-shadow: none;
+            animation: none;
+        }
+
+        /* Tabs Navigation for Completed Match */
+        .ls-tab-nav {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.25rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .ls-tab-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            padding: 0.55rem 1.15rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .ls-tab-btn:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .ls-tab-btn.active {
+            background: #10b981;
+            border-color: #34d399;
+            color: #064e3b;
+            font-weight: 800;
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.35);
+        }
+
+        @keyframes pulse-dot {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        /* Main View Tabs (LIVE | SCOREBOARD) */
+        .ls-main-view-nav {
+            display: flex;
+            gap: 0.6rem;
+            margin-bottom: 1.5rem;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 0.4rem;
+        }
+        .ls-main-view-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            padding: 0.75rem 1.25rem;
+            border-radius: 12px;
+            border: 1px solid transparent;
+            background: transparent;
+            color: #94a3b8;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .ls-main-view-btn:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .ls-main-view-btn.active {
+            background: #10b981;
+            color: #064e3b;
+            font-weight: 800;
+            box-shadow: 0 4px 18px rgba(16, 185, 129, 0.35);
+        }
+        .ls-live-pulsing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ef4444;
+            box-shadow: 0 0 8px #ef4444;
+            animation: pulse-dot 1.2s infinite;
+        }
+        .ls-main-view-btn.active .ls-live-pulsing-dot {
+            background: #064e3b;
+            box-shadow: 0 0 8px rgba(6, 78, 59, 0.6);
+        }
+
+        /* Scoreboard Section Styling */
+        .sb-innings-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .sb-innings-card {
+            background: rgba(15, 23, 42, 0.75);
+            border: 1.5px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 1.15rem 1.25rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            user-select: none;
+        }
+        .sb-innings-card:hover {
+            border-color: rgba(16, 185, 129, 0.4);
+            background: rgba(15, 23, 42, 0.95);
+        }
+        .sb-innings-card.active {
+            border-color: #10b981;
+            background: linear-gradient(135deg, rgba(6, 78, 59, 0.4), rgba(15, 23, 42, 0.95));
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.25);
+        }
+        .sb-card {
+            background: #0f172a;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+        }
+        .sb-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .sb-card-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #38bdf8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 0;
+        }
+        .sb-card-subtitle {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #94a3b8;
+        }
+        .sb-table-wrap {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin: 0 -0.5rem;
+            padding: 0 0.5rem;
+        }
+        .sb-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+        }
+        .sb-table th {
+            text-align: right;
+            color: #94a3b8;
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 0.65rem 0.6rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .sb-table th:first-child {
+            text-align: left;
+            padding-left: 0.4rem;
+        }
+        .sb-table th:last-child {
+            padding-right: 0.4rem;
+        }
+        .sb-table td {
+            padding: 0.75rem 0.6rem;
+            color: #e2e8f0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: right;
+        }
+        .sb-table td:first-child {
+            text-align: left;
+            padding-left: 0.4rem;
+        }
+        .sb-table td:last-child {
+            padding-right: 0.4rem;
+        }
+        .sb-player-row {
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+        .sb-player-row:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+        .sb-crease-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #10b981;
+            display: inline-block;
+            box-shadow: 0 0 6px #10b981;
+            margin-right: 4px;
+        }
+        .sb-striker-star {
+            color: #f59e0b;
+            font-weight: 800;
+            margin-left: 2px;
+        }
+        .sb-status-text {
+            font-size: 0.74rem;
+            font-weight: 500;
+            color: #94a3b8;
+            display: block;
+            margin-top: 0.15rem;
+        }
+        .sb-status-text.batting {
+            color: #10b981;
+            font-weight: 700;
+        }
+        .sb-status-text.not-out {
+            color: #34d399;
+            font-weight: 600;
+        }
+        .sb-status-text.dismissed {
+            color: #fca5a5;
+        }
+        .sb-status-text.not-played {
+            color: #64748b;
+        }
+        .sb-expand-icon {
+            font-size: 0.75rem;
+            color: #64748b;
+            transition: transform 0.2s ease;
+            display: inline-block;
+        }
+        .sb-player-drawer {
+            background: rgba(15, 23, 42, 0.95);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 0.85rem 1rem;
+            font-size: 0.82rem;
+            color: #cbd5e1;
+        }
+        .sb-fow-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+        }
+        .sb-fow-item {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 0.5rem 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.82rem;
+        }
+        .sb-fow-score {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            color: #ef4444;
+        }
+        .sb-fow-name {
+            color: #ffffff;
+            font-weight: 600;
+        }
+        .sb-fow-ov {
+            color: #94a3b8;
+            font-size: 0.75rem;
+        }
+        .sb-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 0.75rem;
+        }
+        .sb-summary-stat {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 0.85rem 0.75rem;
+            text-align: center;
+        }
+        .sb-summary-stat-lbl {
+            font-size: 0.7rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+        .sb-summary-stat-val {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        /* Score Hero Card */
+        .ls-hero-card {
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            padding: 1.75rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ls-match-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-bottom: 1rem;
+        }
+
+        .ls-teams-grid {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .ls-team-box {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .ls-team-box.team-b {
+            flex-direction: row-reverse;
+            text-align: right;
+        }
+
+        .ls-team-avatar {
+            width: 54px;
+            height: 54px;
+            border-radius: 14px;
+            background: #1e293b;
+            border: 2px solid #334155;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #38bdf8;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .ls-team-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .ls-team-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin: 0;
+        }
+        .ls-team-sub {
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+
+        .ls-vs-badge {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 0.85rem;
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+        }
+
+        .ls-score-display {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .ls-big-score {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.75rem;
+            font-weight: 800;
+            color: #ffffff;
+            line-height: 1;
+        }
+        .ls-big-score span {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #94a3b8;
+            margin-left: 0.4rem;
+        }
+
+        .ls-rates-box {
+            display: flex;
+            gap: 1rem;
+        }
+        .ls-rate-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 0.5rem 0.85rem;
+            text-align: center;
+        }
+        .ls-rate-lbl {
+            font-size: 0.7rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+        .ls-rate-val {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #38bdf8;
+        }
+
+        .ls-equation-banner {
+            margin-top: 1rem;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            text-align: center;
+            color: #34d399;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* Pitch Stream Simulation Card */
+        .ls-stream-card {
+            background: radial-gradient(ellipse at 50% 25%, #065f46 0%, #064e3b 45%, #022c22 100%);
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            border-radius: 18px;
+            padding: 1.25rem 1.25rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 60px rgba(0, 0, 0, 0.5);
+        }
+        .ls-sim-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.85rem;
+            position: relative;
+            z-index: 5;
+        }
+        .ls-stream-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            background: rgba(0, 0, 0, 0.65);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            color: #34d399;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            padding: 0.3rem 0.75rem;
+            border-radius: 20px;
+        }
+        .ls-sim-pulse-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #10b981;
+            box-shadow: 0 0 8px #10b981;
+            animation: sim-pulse 1.4s infinite;
+        }
+        @keyframes sim-pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.8); }
+        }
+        .ls-sim-meta {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #6ee7b7;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 0.25rem 0.65rem;
+            border-radius: 12px;
+            border: 1px solid rgba(16, 185, 129, 0.25);
+        }
+
+        /* 2D Pitch Field */
+        .ls-pitch-field {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 125px;
+            background: radial-gradient(ellipse at 50% 50%, rgba(6, 78, 59, 0.45) 0%, rgba(0, 0, 0, 0.5) 100%);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            border-radius: 14px;
+            padding: 0.85rem 1rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 2px 20px rgba(0, 0, 0, 0.7);
+        }
+        .ls-pitch-side {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            z-index: 5;
+            min-width: 110px;
+        }
+        .ls-player-tag {
+            background: rgba(15, 23, 42, 0.88);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            padding: 0.25rem 0.65rem;
+            border-radius: 14px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            white-space: nowrap;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+        }
+        .ls-crease-box {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+        .ls-stumps {
+            display: inline-flex;
+            gap: 3px;
+            align-items: flex-end;
+            height: 26px;
+            transform-origin: bottom center;
+            transition: transform 0.3s ease;
+        }
+        .ls-stump {
+            width: 3.5px;
+            height: 24px;
+            background: #fde047;
+            border-radius: 1px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+        }
+        .ls-crease-line {
+            width: 2px;
+            height: 38px;
+            background: rgba(255, 255, 255, 0.85);
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+        }
+
+        /* Central Turf Pitch Strip */
+        .ls-turf-pitch {
+            flex: 1;
+            height: 34px;
+            margin: 0 0.85rem;
+            background: linear-gradient(90deg, #b45309 0%, #d97706 20%, #ca8a04 50%, #d97706 80%, #b45309 100%);
+            border-radius: 6px;
+            position: relative;
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5), 0 3px 10px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(254, 240, 138, 0.35);
+            display: flex;
+            align-items: center;
+        }
+        .ls-pitch-guideline {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-50%);
+        }
+
+        /* The Animated Cricket Ball */
+        .ls-sim-ball {
+            position: absolute;
+            top: 50%;
+            left: 5%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, #f87171 0%, #dc2626 40%, #7f1d1d 100%);
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6), inset -1px -1px 3px rgba(0, 0, 0, 0.7);
+            z-index: 10;
+            pointer-events: none;
+            transition: left 0.65s cubic-bezier(0.25, 1, 0.5, 1), transform 0.65s ease, box-shadow 0.3s ease;
+        }
+        .ls-sim-ball.delivering {
+            animation: ball-bounce 0.65s ease-in-out;
+        }
+        @keyframes ball-bounce {
+            0% { transform: translateY(-50%) scale(0.9); }
+            45% { transform: translateY(-80%) scale(1.2); }
+            100% { transform: translateY(-50%) scale(1); }
+        }
+        @keyframes stumps-shatter {
+            0% { transform: scale(1) rotate(0deg); }
+            20% { transform: scale(1.15) rotate(-18deg) translateY(-8px); filter: drop-shadow(0 0 12px #ef4444); }
+            50% { transform: scale(1.25) rotate(22deg) translateY(-14px); }
+            80% { transform: scale(1.05) rotate(-6deg) translateY(-4px); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+
+        /* Outcome Overlay Box */
+        .ls-outcome-box {
+            margin-top: 0.9rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            min-height: 54px;
+        }
+        .ls-outcome-badge {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 1.05rem;
+            padding: 0.35rem 1.25rem;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+            animation: outcome-appear 0.35s ease-out;
+        }
+        .ls-outcome-badge.wicket {
+            background: linear-gradient(135deg, #ef4444, #b91c1c);
+            color: #ffffff;
+            border: 1px solid #fca5a5;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+        }
+        .ls-outcome-badge.four {
+            background: linear-gradient(135deg, #10b981, #047857);
+            color: #ffffff;
+            border: 1px solid #6ee7b7;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+        }
+        .ls-outcome-badge.six {
+            background: linear-gradient(135deg, #a855f7, #6b21a8);
+            color: #ffffff;
+            border: 1px solid #d8b4fe;
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
+        }
+        .ls-outcome-badge.runs {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: #ffffff;
+            border: 1px solid #93c5fd;
+        }
+        .ls-outcome-badge.dot {
+            background: rgba(51, 65, 85, 0.85);
+            color: #cbd5e1;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .ls-outcome-badge.extra {
+            background: linear-gradient(135deg, #f59e0b, #b45309);
+            color: #ffffff;
+            border: 1px solid #fde68a;
+        }
+        .ls-outcome-badge.delivering {
+            background: linear-gradient(135deg, #eab308, #ca8a04);
+            color: #0f172a;
+            border: 1px solid #fef08a;
+            animation: pulse-delivering 0.6s infinite alternate;
+        }
+        @keyframes pulse-delivering {
+            from { transform: scale(0.97); }
+            to { transform: scale(1.03); }
+        }
+        @keyframes outcome-appear {
+            0% { transform: scale(0.6); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .ls-outcome-desc {
+            font-size: 0.82rem;
+            color: #a7f3d0;
+            margin-top: 0.35rem;
+            font-weight: 500;
+        }
+
+        /* Ball Pills */
+        .ls-over-balls-bar {
+            background: #0f172a;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .ls-pills-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .ball-pill {
+            min-width: 32px;
+            height: 32px;
+            padding: 0 5px;
+            border-radius: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 0.82rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            line-height: 1;
+            user-select: none;
+        }
+        .ball-pill.sm {
+            min-width: 26px;
+            height: 26px;
+            padding: 0 4px;
+            border-radius: 13px;
+            font-size: 0.72rem;
+        }
+        .ball-pill.run-0 { background: #334155; color: #cbd5e1; border: 1px solid rgba(255, 255, 255, 0.08); }
+        .ball-pill.run-1, .ball-pill.run-2, .ball-pill.run-3 { background: #2563eb; color: #ffffff; border: 1px solid rgba(37, 99, 235, 0.5); }
+        .ball-pill.run-4 { background: #16a34a; color: #ffffff; border: 1px solid rgba(22, 163, 74, 0.5); }
+        .ball-pill.run-6 { background: #9333ea; color: #ffffff; border: 1px solid rgba(147, 51, 234, 0.5); }
+        .ball-pill.wicket { background: #ef4444; color: #ffffff; border: 1px solid rgba(239, 68, 68, 0.5); animation: pop-pill 0.3s ease-out; }
+        .ball-pill.extra { background: #f59e0b; color: #ffffff; border: 1px solid rgba(245, 158, 11, 0.5); }
+
+        @keyframes pop-pill {
+            0% { transform: scale(0.6); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        /* Stats Section Cards */
+        .ls-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .ls-card {
+            background: #0f172a;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 1.25rem;
+        }
+
+        .ls-card-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .ls-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+        }
+        .ls-table th {
+            text-align: left;
+            color: #64748b;
+            font-weight: 600;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            font-size: 0.75rem;
+        }
+        .ls-table td {
+            padding: 0.6rem 0;
+            color: #e2e8f0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .ls-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .ls-striker-star {
+            color: #f59e0b;
+            margin-left: 0.25rem;
+        }
+
+        /* Commentary List */
+        .ls-comm-item {
+            display: flex;
+            gap: 1rem;
+            padding: 0.85rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .ls-comm-item:last-child {
+            border-bottom: none;
+        }
+
+        .ls-comm-over {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #38bdf8;
+            min-width: 45px;
+        }
+
+        .ls-comm-desc {
+            font-size: 0.88rem;
+            color: #cbd5e1;
+            flex-grow: 1;
+        }
+
+        .ls-comm-badge {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 0.75rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 6px;
+            align-self: flex-start;
+        }
+
+        /* Skeletons */
+        .skeleton {
+            background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+            border-radius: 8px;
+        }
+        @keyframes skeleton-loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* Mobile and Tablet Responsive Optimization */
+        @media (max-width: 768px) {
+            .ls-container {
+                padding: 1.25rem 0.85rem;
+            }
+            .ls-hero-card {
+                padding: 1.25rem 1rem;
+                border-radius: 16px;
+            }
+            .ls-teams-grid {
+                gap: 0.75rem;
+            }
+            .ls-big-score {
+                font-size: 2.3rem;
+            }
+            .ls-score-display {
+                padding: 1rem;
+                gap: 0.75rem;
+            }
+            .sb-card {
+                padding: 1rem 0.85rem;
+            }
+            .ls-stats-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .ls-container {
+                padding: 1rem 0.65rem;
+            }
+            .ls-hero-card {
+                padding: 1rem 0.75rem;
+                border-radius: 14px;
+            }
+            .ls-team-avatar {
+                width: 44px;
+                height: 44px;
+                font-size: 1.2rem;
+                border-radius: 10px;
+            }
+            .ls-team-title {
+                font-size: clamp(0.95rem, 3.8vw, 1.15rem);
+            }
+            .ls-big-score {
+                font-size: clamp(1.85rem, 6vw, 2.2rem);
+            }
+            .ls-pitch-field {
+                padding: 0.65rem 0.5rem;
+                min-height: 110px;
+            }
+            .ls-pitch-side {
+                min-width: 80px;
+                gap: 0.35rem;
+            }
+            .ls-player-tag {
+                max-width: 105px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                font-size: 0.72rem;
+                padding: 0.2rem 0.45rem;
+            }
+            .ls-turf-pitch {
+                margin: 0 0.45rem;
+                height: 28px;
+            }
+            .ls-stream-card {
+                padding: 1rem 0.75rem;
+                border-radius: 14px;
+            }
+            .sb-innings-selector {
+                grid-template-columns: 1fr;
+                gap: 0.65rem;
+            }
+            .sb-innings-card {
+                padding: 0.85rem 1rem;
+            }
+            .sb-table th,
+            .sb-table td {
+                padding: 0.55rem 0.4rem;
+                font-size: 0.8rem;
+            }
+            .sb-summary-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 0.5rem;
+            }
+            .sb-summary-stat {
+                padding: 0.65rem 0.5rem;
+            }
+            .sb-summary-stat-val {
+                font-size: 1.1rem;
+            }
+            .ls-main-view-nav {
+                padding: 0.3rem;
+                gap: 0.4rem;
+                border-radius: 12px;
+            }
+            .ls-main-view-btn {
+                padding: 0.65rem 0.85rem;
+                font-size: 0.88rem;
+                border-radius: 10px;
+            }
+            .ls-over-balls-bar {
+                padding: 0.75rem 0.85rem;
+                gap: 0.65rem;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .ls-container {
+                padding: 0.75rem 0.4rem;
+            }
+            .ls-hero-card {
+                padding: 0.85rem 0.5rem;
+            }
+            .ls-team-avatar {
+                width: 36px;
+                height: 36px;
+                font-size: 1rem;
+                border-radius: 8px;
+            }
+            .ls-team-title {
+                font-size: 0.88rem;
+                max-width: 85px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            .ls-team-sub {
+                font-size: 0.72rem;
+            }
+            .ls-vs-badge {
+                font-size: 0.72rem;
+                padding: 0.2rem 0.45rem;
+            }
+            .ls-big-score {
+                font-size: 1.7rem;
+            }
+            .ls-rate-item {
+                padding: 0.35rem 0.5rem;
+            }
+            .ls-rate-val {
+                font-size: 0.95rem;
+            }
+            .ls-pitch-field {
+                padding: 0.5rem 0.35rem;
+            }
+            .ls-pitch-side {
+                min-width: 62px;
+            }
+            .ls-player-tag {
+                max-width: 78px;
+                font-size: 0.65rem;
+                padding: 0.15rem 0.3rem;
+            }
+            .ls-turf-pitch {
+                margin: 0 0.25rem;
+                height: 22px;
+            }
+            .ball-pill {
+                min-width: 26px;
+                height: 26px;
+                font-size: 0.72rem;
+            }
+            .sb-table th,
+            .sb-table td {
+                padding: 0.45rem 0.25rem;
+                font-size: 0.75rem;
+            }
+            .sb-summary-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.35rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="ls-container">
+        <!-- Header -->
+        <header class="ls-header">
+            <a href="dashboard.html" class="ls-back-btn">
+                &larr; Back to Dashboard
+            </a>
+            <div id="ls-conn-badge" class="ls-conn-badge connecting">
+                <span id="ls-conn-dot" class="ls-dot amber"></span>
+                <span id="ls-conn-text">Connecting...</span>
+            </div>
+        </header>
+
+        <!-- Top Level Match View Navigation: LIVE | SCOREBOARD -->
+        <nav class="ls-main-view-nav" aria-label="Match view selection">
+            <button type="button" class="ls-main-view-btn active" id="tab-nav-live" onclick="switchMatchView('live')">
+                <span class="ls-live-pulsing-dot"></span> LIVE
+            </button>
+            <button type="button" class="ls-main-view-btn" id="tab-nav-scoreboard" onclick="switchMatchView('scoreboard')">
+                📋 SCOREBOARD
+            </button>
+        </nav>
+
+        <!-- TAB 1: LIVE VIEW (PROTECTED / LOCKED CODE) -->
+        <div id="ls-live-tab-view">
+            <div id="ls-alert" class="alert alert-error" style="display: none; margin-bottom: 1.5rem;"></div>
+
+        <!-- Match Paused Banner (Viewer) -->
+        <div id="ls-paused-banner" style="display: none; background: rgba(239, 68, 68, 0.15); border: 1.5px solid #ef4444; border-radius: 14px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; text-align: center; box-shadow: 0 4px 20px rgba(239, 68, 68, 0.25);">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 0.6rem; margin-bottom: 0.25rem;">
+                <span style="font-size: 1.4rem;">⏸️</span>
+                <strong style="font-family: 'Outfit', sans-serif; font-size: 1.2rem; font-weight: 800; color: #fca5a5; letter-spacing: 1px;">MATCH PAUSED</strong>
+            </div>
+            <div style="font-size: 0.95rem; color: #ffffff;" id="ls-paused-reason">Reason: Rain</div>
+        </div>
+
+        <!-- Innings Break Card (Viewer) -->
+        <section id="ls-innings-break-card" style="display: none; background: linear-gradient(135deg, #1e293b, #0f172a); border: 2px solid #f59e0b; border-radius: 20px; padding: 2.25rem 1.5rem; text-align: center; margin-bottom: 1.5rem; box-shadow: 0 10px 30px rgba(245, 158, 11, 0.25);">
+            <div style="font-size: 3.2rem; margin-bottom: 0.4rem;">☕</div>
+            <div style="font-size: 0.85rem; font-weight: 800; color: #f59e0b; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.25rem;">INNINGS BREAK</div>
+            <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.6rem; font-weight: 800; color: #ffffff; margin: 0 0 1.25rem 0;">First Innings Completed</h2>
+
+            <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 14px; padding: 1.25rem; max-width: 420px; margin: 0 auto 1.25rem auto;">
+                <div style="font-family: 'Outfit', sans-serif; font-size: 1.35rem; font-weight: 800; color: #38bdf8; margin-bottom: 0.35rem;" id="ls-break-team-name">Team A</div>
+                <div style="font-family: 'Outfit', sans-serif; font-size: 2.75rem; font-weight: 900; color: #ffffff; line-height: 1;" id="ls-break-score">0/0</div>
+                <div style="font-size: 1rem; color: #94a3b8; font-weight: 600; margin-top: 0.4rem;" id="ls-break-overs">0 Overs</div>
+            </div>
+
+            <p style="font-size: 1.05rem; color: #e2e8f0; margin: 0 0 1rem 0; font-weight: 500;">
+                Waiting for the second innings to begin...
+            </p>
+
+            <div style="display: inline-flex; background: rgba(16, 185, 129, 0.15); border: 1.5px solid #10b981; border-radius: 12px; padding: 0.65rem 1.5rem; text-align: center;">
+                <span style="font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 800; color: #34d399;" id="ls-break-target">Target: --- runs</span>
+            </div>
+        </section>
+
+        <!-- Hero Score Section -->
+        <section class="ls-hero-card" id="ls-hero-section">
+            <div class="ls-match-meta">
+                <span id="ls-match-format">T20 MATCH</span>
+                <span id="ls-toss-summary">Loading Toss Details...</span>
+            </div>
+
+            <div class="ls-teams-grid">
+                <div class="ls-team-box team-a">
+                    <div class="ls-team-avatar">
+                        <img id="ls-team-a-logo" src="" alt="Team A" style="display:none;">
+                        <span id="ls-team-a-fallback">A</span>
+                    </div>
+                    <div>
+                        <h2 class="ls-team-title" id="ls-team-a-name">Team A</h2>
+                        <div class="ls-team-sub" id="ls-team-a-status">Batting</div>
+                    </div>
+                </div>
+
+                <div class="ls-vs-badge">VS</div>
+
+                <div class="ls-team-box team-b">
+                    <div class="ls-team-avatar">
+                        <img id="ls-team-b-logo" src="" alt="Team B" style="display:none;">
+                        <span id="ls-team-b-fallback">B</span>
+                    </div>
+                    <div>
+                        <h2 class="ls-team-title" id="ls-team-b-name">Team B</h2>
+                        <div class="ls-team-sub" id="ls-team-b-status">Bowling</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ls-score-display">
+                <div>
+                    <div class="ls-big-score" id="ls-score-text">
+                        0 / 0 <span id="ls-overs-text">(0.0 / 20.0 Overs)</span>
+                    </div>
+                </div>
+
+                <div class="ls-rates-box">
+                    <div class="ls-rate-item">
+                        <div class="ls-rate-lbl">CRR</div>
+                        <div class="ls-rate-val" id="ls-crr">0.00</div>
+                    </div>
+                    <div class="ls-rate-item" id="ls-rrr-box" style="display: none;">
+                        <div class="ls-rate-lbl">RRR</div>
+                        <div class="ls-rate-val" id="ls-rrr">0.00</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ls-equation-banner" id="ls-equation-banner" style="display: none;">
+                Match in Progress
+            </div>
+        </section>
+
+        <!-- LIVE MATCH WIDGETS -->
+        <div id="ls-live-widgets">
+            <!-- Stadium Pitch Simulation Card -->
+            <section class="ls-stream-card" id="ls-stadium-card">
+                <!-- Header bar -->
+                <div class="ls-sim-header">
+                    <div class="ls-stream-badge" id="ls-sim-status-badge">
+                        <span class="ls-sim-pulse-dot"></span>
+                        <span>LIVE STADIUM SIMULATION</span>
+                    </div>
+                    <div class="ls-sim-meta" id="ls-sim-meta-over">Ball 0.0</div>
+                </div>
+
+                <!-- 2D Pitch Field -->
+                <div class="ls-pitch-field" id="ls-pitch-field">
+                    <!-- Bowler End (Left) -->
+                    <div class="ls-pitch-side bowler-side">
+                        <div class="ls-player-tag" id="ls-sim-bowler-tag">
+                            <span class="ls-tag-icon">🎳</span>
+                            <span id="ls-sim-bowler-name">Bowler</span>
+                        </div>
+                        <div class="ls-crease-box">
+                            <div class="ls-stumps">
+                                <span class="ls-stump"></span><span class="ls-stump"></span><span class="ls-stump"></span>
+                            </div>
+                            <div class="ls-crease-line"></div>
+                        </div>
+                    </div>
+
+                    <!-- Central Turf Pitch Strip with Animated Ball -->
+                    <div class="ls-turf-pitch" id="ls-turf-pitch">
+                        <div class="ls-pitch-guideline"></div>
+                        <!-- The Animated Cricket Ball -->
+                        <div class="ls-sim-ball" id="ls-sim-ball"></div>
+                    </div>
+
+                    <!-- Striker End (Right) -->
+                    <div class="ls-pitch-side striker-side">
+                        <div class="ls-crease-box">
+                            <div class="ls-crease-line"></div>
+                            <div class="ls-stumps" id="ls-striker-stumps">
+                                <span class="ls-stump"></span><span class="ls-stump"></span><span class="ls-stump"></span>
+                            </div>
+                        </div>
+                        <div class="ls-player-tag" id="ls-sim-striker-tag">
+                            <span class="ls-tag-icon">🏏</span>
+                            <span id="ls-sim-striker-name">Striker*</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Current Ball Outcome Overlay Banner -->
+                <div class="ls-outcome-box" id="ls-outcome-box">
+                    <div class="ls-outcome-badge dot" id="ls-outcome-badge">
+                        READY FOR NEXT BALL
+                    </div>
+                    <div class="ls-outcome-desc" id="ls-outcome-desc">
+                        Ball-by-ball simulation updating live from scorer console.
+                    </div>
+                </div>
+            </section>
+
+            <!-- Current Over Pills -->
+            <section class="ls-over-balls-bar">
+                <div style="font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 0.9rem; color: #94a3b8;">
+                    THIS OVER
+                </div>
+                <div class="ls-pills-container" id="ls-current-over-pills">
+                    <span style="color: #64748b; font-size: 0.85rem;">Waiting for first ball...</span>
+                </div>
+            </section>
+
+            <!-- Batters & Bowlers Grid -->
+            <div class="ls-stats-grid">
+                <!-- Current Batters -->
+                <div class="ls-card">
+                    <div class="ls-card-title">
+                        <span>🏏 Current Batters</span>
+                    </div>
+                    <table class="ls-table">
+                        <thead>
+                            <tr>
+                                <th>BATTER</th>
+                                <th>R</th>
+                                <th>B</th>
+                                <th>4s</th>
+                                <th>6s</th>
+                                <th>SR</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ls-batters-body">
+                            <tr><td colspan="6" style="color: #64748b;">Loading batters...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Current Bowler -->
+                <div class="ls-card">
+                    <div class="ls-card-title">
+                        <span>⚾ Current Bowler</span>
+                    </div>
+                    <table class="ls-table">
+                        <thead>
+                            <tr>
+                                <th>BOWLER</th>
+                                <th>O</th>
+                                <th>M</th>
+                                <th>R</th>
+                                <th>W</th>
+                                <th>ECO</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ls-bowler-body">
+                            <tr><td colspan="6" style="color: #64748b;">Loading bowler...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Recent Overs & Live Commentary Grid -->
+            <div class="ls-stats-grid">
+                <!-- Recent Overs -->
+                <div class="ls-card">
+                    <div class="ls-card-title">
+                        <span>📊 Recent Overs</span>
+                    </div>
+                    <div id="ls-recent-overs-list" style="display: flex; flex-direction: column; gap: 0.6rem;">
+                        <div style="color: #64748b; font-size: 0.85rem;">No completed overs yet.</div>
+                    </div>
+                </div>
+
+                <!-- Commentary -->
+                <div class="ls-card">
+                    <div class="ls-card-title">
+                        <span>🎙️ Live Commentary</span>
+                    </div>
+                    <div id="ls-commentary-list" style="max-height: 300px; overflow-y: auto;">
+                        <div style="color: #64748b; font-size: 0.85rem;">Commentary will appear when balls are bowled...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- COMPLETED MATCH FINAL SCOREBOARD MODE -->
+        <div id="ls-completed-widgets" style="display: none;">
+            <!-- Completed Header Announcement -->
+            <div style="background: linear-gradient(135deg, rgba(6, 78, 59, 0.7), rgba(2, 44, 34, 0.85)); border: 2px solid #10b981; border-radius: 18px; padding: 1.75rem 1.5rem; text-align: center; margin-bottom: 1.5rem; box-shadow: 0 10px 30px rgba(16, 185, 129, 0.25);">
+                <div style="font-size: 2.5rem; margin-bottom: 0.35rem;">🏆</div>
+                <div style="font-size: 0.82rem; font-weight: 800; color: #34d399; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.35rem;">MATCH COMPLETED</div>
+                <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.8rem; font-weight: 800; color: #ffffff; margin: 0 0 0.5rem 0;" id="ls-completed-match-title">
+                    Match Completed
+                </h2>
+                <div style="font-family: 'Outfit', sans-serif; font-size: 1.25rem; font-weight: 800; color: #34d399;" id="ls-completed-result-text">
+                    Winner Details
+                </div>
+            </div>
+
+            <!-- Navigation Tabs (SCORECARD | BALL-BY-BALL | MATCH INFO) -->
+            <div class="ls-tab-nav">
+                <button type="button" class="ls-tab-btn active" id="tab-btn-scorecard" onclick="switchCompletedTab('scorecard')">📋 Final Scoreboard</button>
+                <button type="button" class="ls-tab-btn" id="tab-btn-ballbyball" onclick="switchCompletedTab('ballbyball')">📜 Ball-by-Ball History</button>
+                <button type="button" class="ls-tab-btn" id="tab-btn-info" onclick="switchCompletedTab('info')">ℹ️ Match Info</button>
+            </div>
+
+            <!-- Tab 1: Final Scoreboard (Default) -->
+            <div id="tab-content-scorecard" class="ls-tab-content">
+                <div id="ls-full-scorecards-container">
+                    <!-- Innings 1 and Innings 2 scorecards will be injected here -->
+                </div>
+            </div>
+
+            <!-- Tab 2: Ball-by-Ball History -->
+            <div id="tab-content-ballbyball" class="ls-tab-content" style="display: none;">
+                <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem;">
+                    <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.15rem; color: #38bdf8; margin: 0 0 1rem 0; display: flex; align-items: center; gap: 0.5rem;">
+                        <span>📜 Match Ball-by-Ball History</span>
+                        <span style="font-size: 0.75rem; background: rgba(56, 189, 248, 0.15); color: #38bdf8; padding: 2px 8px; border-radius: 12px; font-weight: 700;">COMPLETED MATCH RECORD</span>
+                    </h3>
+                    <div class="ls-stats-grid" style="margin-bottom: 0;">
+                        <!-- Recent Overs Breakdown -->
+                        <div class="ls-card">
+                            <div class="ls-card-title">
+                                <span>📊 Overs Breakdown</span>
+                            </div>
+                            <div id="ls-completed-overs-list" style="display: flex; flex-direction: column; gap: 0.6rem;">
+                            </div>
+                        </div>
+                        <!-- Commentary Log -->
+                        <div class="ls-card">
+                            <div class="ls-card-title">
+                                <span>🎙️ Match Commentary Log</span>
+                            </div>
+                            <div id="ls-completed-commentary-list" style="max-height: 400px; overflow-y: auto;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 3: Match Info -->
+            <div id="tab-content-info" class="ls-tab-content" style="display: none;">
+                <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 1.5rem;">
+                    <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.15rem; color: #10b981; margin: 0 0 1.25rem 0;">Match Information</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;" id="ls-completed-info-grid">
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div> <!-- End of #ls-live-tab-view (Existing LIVE Section Preserved Untouched) -->
+
+        <!-- TAB 2: SCOREBOARD VIEW (STAGE 11) -->
+        <div id="ls-scoreboard-tab-view" style="display: none;">
+            <!-- Innings / Team Selector (Top of Scoreboard) -->
+            <div class="sb-innings-selector" id="sb-innings-selector">
+                <!-- Team 1 Card -->
+                <div class="sb-innings-card active" id="sb-card-inn-1" onclick="selectScoreboardInnings(1)">
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <div class="ls-team-avatar" style="width: 44px; height: 44px; font-size: 1.1rem;" id="sb-avatar-inn-1">
+                            <span id="sb-fallback-inn-1">1</span>
+                        </div>
+                        <div>
+                            <span style="font-size: 0.7rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; display: block;" id="sb-badge-inn-1">1ST INNINGS</span>
+                            <strong style="font-family: 'Outfit', sans-serif; font-size: 1.05rem; color: #ffffff;" id="sb-name-inn-1">Team A</strong>
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-family: 'Outfit', sans-serif; font-size: 1.35rem; font-weight: 800; color: #10b981;" id="sb-score-inn-1">0/0</div>
+                        <div style="font-size: 0.78rem; color: #94a3b8;" id="sb-overs-inn-1">(0.0 ov)</div>
+                    </div>
+                </div>
+
+                <!-- Team 2 Card -->
+                <div class="sb-innings-card" id="sb-card-inn-2" onclick="selectScoreboardInnings(2)">
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <div class="ls-team-avatar" style="width: 44px; height: 44px; font-size: 1.1rem;" id="sb-avatar-inn-2">
+                            <span id="sb-fallback-inn-2">2</span>
+                        </div>
+                        <div>
+                            <span style="font-size: 0.7rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; display: block;" id="sb-badge-inn-2">2ND INNINGS</span>
+                            <strong style="font-family: 'Outfit', sans-serif; font-size: 1.05rem; color: #ffffff;" id="sb-name-inn-2">Team B</strong>
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-family: 'Outfit', sans-serif; font-size: 1.35rem; font-weight: 800; color: #94a3b8;" id="sb-score-inn-2">Yet to bat</div>
+                        <div style="font-size: 0.78rem; color: #64748b;" id="sb-overs-inn-2"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Batting Scoreboard -->
+            <div class="sb-card" id="sb-batting-card">
+                <div class="sb-card-header">
+                    <div>
+                        <h3 class="sb-card-title" id="sb-batting-title">BATTING — TEAM</h3>
+                    </div>
+                    <div class="sb-card-subtitle" id="sb-batting-innings-total">
+                        0/0 (0.0 ov)
+                    </div>
+                </div>
+                <div class="sb-table-wrap">
+                    <table class="sb-table" id="sb-batting-table">
+                        <thead>
+                            <tr>
+                                <th>BATTER</th>
+                                <th>R</th>
+                                <th>B</th>
+                                <th>4s</th>
+                                <th>6s</th>
+                                <th>SR</th>
+                                <th style="width: 32px; text-align: center;"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="sb-batting-body">
+                            <tr><td colspan="7" style="text-align: center; color: #64748b; padding: 1.5rem;">Loading batting scorecard...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Bowling Scoreboard -->
+            <div class="sb-card" id="sb-bowling-card">
+                <div class="sb-card-header">
+                    <div>
+                        <h3 class="sb-card-title" id="sb-bowling-title" style="color: #f59e0b;">BOWLING — OPPONENT</h3>
+                    </div>
+                </div>
+                <div class="sb-table-wrap">
+                    <table class="sb-table" id="sb-bowling-table">
+                        <thead>
+                            <tr>
+                                <th>BOWLER</th>
+                                <th>O</th>
+                                <th>M</th>
+                                <th>R</th>
+                                <th>W</th>
+                                <th>ECON</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sb-bowling-body">
+                            <tr><td colspan="6" style="text-align: center; color: #64748b; padding: 1.5rem;">Loading bowling scorecard...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Fall of Wickets -->
+            <div class="sb-card" id="sb-fow-card">
+                <div class="sb-card-header">
+                    <h3 class="sb-card-title" style="color: #ef4444;">FALL OF WICKETS</h3>
+                </div>
+                <div class="sb-fow-grid" id="sb-fow-grid">
+                    <span style="color: #64748b; font-size: 0.85rem;">No wickets fallen yet.</span>
+                </div>
+            </div>
+
+            <!-- Innings Summary -->
+            <div class="sb-card" id="sb-summary-card">
+                <div class="sb-card-header">
+                    <h3 class="sb-card-title" style="color: #10b981;" id="sb-summary-title">INNINGS SUMMARY</h3>
+                </div>
+                <div class="sb-summary-grid">
+                    <div class="sb-summary-stat">
+                        <div class="sb-summary-stat-lbl">TOTAL SCORE</div>
+                        <div class="sb-summary-stat-val text-emerald" id="sb-sum-score">0/0</div>
+                    </div>
+                    <div class="sb-summary-stat">
+                        <div class="sb-summary-stat-lbl">OVERS</div>
+                        <div class="sb-summary-stat-val" id="sb-sum-overs">0.0</div>
+                    </div>
+                    <div class="sb-summary-stat">
+                        <div class="sb-summary-stat-lbl">RUN RATE</div>
+                        <div class="sb-summary-stat-val" style="color: #38bdf8;" id="sb-sum-rr">0.00</div>
+                    </div>
+                    <div class="sb-summary-stat">
+                        <div class="sb-summary-stat-lbl">EXTRAS</div>
+                        <div class="sb-summary-stat-val" style="color: #f59e0b;" id="sb-sum-extras">0</div>
+                    </div>
+                    <div class="sb-summary-stat">
+                        <div class="sb-summary-stat-lbl">FOURS</div>
+                        <div class="sb-summary-stat-val" style="color: #34d399;" id="sb-sum-fours">0</div>
+                    </div>
+                    <div class="sb-summary-stat">
+                        <div class="sb-summary-stat-lbl">SIXES</div>
+                        <div class="sb-summary-stat-val" style="color: #c084fc;" id="sb-sum-sixes">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SockJS and STOMP Client dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/celebration.js"></script>
+    <script src="../js/live-score.js?v=2.8"></script>
+</body>
+</html>
