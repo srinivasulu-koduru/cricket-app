@@ -3,139 +3,602 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Cricket App - Official Team Management and Sports Player Platform.">
-    <title>Cricket App - Sports Platform & Player Hub</title>
+    <meta name="description" content="Cricket App - Your Game. Your Team. Your Score. A modern cricket platform connecting players, teams and matches in one place.">
+    <title>Cricket App - Your Game. Your Team. Your Score.</title>
+    
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Stylesheets -->
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/landing.css">
 </head>
-<body>
-    <div class="app-background">
-        <div class="glow-orb orb-1"></div>
-        <div class="glow-orb orb-2"></div>
-        <div class="glow-orb orb-3"></div>
+<body class="landing-body">
+
+    <!-- Atmospheric Stadium Lighting Background -->
+    <div class="landing-atmosphere" aria-hidden="true">
+        <div class="atmo-glow-1"></div>
+        <div class="atmo-glow-2"></div>
+        <div class="atmo-glow-3"></div>
+        <div class="atmo-swoosh"></div>
     </div>
 
-    <div class="container">
-        <!-- Navigation Header -->
-        <header class="header">
-            <a href="index.html" class="brand-link">
-                <div class="brand-icon">🏏</div>
-                <h1 class="brand-title">Cricket <span>App</span></h1>
+    <!-- Navigation Header -->
+    <header class="landing-nav-wrap">
+        <nav class="landing-nav" aria-label="Main Navigation">
+            <!-- Brand Logo -->
+            <a href="#hero" class="nav-brand">
+                <div class="brand-ball-badge">
+                    <svg viewBox="0 0 40 40" width="38" height="38" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <radialGradient id="ballShine" cx="35%" cy="30%" r="65%">
+                                <stop offset="0%" stop-color="#34d399" />
+                                <stop offset="35%" stop-color="#059669" />
+                                <stop offset="75%" stop-color="#064e3b" />
+                                <stop offset="100%" stop-color="#022c22" />
+                            </radialGradient>
+                            <filter id="ballGlow" x="-20%" y="-20%" width="140%" height="140%">
+                                <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#10b981" flood-opacity="0.35"/>
+                            </filter>
+                        </defs>
+                        <circle cx="20" cy="20" r="18" fill="url(#ballShine)" filter="url(#ballGlow)"/>
+                        <!-- White central seam stitches -->
+                        <path d="M 6 12 C 14 17 26 23 34 28" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="1.8" stroke-dasharray="2,2"/>
+                        <path d="M 5.5 11.5 C 13.5 16.5 25.5 22.5 33.5 27.5" fill="none" stroke="rgba(0,0,0,0.3)" stroke-width="0.8"/>
+                        <!-- Specular highlight -->
+                        <ellipse cx="14" cy="11" rx="5" ry="3" fill="rgba(255,255,255,0.45)" transform="rotate(-20 14 11)"/>
+                    </svg>
+                </div>
+                <span class="brand-text">Cricket App</span>
             </a>
-            
-            <div class="header-nav-actions" style="display: flex; align-items: center; gap: 1rem;">
-                <span class="role-badge">Official Platform</span>
-                <a href="pages/login.html" class="btn btn-secondary">Sign In</a>
-                <a href="pages/register.html" class="btn btn-primary">Create Account</a>
+
+            <!-- Center Navigation Links -->
+            <div class="nav-center-menu">
+                <a href="#hero" class="nav-link-item active">Home</a>
+                <a href="#about" class="nav-link-item">About</a>
             </div>
-        </header>
 
-        <!-- Hero Section -->
-        <main class="main-content">
-            <section class="hero-card">
-                <div class="hero-badge">⚡ Sports Team & Player Hub</div>
-                <h2 class="hero-title">Cricket Team Management & Player Profiles</h2>
-                <p class="hero-subtitle">
-                    Register to receive your permanent Cricket User ID (<code>CRKXXXXXX</code>), create cricket teams with permanent Team IDs (<code>TEAMXXXXXX</code>), invite players via CRK IDs, and manage squad memberships.
-                </p>
+            <!-- Right Compulsory Login CTA -->
+            <div class="nav-actions-right">
+                <a href="pages/login.html" class="btn-nav-login">LOGIN</a>
+                
+                <!-- Mobile Navigation Toggle -->
+                <button id="landing-nav-toggle" class="mobile-nav-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+        </nav>
 
-                <!-- Quick Action Hub -->
-                <div class="status-box" style="background: rgba(11, 19, 41, 0.85); border-color: rgba(16, 185, 129, 0.3);">
-                    <div class="status-header">
-                        <div class="status-title" style="font-size: 1.15rem; color: var(--color-pitch-emerald); font-family: var(--font-heading); font-weight: 700;">
-                            🛡️ Cricket App Actions Hub
-                        </div>
-                    </div>
-                    <p style="font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
-                        Sign in or register to access player identity details, team rosters, and player invitations.
+        <!-- Mobile Drawer -->
+        <div id="landing-nav-drawer" class="mobile-nav-drawer">
+            <a href="#hero" class="nav-link-item">Home</a>
+            <a href="#about" class="nav-link-item">About</a>
+            <a href="pages/login.html" class="btn-nav-login" style="margin-top: 0.5rem; text-align: center;">LOGIN</a>
+        </div>
+    </header>
+
+    <!-- Master Shell Container -->
+    <div class="landing-shell">
+
+        <!-- ============================================================
+             Hero Section
+             ============================================================ -->
+        <section id="hero" class="hero-section">
+            <div class="hero-grid">
+                
+                <!-- Hero Left Column -->
+                <div class="hero-content">
+                    <h1 class="hero-headline">
+                        <span class="headline-row">YOUR GAME.</span>
+                        <span class="headline-row">YOUR TEAM.</span>
+                        <span class="headline-row">YOUR SCORE.</span>
+                    </h1>
+                    
+                    <p class="hero-subtitle">
+                        Create matches, manage teams, follow live scores and experience cricket in real time.
                     </p>
-                    <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
-                        <a href="pages/register.html" class="btn btn-primary">
-                            <span style="font-size: 1.1rem;">📝</span> Create Account
-                        </a>
-                        <a href="pages/login.html" class="btn btn-secondary">
-                            <span style="font-size: 1.1rem;">🔑</span> Sign In
-                        </a>
-                        <a href="pages/dashboard.html" class="btn btn-secondary">
-                            <span style="font-size: 1.1rem;">👤</span> User Dashboard
-                        </a>
-                        <a href="pages/teams.html" class="btn btn-gold">
-                            <span style="font-size: 1.1rem;">🏏</span> My Teams & Create Team
-                        </a>
+
+                    <div class="hero-actions">
+                        <a href="pages/login.html" class="btn-hero-primary">LOGIN</a>
+                        <a href="#about" class="btn-hero-secondary">EXPLORE</a>
                     </div>
                 </div>
 
-                <!-- Backend Health Monitor -->
-                <div class="status-box" id="status-card">
-                    <div class="status-header">
-                        <div class="section-title">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>
-                            Backend Server Connectivity
-                        </div>
-                        <span class="role-badge" id="connection-pill">
-                            <span id="connection-text">Checking status...</span>
-                        </span>
-                    </div>
+                <!-- Hero Right Column: Framed Stadium Pitch Showcase -->
+                <div class="hero-visual-card">
+                    <!-- High-Fidelity Stadium Night SVG -->
+                    <svg class="stadium-scene-svg" viewBox="0 0 700 500" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <!-- Sky gradient -->
+                            <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#040b07" />
+                                <stop offset="50%" stop-color="#081810" />
+                                <stop offset="100%" stop-color="#0f2b1c" />
+                            </linearGradient>
 
-                    <div id="status-details">
-                        <p id="status-message" style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 1rem;">
-                            Initiating HTTP request to Spring Boot health endpoint...
-                        </p>
-                        <div class="grid-2col" style="font-size: 0.88rem; color: var(--text-muted); background: rgba(0,0,0,0.2); padding: 0.85rem; border-radius: var(--radius-md); margin-bottom: 1rem;">
-                            <div>
-                                <span style="display: block; font-size: 0.78rem; text-transform: uppercase;">Backend Health URL</span>
-                                <strong style="color: var(--text-primary);">http://localhost:8080/api/health</strong>
+                            <!-- Outfield grass radial -->
+                            <radialGradient id="outfieldGrad" cx="50%" cy="85%" r="70%">
+                                <stop offset="0%" stop-color="#144d2b" />
+                                <stop offset="45%" stop-color="#0c351c" />
+                                <stop offset="85%" stop-color="#071e11" />
+                            </radialGradient>
+
+                            <!-- Pitch clay gradient -->
+                            <linearGradient id="pitchGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#7c603b" />
+                                <stop offset="35%" stop-color="#9a7749" />
+                                <stop offset="70%" stop-color="#b88f5a" />
+                                <stop offset="100%" stop-color="#916f42" />
+                            </linearGradient>
+
+                            <!-- Floodlight beam gradient -->
+                            <linearGradient id="lightBeamLeft" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="rgba(255,255,255,0.45)" />
+                                <stop offset="40%" stop-color="rgba(220,252,231,0.18)" />
+                                <stop offset="100%" stop-color="rgba(16,185,129,0)" />
+                            </linearGradient>
+
+                            <linearGradient id="lightBeamRight" x1="100%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="rgba(255,255,255,0.45)" />
+                                <stop offset="40%" stop-color="rgba(220,252,231,0.18)" />
+                                <stop offset="100%" stop-color="rgba(16,185,129,0)" />
+                            </linearGradient>
+
+                            <!-- Cricket ball 3D sphere gradient -->
+                            <radialGradient id="redBallSphere" cx="35%" cy="30%" r="65%">
+                                <stop offset="0%" stop-color="#f87171" />
+                                <stop offset="25%" stop-color="#ef4444" />
+                                <stop offset="60%" stop-color="#b91c1c" />
+                                <stop offset="90%" stop-color="#7f1d1d" />
+                                <stop offset="100%" stop-color="#450a0a" />
+                            </radialGradient>
+
+                            <!-- Trajectory green glow -->
+                            <linearGradient id="trajGlow" x1="100%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="rgba(52,211,153,0.9)" />
+                                <stop offset="50%" stop-color="rgba(16,185,129,0.7)" />
+                                <stop offset="100%" stop-color="rgba(5,150,105,0.05)" />
+                            </linearGradient>
+                        </defs>
+
+                        <!-- Night Sky Background -->
+                        <rect x="0" y="0" width="700" height="500" fill="url(#skyGrad)" />
+
+                        <!-- Distant Stadium Stands Silhouettes & Atmospheric Fog -->
+                        <path d="M 0 170 Q 350 145 700 170 L 700 240 L 0 240 Z" fill="#06120b" opacity="0.8" />
+                        <path d="M 0 185 Q 350 165 700 185 L 700 260 L 0 260 Z" fill="#091a10" opacity="0.9" />
+
+                        <!-- Floodlight Towers - Left Bank -->
+                        <g opacity="0.95">
+                            <rect x="80" y="60" width="4" height="110" fill="#2d3748" />
+                            <polygon points="65,60 99,60 92,85 72,85" fill="#1a202c" stroke="#4a5568" stroke-width="1" />
+                            <!-- Light Bulbs Grid -->
+                            <circle cx="72" cy="68" r="4" fill="#ffffff" filter="drop-shadow(0 0 6px #ffffff)" />
+                            <circle cx="82" cy="68" r="4" fill="#ffffff" filter="drop-shadow(0 0 6px #ffffff)" />
+                            <circle cx="92" cy="68" r="4" fill="#ffffff" filter="drop-shadow(0 0 6px #ffffff)" />
+                            <circle cx="72" cy="78" r="4" fill="#ffffff" filter="drop-shadow(0 0 6px #ffffff)" />
+                            <circle cx="82" cy="78" r="4" fill="#ffffff" filter="drop-shadow(0 0 6px #ffffff)" />
+                            <circle cx="92" cy="78" r="4" fill="#ffffff" filter="drop-shadow(0 0 6px #ffffff)" />
+                            <!-- Left Beams -->
+                            <polygon points="65,60 100,60 480,480 200,480" fill="url(#lightBeamLeft)" opacity="0.65" />
+                        </g>
+
+                        <!-- Floodlight Towers - Right Bank -->
+                        <g opacity="0.95">
+                            <rect x="616" y="60" width="4" height="110" fill="#2d3748" />
+                            <polygon points="601,60 635,60 628,85 608,85" fill="#1a202c" stroke="#4a5568" stroke-width="1" />
+                            <!-- Light Bulbs Grid -->
+                            <circle cx="608" cy="68" r="4" fill="#ffffff" filter="drop-shadow(0 0 6px #ffffff)" />
+                            <circle cx="618" cy="68" r="4" fill="#ffffff" filter="drop-shadow(0 0 6px #ffffff)" />
+                            <circle cx="628" cy="68" r="4" fill="#ffffff" filter="drop-shadow(0 0 6px #ffffff)" />
+                            <circle cx="608" cy="78" r="4" fill="#ffffff" filter="drop-shadow(0 0 6px #ffffff)" />
+                            <circle cx="618" cy="78" r="4" fill="#ffffff" filter="drop-shadow(0 0 6px #ffffff)" />
+                            <circle cx="628" cy="78" r="4" fill="#ffffff" filter="drop-shadow(0 0 6px #ffffff)" />
+                            <!-- Right Beams -->
+                            <polygon points="601,60 635,60 550,480 250,480" fill="url(#lightBeamRight)" opacity="0.65" />
+                        </g>
+
+                        <!-- Green Outfield Grass -->
+                        <path d="M 0 220 Q 350 200 700 220 L 700 500 L 0 500 Z" fill="url(#outfieldGrad)" />
+
+                        <!-- Elliptical Boundary Glow Line -->
+                        <ellipse cx="350" cy="380" rx="330" ry="115" fill="none" stroke="rgba(255,255,255,0.12)" stroke-dasharray="6,4" stroke-width="1.5" />
+
+                        <!-- Cricket Pitch (Perspective Polygon) -->
+                        <polygon points="310,240 390,240 500,490 200,490" fill="url(#pitchGrad)" />
+                        <!-- Pitch side mowing lines & edges -->
+                        <line x1="310" y1="240" x2="200" y2="490" stroke="rgba(0,0,0,0.3)" stroke-width="1.5" />
+                        <line x1="390" y1="240" x2="500" y2="490" stroke="rgba(0,0,0,0.3)" stroke-width="1.5" />
+
+                        <!-- Pitch Crease Markings -->
+                        <!-- Bowling Crease (Far End) -->
+                        <line x1="316" y1="250" x2="384" y2="250" stroke="#ffffff" stroke-width="1.5" opacity="0.8" />
+                        <!-- Stumps (Far End) -->
+                        <rect x="348" y="238" width="1.5" height="12" fill="#e2e8f0" />
+                        <rect x="350" y="238" width="1.5" height="12" fill="#e2e8f0" />
+                        <rect x="352" y="238" width="1.5" height="12" fill="#e2e8f0" />
+                        <line x1="347" y1="238" x2="354" y2="238" stroke="#ffffff" stroke-width="1.2" />
+
+                        <!-- Popping Crease (Near End) -->
+                        <line x1="225" y1="440" x2="475" y2="440" stroke="#ffffff" stroke-width="2.5" opacity="0.85" />
+                        <!-- Bowling Crease (Near End) -->
+                        <line x1="240" y1="465" x2="460" y2="465" stroke="#ffffff" stroke-width="2" opacity="0.8" />
+
+                        <!-- Batsman Silhouette in Stadium Background -->
+                        <g opacity="0.75" transform="translate(605, 175) scale(0.65)">
+                            <!-- Halo aura behind batsman -->
+                            <ellipse cx="25" cy="50" rx="35" ry="45" fill="rgba(16,185,129,0.22)" filter="blur(8px)" />
+                            <!-- Head & Helmet -->
+                            <circle cx="28" cy="18" r="8" fill="#10b981" opacity="0.9" />
+                            <!-- Body Torso in batting stance -->
+                            <path d="M 22 26 L 36 28 L 32 58 L 20 56 Z" fill="#34d399" opacity="0.85" />
+                            <!-- Arms holding bat -->
+                            <path d="M 34 30 L 46 22 L 54 8" stroke="#34d399" stroke-width="4.5" stroke-linecap="round" fill="none" opacity="0.9" />
+                            <!-- Cricket Bat -->
+                            <polygon points="50,6 56,10 65,34 60,36" fill="#f59e0b" opacity="0.9" />
+                            <!-- Legs & Pads -->
+                            <path d="M 22 56 L 15 88 L 10 94" stroke="#10b981" stroke-width="5" stroke-linecap="round" fill="none" opacity="0.85" />
+                            <path d="M 30 56 L 36 88 L 42 94" stroke="#10b981" stroke-width="5" stroke-linecap="round" fill="none" opacity="0.85" />
+                        </g>
+
+                        <!-- Dynamic Neon Green Ball Trajectory Arc -->
+                        <path d="M 620 180 Q 560 210, 480 260 T 360 350" fill="none" stroke="url(#trajGlow)" stroke-width="4" stroke-linecap="round" filter="drop-shadow(0 0 10px #10b981)" />
+                        <path d="M 620 180 Q 560 210, 480 260 T 360 350" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" opacity="0.8" />
+
+                        <!-- Trajectory particle sparks -->
+                        <circle cx="530" cy="225" r="2.5" fill="#34d399" filter="drop-shadow(0 0 4px #34d399)" />
+                        <circle cx="460" cy="275" r="2" fill="#ffffff" filter="drop-shadow(0 0 4px #10b981)" />
+                        <circle cx="410" cy="315" r="2.5" fill="#34d399" filter="drop-shadow(0 0 4px #34d399)" />
+
+                        <!-- Cricket Ball Shadow on Turf Pitch -->
+                        <ellipse cx="355" cy="385" rx="20" ry="7" fill="rgba(0,0,0,0.5)" filter="blur(3px)" />
+
+                        <!-- 3D Red Leather Cricket Ball -->
+                        <g transform="translate(355, 345)">
+                            <!-- Outer glow -->
+                            <circle cx="0" cy="0" r="23" fill="rgba(239,68,68,0.25)" filter="blur(6px)" />
+                            <!-- Ball body -->
+                            <circle cx="0" cy="0" r="21" fill="url(#redBallSphere)" />
+                            <!-- Stitched seam -->
+                            <path d="M -15 -9 C -5 -2, 6 7, 16 11" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="2" stroke-dasharray="2.5,2" />
+                            <path d="M -15.5 -9.5 C -5.5 -2.5, 5.5 6.5, 15.5 10.5" fill="none" stroke="rgba(0,0,0,0.4)" stroke-width="0.8" />
+                            <!-- Specular gloss highlight -->
+                            <ellipse cx="-7" cy="-9" rx="6" ry="3.5" fill="rgba(255,255,255,0.55)" transform="rotate(-25 -7 -9)" />
+                        </g>
+                    </svg>
+
+                    <!-- Floating Live Scorecard (Top-Left of Showcase) -->
+                    <div class="floating-match-card" aria-label="Live Match Card Demonstration">
+                        <div class="match-card-top">
+                            <div class="live-pill-group">
+                                <span class="live-dot-pulse"></span>
+                                <span class="live-badge-title">LIVE SCORE</span>
                             </div>
-                            <div>
-                                <span style="display: block; font-size: 0.78rem; text-transform: uppercase;">Last Checked</span>
-                                <strong id="last-checked-time" style="color: var(--text-primary);">--:--:--</strong>
+                            <span class="badge-live-now">LIVE NOW</span>
+                        </div>
+                        <div class="match-card-body">
+                            <!-- Team 1 -->
+                            <div class="team-entry">
+                                <div class="team-info">
+                                    <span class="team-badge-icon">🛡️</span>
+                                    <span class="team-title">SRIT WARRIORS</span>
+                                </div>
+                                <div class="team-score-primary">145/4</div>
+                            </div>
+                            
+                            <!-- Overs & VS Divider -->
+                            <div class="match-vs-row">
+                                <span class="vs-text">VS</span>
+                                <span class="overs-text">18.2 OVERS</span>
+                            </div>
+
+                            <!-- Team 2 -->
+                            <div class="team-entry">
+                                <div class="team-info">
+                                    <span class="team-badge-icon">👑</span>
+                                    <span class="team-title">NELLORE KINGS</span>
+                                </div>
+                                <span class="badge-red-live">LIVE</span>
                             </div>
                         </div>
                     </div>
 
-                    <div>
-                        <button id="btn-recheck" class="btn btn-secondary btn-sm">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"></path><path d="M1 20v-6h6"></path><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
-                            Recheck Server Endpoint
-                        </button>
+                    <!-- Floating Mini HUD Telemetry Card (Right Side of Showcase) -->
+                    <div class="floating-hud-card" aria-hidden="true">
+                        <div class="hud-header">
+                            <span>RUN RATE</span>
+                            <span style="color: var(--crk-emerald);">7.91</span>
+                        </div>
+                        <div class="hud-bars">
+                            <div class="hud-bar green" style="height: 60%;"></div>
+                            <div class="hud-bar gold" style="height: 40%;"></div>
+                            <div class="hud-bar green" style="height: 90%;"></div>
+                            <div class="hud-bar green" style="height: 75%;"></div>
+                            <div class="hud-bar gold" style="height: 50%;"></div>
+                            <div class="hud-bar green" style="height: 100%;"></div>
+                        </div>
+                        <div class="hud-footer">
+                            <span>BALL SPEED</span>
+                            <span style="color: #38bdf8;">138.4 KM/H</span>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ============================================================
+             Feature Cards Section (Row of 4 Glassmorphic Cards)
+             ============================================================ -->
+        <section id="features" class="features-section" aria-label="Platform Highlights">
+            <div class="feature-cards-row">
+                
+                <!-- Card 1: LIVE SCORE -->
+                <div class="feature-glass-card">
+                    <div class="feature-icon-bubble">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="3" width="20" height="14" rx="3"></rect>
+                            <path d="M7 11l3 3 7-7"></path>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">LIVE SCORE</h3>
+                    <p class="feature-desc">Real-time match scoring and updates</p>
+                </div>
+
+                <!-- Card 2: TEAMS -->
+                <div class="feature-glass-card">
+                    <div class="feature-icon-bubble">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">TEAMS</h3>
+                    <p class="feature-desc">Create and manage cricket teams</p>
+                </div>
+
+                <!-- Card 3: PLAYERS -->
+                <div class="feature-glass-card">
+                    <div class="feature-icon-bubble">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">PLAYERS</h3>
+                    <p class="feature-desc">Explore player profiles and performances</p>
+                </div>
+
+                <!-- Card 4: MATCHES -->
+                <div class="feature-glass-card">
+                    <div class="feature-icon-bubble">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="3"></rect>
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <line x1="3" y1="12" x2="9" y2="12"></line>
+                            <line x1="15" y1="12" x2="21" y2="12"></line>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">MATCHES</h3>
+                    <p class="feature-desc">Create matches and follow results</p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ============================================================
+             About Section ("ABOUT CRICKET APP" / "BUILT FOR THE GAME.")
+             ============================================================ -->
+        <section id="about" class="about-section" aria-label="About Cricket App">
+            <div class="about-grid">
+                
+                <!-- About Left Column -->
+                <div class="about-content-left">
+                    <div class="about-tag-badge">
+                        <span>⚡</span> ABOUT CRICKET APP
+                    </div>
+                    <h2 class="about-headline">BUILT FOR THE GAME.</h2>
+                    <p class="about-text-primary">
+                        Cricket App is a modern platform designed to connect players, teams and matches in one place. From creating matches and managing teams to following live scores and player performances, the platform brings the complete cricket experience together.
+                    </p>
+                    <p class="about-text-secondary">
+                        Engineered with real-time WebSocket live scoring, ball-by-ball precision tracking, permanent player identities, and instant celebration experiences.
+                    </p>
+
+                    <div class="about-pillars">
+                        <div class="about-pillar-pill">
+                            <span>🏏</span> Live Ball-by-Ball Engine
+                        </div>
+                        <div class="about-pillar-pill">
+                            <span>🛡️</span> Verified Player IDs
+                        </div>
+                        <div class="about-pillar-pill">
+                            <span>📊</span> Deep Match Intelligence
+                        </div>
                     </div>
                 </div>
 
-                <!-- Platform Highlights Grid -->
-                <div style="margin-top: 2.5rem;">
-                    <h3 class="section-title" style="margin-bottom: 1.25rem;">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path></svg>
-                        Platform Features & Specifications
-                    </h3>
-                    <div class="stack-grid">
-                        <div class="stack-card">
-                            <div style="font-size: 2rem; margin-bottom: 0.5rem;">🛡️</div>
-                            <h4 style="font-family: var(--font-heading); font-size: 1.1rem; color: #fff; margin-bottom: 0.4rem;">Spring Security & JWT</h4>
-                            <p style="font-size: 0.88rem; color: var(--text-secondary);">Stateless JWT token authentication, BCrypt password hashing, and server-side role authorization.</p>
-                        </div>
-                        <div class="stack-card">
-                            <div style="font-size: 2rem; margin-bottom: 0.5rem;">🏏</div>
-                            <h4 style="font-family: var(--font-heading); font-size: 1.1rem; color: #fff; margin-bottom: 0.4rem;">Permanent Team IDs</h4>
-                            <p style="font-size: 0.88rem; color: var(--text-secondary);">Server-side generated <code>TEAMXXXXXX</code> IDs, team logos, and shareable join links.</p>
-                        </div>
-                        <div class="stack-card">
-                            <div style="font-size: 2rem; margin-bottom: 0.5rem;">👥</div>
-                            <h4 style="font-family: var(--font-heading); font-size: 1.1rem; color: #fff; margin-bottom: 0.4rem;">Player Invitations</h4>
-                            <p style="font-size: 0.88rem; color: var(--text-secondary);">Invite players via permanent <code>CRKXXXXXX</code> IDs with real email notifications & in-app Accept/Reject workflow.</p>
-                        </div>
+                <!-- About Right Column: Tech Cricket Visual -->
+                <div class="about-visual-card">
+                    <svg viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice" style="width: 100%; height: 100%;" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="aboutSkyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#040e08" />
+                                <stop offset="100%" stop-color="#092114" />
+                            </linearGradient>
+                            <radialGradient id="radarPulse" cx="50%" cy="50%" r="50%">
+                                <stop offset="0%" stop-color="rgba(16,185,129,0.35)" />
+                                <stop offset="60%" stop-color="rgba(16,185,129,0.12)" />
+                                <stop offset="100%" stop-color="transparent" />
+                            </radialGradient>
+                        </defs>
+
+                        <!-- Stadium Backdrop -->
+                        <rect x="0" y="0" width="600" height="400" fill="url(#aboutSkyGrad)" />
+
+                        <!-- Stadium Lights Top -->
+                        <g opacity="0.9">
+                            <circle cx="300" cy="30" r="12" fill="#ffffff" filter="drop-shadow(0 0 16px #34d399)" />
+                            <polygon points="270,30 330,30 500,400 100,400" fill="rgba(16,185,129,0.12)" />
+                        </g>
+
+                        <!-- Outfield & Pitch Perspective -->
+                        <polygon points="0,180 600,180 600,400 0,400" fill="#0d351d" />
+                        <polygon points="220,180 380,180 480,400 120,400" fill="#b08b57" />
+                        <line x1="140" y1="360" x2="460" y2="360" stroke="#ffffff" stroke-width="2" opacity="0.8" />
+
+                        <!-- Wickets / Stumps -->
+                        <g transform="translate(290, 310)">
+                            <!-- Stumps -->
+                            <rect x="0" y="0" width="3.5" height="42" fill="#e2e8f0" rx="1.5" />
+                            <rect x="9.5" y="0" width="3.5" height="42" fill="#e2e8f0" rx="1.5" />
+                            <rect x="19" y="0" width="3.5" height="42" fill="#e2e8f0" rx="1.5" />
+                            <!-- Bails -->
+                            <rect x="-1" y="-3" width="11" height="3" fill="#ffffff" rx="1" />
+                            <rect x="12" y="-3" width="11" height="3" fill="#ffffff" rx="1" />
+                        </g>
+
+                        <!-- Holographic Target HUD Rings around Stumps -->
+                        <g transform="translate(301, 335)">
+                            <circle cx="0" cy="0" r="45" fill="none" stroke="rgba(16,185,129,0.7)" stroke-width="1.5" stroke-dasharray="6,4" />
+                            <circle cx="0" cy="0" r="32" fill="url(#radarPulse)" stroke="#34d399" stroke-width="1.2" />
+                            <circle cx="0" cy="0" r="16" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="1" />
+                            <!-- Target Crosshairs -->
+                            <line x1="-55" y1="0" x2="-35" y2="0" stroke="#10b981" stroke-width="2" />
+                            <line x1="35" y1="0" x2="55" y2="0" stroke="#10b981" stroke-width="2" />
+                            <line x1="0" y1="-55" x2="0" y2="-35" stroke="#10b981" stroke-width="2" />
+                            <line x1="0" y1="35" x2="0" y2="55" stroke="#10b981" stroke-width="2" />
+                        </g>
+
+                        <!-- Telemetry Panels Overlay -->
+                        <g transform="translate(30, 60)" opacity="0.9">
+                            <rect x="0" y="0" width="150" height="45" rx="8" fill="rgba(8,16,11,0.8)" stroke="rgba(255,255,255,0.12)" stroke-width="1" />
+                            <text x="12" y="18" fill="#94a3b8" font-size="10" font-family="'Outfit', sans-serif" font-weight="700">TRACKING HUD</text>
+                            <text x="12" y="34" fill="#10b981" font-size="12" font-family="'Outfit', sans-serif" font-weight="800">BALL SPEED: 141.2 KM/H</text>
+                        </g>
+
+                        <g transform="translate(420, 240)" opacity="0.9">
+                            <rect x="0" y="0" width="150" height="45" rx="8" fill="rgba(8,16,11,0.8)" stroke="rgba(255,255,255,0.12)" stroke-width="1" />
+                            <text x="12" y="18" fill="#94a3b8" font-size="10" font-family="'Outfit', sans-serif" font-weight="700">STUMP HIT PROB</text>
+                            <text x="12" y="34" fill="#38bdf8" font-size="12" font-family="'Outfit', sans-serif" font-weight="800">ACCURACY: 94.6%</text>
+                        </g>
+                    </svg>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ============================================================
+             Meet The Developers Section
+             ============================================================ -->
+        <section id="developers" class="developers-section" aria-label="Meet The Developers">
+            <div class="developers-header">
+                <span class="developers-tag">LEAD ARCHITECTS</span>
+                <h2 class="developers-title">MEET THE DEVELOPERS</h2>
+                <p class="developers-subtitle">
+                    Engineered with passion for cricket, robust systems architecture, and modern web technologies.
+                </p>
+            </div>
+
+            <div class="developers-grid">
+                
+                <!-- Developer 1: K. Srinivasulu -->
+                <div class="developer-card">
+                    <div class="dev-card-top">
+                        <div class="dev-avatar-monogram">KS</div>
+                        <span class="dev-role-badge">Co-Developer</span>
+                    </div>
+                    <h3 class="dev-name">K. Srinivasulu</h3>
+                    <div class="dev-dept">Computer Science & Engineering</div>
+                    <div class="dev-batch-row">
+                        <span>Batch: 2024 – 2028</span>
+                        <span class="dot"></span>
+                        <span>Co-Developer</span>
+                    </div>
+                    <div class="dev-tech-badge">
+                        <span>🏏</span> Full-Stack Architecture & Real-Time Live Scoring Engine
                     </div>
                 </div>
-            </section>
-        </main>
 
-        <!-- Footer -->
-        <footer class="footer">
-            <p>Cricket App &copy; 2026 &bull; Stage 4 Team Management & Player Platform</p>
+                <!-- Developer 2: M. Sunil -->
+                <div class="developer-card">
+                    <div class="dev-card-top">
+                        <div class="dev-avatar-monogram">MS</div>
+                        <span class="dev-role-badge">Co-Developer</span>
+                    </div>
+                    <h3 class="dev-name">M. Sunil</h3>
+                    <div class="dev-dept">Computer Science & Engineering</div>
+                    <div class="dev-batch-row">
+                        <span>Batch: 2024 – 2028</span>
+                        <span class="dot"></span>
+                        <span>Co-Developer</span>
+                    </div>
+                    <div class="dev-tech-badge">
+                        <span>🏏</span> Platform Experience & Match Management Systems
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ============================================================
+             Footer Section
+             ============================================================ -->
+        <footer class="landing-footer">
+            <div class="footer-top-row">
+                
+                <!-- Brand & Slogan -->
+                <div class="footer-brand-col">
+                    <a href="#hero" class="nav-brand">
+                        <div class="brand-ball-badge" style="width: 32px; height: 32px;">
+                            <svg viewBox="0 0 40 40" width="30" height="30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                    <radialGradient id="footerBallShine" cx="35%" cy="30%" r="65%">
+                                        <stop offset="0%" stop-color="#34d399" />
+                                        <stop offset="35%" stop-color="#059669" />
+                                        <stop offset="75%" stop-color="#064e3b" />
+                                        <stop offset="100%" stop-color="#022c22" />
+                                    </radialGradient>
+                                </defs>
+                                <circle cx="20" cy="20" r="18" fill="url(#footerBallShine)" />
+                                <path d="M 6 12 C 14 17 26 23 34 28" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="1.8" stroke-dasharray="2,2"/>
+                            </svg>
+                        </div>
+                        <span class="brand-text" style="font-size: 1.25rem;">Cricket App</span>
+                    </a>
+                    <p class="footer-slogan">Built for players. Built for the game.</p>
+                </div>
+
+                <!-- Footer Navigation -->
+                <div class="footer-nav-col">
+                    <a href="#hero" class="footer-link">Home</a>
+                    <a href="#about" class="footer-link">About</a>
+                    <a href="pages/login.html" class="footer-link">Login</a>
+                    <span class="footer-handle-badge">@CricketApp</span>
+                </div>
+
+            </div>
+
+            <!-- Copyright Line -->
+            <div class="footer-bottom-row">
+                <p class="footer-copyright">
+                    &copy; 2026 Cricket App. All Rights Reserved.
+                </p>
+            </div>
         </footer>
+
     </div>
 
-    <script src="js/app.js"></script>
+    <!-- Scripts -->
+    <script src="js/landing.js"></script>
 </body>
 </html>
