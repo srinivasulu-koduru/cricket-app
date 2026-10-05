@@ -1,13 +1,30 @@
 /**
- * Cricket App - Landing Page Interactive Controls
- * Handles mobile drawer, smooth navigation, and scroll observation
+ * Cricket App - Central Application Version Definition
+ * Single source of truth for the application version.
  */
+const APP_VERSION = "1.0.0";
+window.APP_VERSION = APP_VERSION;
 
-document.addEventListener('DOMContentLoaded', () => {
+function init() {
     initLandingNav();
     initSmoothScroll();
     initScrollSpy();
-});
+    initAppVersion();
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+} else {
+    init();
+}
+
+function initAppVersion() {
+    const formattedVersion = `Cricket App · v${APP_VERSION}`;
+    const versionElements = document.querySelectorAll('.app-version-display');
+    versionElements.forEach(el => {
+        el.textContent = formattedVersion;
+    });
+}
 
 function initLandingNav() {
     const toggleBtn = document.getElementById('landing-nav-toggle');

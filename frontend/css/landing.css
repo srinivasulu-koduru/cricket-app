@@ -705,6 +705,14 @@ body.landing-body {
     flex-direction: column;
 }
 
+.about-tag-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.75rem;
+}
+
 .about-tag-badge {
     color: var(--crk-emerald);
     font-family: var(--crk-font-heading);
@@ -712,10 +720,27 @@ body.landing-body {
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    margin-bottom: 0.75rem;
     display: inline-flex;
     align-items: center;
     gap: 6px;
+}
+
+.about-tag-row .about-tag-badge {
+    margin-bottom: 0;
+}
+
+.about-version-badge {
+    font-family: var(--crk-font-heading);
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--crk-emerald);
+    background: rgba(16, 185, 129, 0.08);
+    border: 1px solid rgba(16, 185, 129, 0.22);
+    padding: 0.22rem 0.65rem;
+    border-radius: 9999px;
+    letter-spacing: 0.04em;
+    display: inline-flex;
+    align-items: center;
 }
 
 .about-headline {
@@ -784,12 +809,14 @@ body.landing-body {
 .developers-section {
     padding: 3rem 0 5rem;
     border-top: 1px solid var(--crk-border-subtle);
+    min-width: 0;
 }
 
 .developers-header {
     text-align: center;
     max-width: 650px;
     margin: 0 auto 3.5rem;
+    min-width: 0;
 }
 
 .developers-tag {
@@ -811,17 +838,22 @@ body.landing-body {
     color: var(--crk-text-white);
     letter-spacing: -0.02em;
     margin-bottom: 0.85rem;
+    word-break: normal;
+    overflow-wrap: break-word;
 }
 
 .developers-subtitle {
     font-size: 0.95rem;
     color: var(--crk-text-secondary);
+    word-break: normal;
+    overflow-wrap: break-word;
 }
 
 .developers-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 2.25rem;
+    min-width: 0;
 }
 
 .developer-card {
@@ -834,6 +866,8 @@ body.landing-body {
     transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
+    min-width: 0;
+    box-sizing: border-box;
 }
 
 .developer-card::before {
@@ -863,7 +897,9 @@ body.landing-body {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 0.75rem;
     margin-bottom: 1.5rem;
+    min-width: 0;
 }
 
 .dev-avatar-monogram {
@@ -880,6 +916,7 @@ body.landing-body {
     font-weight: 800;
     color: var(--crk-text-white);
     box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35);
+    flex-shrink: 0;
 }
 
 .dev-role-badge {
@@ -893,6 +930,8 @@ body.landing-body {
     letter-spacing: 0.08em;
     padding: 0.4rem 1rem;
     border-radius: 9999px;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .dev-name {
@@ -902,6 +941,12 @@ body.landing-body {
     color: var(--crk-text-white);
     letter-spacing: -0.01em;
     margin-bottom: 0.35rem;
+    display: block;
+    width: 100%;
+    min-width: 0;
+    white-space: normal;
+    word-break: normal;
+    overflow-wrap: break-word;
 }
 
 .dev-dept {
@@ -909,15 +954,26 @@ body.landing-body {
     font-weight: 500;
     color: var(--crk-text-light);
     margin-bottom: 0.35rem;
+    min-width: 0;
+    white-space: normal;
+    word-break: normal;
+    overflow-wrap: break-word;
 }
 
 .dev-batch-row {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    flex-wrap: wrap;
+    row-gap: 0.35rem;
+    column-gap: 0.5rem;
     font-size: 0.88rem;
     color: var(--crk-text-secondary);
     margin-bottom: 1.5rem;
+    min-width: 0;
+}
+
+.dev-batch-row span {
+    white-space: nowrap;
 }
 
 .dev-batch-row .dot {
@@ -925,19 +981,40 @@ body.landing-body {
     height: 5px;
     background: var(--crk-emerald);
     border-radius: 50%;
+    flex-shrink: 0;
 }
 
 .dev-tech-badge {
-    display: inline-flex;
-    align-items: center;
+    display: flex;
+    align-items: flex-start;
     gap: 8px;
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 8px;
     padding: 0.6rem 0.95rem;
     font-size: 0.82rem;
+    line-height: 1.45;
     color: var(--crk-text-secondary);
     width: 100%;
+    box-sizing: border-box;
+    min-width: 0;
+    white-space: normal;
+    word-break: normal;
+    overflow-wrap: break-word;
+}
+
+.dev-tech-badge > span:first-child {
+    flex-shrink: 0;
+    font-size: 0.95rem;
+    line-height: 1.2;
+}
+
+.dev-tech-text {
+    flex: 1;
+    min-width: 0;
+    white-space: normal;
+    word-break: normal;
+    overflow-wrap: break-word;
 }
 
 /* ==========================================================================
@@ -1010,6 +1087,16 @@ body.landing-body {
     color: var(--crk-text-muted);
 }
 
+.footer-version-tag {
+    font-family: var(--crk-font-heading);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--crk-text-muted);
+    letter-spacing: 0.04em;
+    margin-top: 0.45rem;
+    display: block;
+}
+
 /* ==========================================================================
    Responsive Adaptations
    ========================================================================== */
@@ -1076,6 +1163,17 @@ body.landing-body {
     .developers-grid {
         grid-template-columns: 1fr;
         gap: 1.5rem;
+        min-width: 0;
+    }
+
+    .developer-card {
+        padding: 1.75rem 1.5rem;
+        min-width: 0;
+        box-sizing: border-box;
+    }
+
+    .dev-name {
+        font-size: 1.45rem;
     }
     
     .footer-top-row {
@@ -1110,6 +1208,122 @@ body.landing-body {
     .btn-nav-login {
         padding: 0.5rem 1.25rem;
         font-size: 0.8rem;
+    }
+
+    .about-tag-row {
+        gap: 0.5rem;
+        margin-bottom: 0.65rem;
+    }
+
+    .about-version-badge {
+        font-size: 0.72rem;
+        padding: 0.2rem 0.55rem;
+    }
+
+    .developers-section {
+        padding: 2.25rem 0 3.5rem;
+    }
+
+    .developers-header {
+        margin-bottom: 2rem;
+    }
+
+    .developers-title {
+        font-size: 1.65rem;
+    }
+
+    .developers-subtitle {
+        font-size: 0.88rem;
+    }
+
+    .developer-card {
+        padding: 1.35rem 1.15rem;
+        border-radius: 16px;
+    }
+
+    .dev-card-top {
+        margin-bottom: 1.15rem;
+    }
+
+    .dev-avatar-monogram {
+        width: 48px;
+        height: 48px;
+        font-size: 1.15rem;
+        border-radius: 12px;
+    }
+
+    .dev-role-badge {
+        font-size: 0.72rem;
+        padding: 0.3rem 0.75rem;
+    }
+
+    .dev-name {
+        font-size: 1.3rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .dev-dept {
+        font-size: 0.88rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .dev-batch-row {
+        font-size: 0.82rem;
+        margin-bottom: 1.15rem;
+    }
+
+    .dev-tech-badge {
+        font-size: 0.78rem;
+        padding: 0.55rem 0.8rem;
+    }
+
+    .footer-version-tag {
+        font-size: 0.75rem;
+        margin-top: 0.35rem;
+    }
+}
+
+@media (max-width: 360px) {
+    .developer-card {
+        padding: 1.15rem 0.85rem;
+        border-radius: 14px;
+    }
+
+    .dev-avatar-monogram {
+        width: 42px;
+        height: 42px;
+        font-size: 1.05rem;
+        border-radius: 10px;
+    }
+
+    .dev-role-badge {
+        font-size: 0.68rem;
+        padding: 0.25rem 0.65rem;
+    }
+
+    .dev-name {
+        font-size: 1.18rem;
+    }
+
+    .dev-dept {
+        font-size: 0.82rem;
+    }
+
+    .dev-batch-row {
+        font-size: 0.78rem;
+    }
+
+    .dev-tech-badge {
+        font-size: 0.75rem;
+        padding: 0.5rem 0.65rem;
+    }
+
+    .developers-title {
+        font-size: 1.45rem;
+    }
+
+    .developers-subtitle {
+        font-size: 0.82rem;
     }
 }
 
