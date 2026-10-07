@@ -517,6 +517,10 @@ body {
     margin-bottom: 1.5rem;
     box-shadow: var(--shadow-md);
     transition: var(--transition-normal);
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
 .profile-section-card:hover {
@@ -615,11 +619,17 @@ body {
     font-weight: 700;
     letter-spacing: 0.05em;
     font-size: 0.95rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    word-break: normal;
+    overflow-wrap: normal;
 }
 
 .permanent-id-badge.small {
     font-size: 0.8rem;
     padding: 0.2rem 0.5rem;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .role-badge, .verified-badge, .verified-pill {
@@ -631,6 +641,10 @@ body {
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.04em;
+    white-space: nowrap;
+    flex-shrink: 0;
+    word-break: normal;
+    overflow-wrap: normal;
 }
 
 .role-badge {
@@ -1049,13 +1063,54 @@ select.input-field option {
 }
 
 /* Members Table */
+.table-scroll-hint {
+    display: none;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--color-pitch-emerald);
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    border-radius: var(--radius-full);
+    padding: 0.2rem 0.6rem;
+    letter-spacing: 0.02em;
+    user-select: none;
+    white-space: nowrap;
+}
+
 .table-responsive {
     width: 100%;
+    max-width: 100%;
     overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    display: block;
+    box-sizing: border-box;
+    border-radius: var(--radius-md);
+    scrollbar-width: thin;
+    scrollbar-color: rgba(16, 185, 129, 0.4) rgba(11, 19, 41, 0.5);
+}
+
+.table-responsive::-webkit-scrollbar {
+    height: 6px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: rgba(11, 19, 41, 0.5);
+    border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: rgba(16, 185, 129, 0.4);
+    border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: rgba(16, 185, 129, 0.7);
 }
 
 .data-table {
     width: 100%;
+    min-width: 700px;
     border-collapse: collapse;
     margin-top: 1rem;
     font-size: 0.92rem;
@@ -1065,6 +1120,9 @@ select.input-field option {
     padding: 0.9rem 1.1rem;
     text-align: left;
     border-bottom: 1px solid var(--border-color);
+    white-space: nowrap !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
 }
 
 .data-table th {
@@ -1073,6 +1131,18 @@ select.input-field option {
     letter-spacing: 0.05em;
     color: var(--text-secondary);
     background: rgba(11, 19, 41, 0.4);
+    white-space: nowrap !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+}
+
+.data-table td strong {
+    white-space: nowrap !important;
+}
+
+.data-table td .btn {
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
 }
 
 .data-table tr:hover td {
@@ -3774,7 +3844,8 @@ img, svg, video, canvas {
 /* Prevent flex and grid items from blowing past viewport */
 .dash-layout, .dash-main, .dash-grid, .dash-left-col, .dash-right-col,
 .container, .sc-container, .ls-container, .prof-main-grid,
-.card, .prof-card, .ls-card, .sb-card, .player-status-card {
+.card, .prof-card, .ls-card, .sb-card, .player-status-card,
+.profile-section-card, .status-box {
     min-width: 0;
     box-sizing: border-box;
 }
@@ -3782,6 +3853,13 @@ img, svg, video, canvas {
 /* Text clipping and overflow protection */
 p, span, h1, h2, h3, h4, h5, h6, a, td, th {
     overflow-wrap: anywhere;
+}
+
+/* Data table cells must preserve whole text and not break into single characters */
+.data-table th, .data-table td {
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    white-space: nowrap !important;
 }
 
 /* Universal local table scroll wrapper */
@@ -4006,6 +4084,18 @@ p, span, h1, h2, h3, h4, h5, h6, a, td, th {
     .modal-footer .btn {
         width: 100% !important;
     }
+
+    /* Table scroll affordance & section card */
+    .table-scroll-hint {
+        display: inline-flex !important;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .profile-section-card {
+        padding: 1.25rem 1rem !important;
+        border-radius: 14px !important;
+    }
 }
 
 /* 4. Standard Mobile Screens (<= 480px) */
@@ -4064,6 +4154,27 @@ p, span, h1, h2, h3, h4, h5, h6, a, td, th {
     .pxi-player-card, .player-item-row {
         padding: 0.75rem 0.6rem !important;
     }
+
+    /* Team details & member table */
+    .profile-section-card {
+        padding: 1rem 0.65rem !important;
+    }
+
+    .section-header {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        align-items: center;
+    }
+
+    .section-title {
+        font-size: 1.15rem !important;
+        white-space: nowrap;
+    }
+
+    .data-table th, .data-table td {
+        padding: 0.75rem 0.8rem !important;
+        font-size: 0.86rem !important;
+    }
 }
 
 /* 5. Ultra-Compact Mobile Screens (<= 360px & 320px) */
@@ -4074,6 +4185,19 @@ p, span, h1, h2, h3, h4, h5, h6, a, td, th {
 
     .dash-main {
         padding: 0.75rem 0.45rem !important;
+    }
+
+    .section-title {
+        font-size: 1rem !important;
+    }
+
+    .profile-section-card {
+        padding: 0.85rem 0.5rem !important;
+    }
+
+    .data-table th, .data-table td {
+        padding: 0.65rem 0.65rem !important;
+        font-size: 0.82rem !important;
     }
 
     .dash-sidebar {

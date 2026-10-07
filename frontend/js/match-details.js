@@ -214,6 +214,7 @@ function renderMatchDetails(match) {
     const btnInfoAssignScorer = document.getElementById('btn-info-assign-scorer');
     const btnManagePxi = document.getElementById('btn-manage-playing-xi');
     const btnPlayingXi = document.getElementById('btn-open-playing-xi');
+    const btnScorerDashboard = document.getElementById('btn-open-scorer-dashboard');
     const btnLiveScore = document.getElementById('btn-open-live-score');
     const btnMatchPoster = document.getElementById('btn-open-match-poster');
 
@@ -226,10 +227,11 @@ function renderMatchDetails(match) {
         if (btnManagePxi) btnManagePxi.style.display = 'none';
         if (btnPlayingXi) btnPlayingXi.style.display = 'none';
         if (btnMatchPoster) btnMatchPoster.style.display = 'none';
+        if (btnScorerDashboard) btnScorerDashboard.style.display = 'none';
 
-        // Show ONLY Scoreboard button under Match Activities
+        // Show ONLY Scoreboard button under Match Activities (in viewer mode)
         if (btnLiveScore) {
-            btnLiveScore.href = `scoring-dashboard.html?matchId=${encodeURIComponent(matchId)}`;
+            btnLiveScore.href = `scoring-dashboard.html?matchId=${encodeURIComponent(matchId)}&mode=view`;
             btnLiveScore.style.display = 'flex';
             btnLiveScore.style.background = '#10b981';
             btnLiveScore.style.color = '#000000';
@@ -262,6 +264,15 @@ function renderMatchDetails(match) {
             btnPlayingXi.onclick = () => {
                 window.open(`playing-xi.html?matchId=${encodeURIComponent(matchId)}`, '_blank');
             };
+        }
+        const canScore = Boolean(match.isScorer || isCaptain || match.isCreator);
+        if (btnScorerDashboard) {
+            if (canScore) {
+                btnScorerDashboard.href = `scoring-dashboard.html?matchId=${encodeURIComponent(matchId)}&mode=scorer`;
+                btnScorerDashboard.style.display = 'flex';
+            } else {
+                btnScorerDashboard.style.display = 'none';
+            }
         }
         if (btnLiveScore) {
             btnLiveScore.href = `live-score.html?matchId=${encodeURIComponent(matchId)}`;

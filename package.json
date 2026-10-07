@@ -1,0 +1,25 @@
+{
+  "name": "cricket",
+  "version": "1.0.0",
+  "description": "**Cricket App** is a cricket match management and live scoring platform built for real-time score tracking, team management, player statistics, and match streaming.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/srinivasulu-koduru/cricket-app.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/srinivasulu-koduru/cricket-app/issues"
+  },
+  "homepage": "https://github.com/srinivasulu-koduru/cricket-app#readme",
+  "dependencies": {
+    "@capacitor/android": "^8.5.2",
+    "@capacitor/cli": "^8.5.2",
+    "@capacitor/core": "^8.5.2"
+  }
+}

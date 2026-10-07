@@ -502,7 +502,7 @@ async function loadAssignedScorerMatches() {
                     </p>
 
                     <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;">
-                        <a href="scoring-dashboard.html?matchId=${encodeURIComponent(matchId)}" class="btn btn-primary" style="background: #10b981; color: #000; font-weight: 800; text-decoration: none; padding: 0.55rem 1.1rem; border-radius: 8px; display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.88rem;">
+                        <a href="scoring-dashboard.html?matchId=${encodeURIComponent(matchId)}&mode=scorer" class="btn btn-primary" style="background: #10b981; color: #000; font-weight: 800; text-decoration: none; padding: 0.55rem 1.1rem; border-radius: 8px; display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.88rem;">
                             <span>${btnLabel}</span> &rarr;
                         </a>
                         <a href="match-details.html?id=${encodeURIComponent(matchId)}" style="color: #94a3b8; font-size: 0.85rem; font-weight: 600; text-decoration: none;">

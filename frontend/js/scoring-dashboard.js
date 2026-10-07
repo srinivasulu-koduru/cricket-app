@@ -5,6 +5,8 @@
 
 let currentMatchId = null;
 let scoringState = null;
+let currentMatchMeta = null;
+let currentUserId = null;
 let pendingBowlerAction = null;
 
 // Cross-tab zero-latency communication channel
@@ -499,6 +501,7 @@ function initEventListeners() {
 
     if (settingsBtn && settingsModal) {
         settingsBtn.addEventListener('click', () => {
+            if (!verifyAuthorizedScorer()) return;
             if (!scoringState) return;
             populateSettingsModal(scoringState);
             syncCelebToggles();
@@ -565,6 +568,7 @@ function initEventListeners() {
 
     if (celebModalBtn && celebModal) {
         celebModalBtn.addEventListener('click', () => {
+            if (!verifyAuthorizedScorer()) return;
             syncCelebToggles();
             celebModal.style.display = 'flex';
         });
@@ -871,7 +875,11 @@ function initEventListeners() {
 }
 
 function verifyAuthorizedScorer() {
-    if (scoringState && !scoringState.authorizedScorer) {
+    if (scoringState && (scoringState.status === 'COMPLETED' || scoringState.isMatchCompleted === true)) {
+        ApiService.showToast('Match is already completed. Scoring controls are disabled.', 'warning');
+        return false;
+    }
+    if (!checkIsScorerMode(scoringState)) {
         ApiService.showToast('Only the authorized scorer or match captain can operate scoring controls.', 'warning');
         return false;
     }
@@ -883,7 +891,7 @@ function verifyAuthorizedScorer() {
 }
 
 function disableScoringControls(disabled) {
-    const selector = '.sc-btn-run, .sc-btn-boundary-four, .sc-btn-boundary-six, .sc-btn-extra, .sc-btn-wicket-large, #btn-deliver-ball, #btn-undo-last-ball, #btn-open-retire-modal, #btn-open-keeper-modal';
+    const selector = '.sc-btn-run, .sc-btn-boundary-four, .sc-btn-boundary-six, .sc-btn-extra, .sc-btn-wicket-large, #btn-deliver-ball, #btn-undo-last-ball';
     document.querySelectorAll(selector).forEach(btn => {
         btn.disabled = disabled;
         btn.style.opacity = disabled ? '0.4' : '1';
@@ -1094,17 +1102,70 @@ async function recordBallEvent(runs, extraType, isBoundary = false) {
     }
 }
 
+function checkIsScorerMode(state) {
+    if (!state) return false;
+
+    // 1. Completed matches are NEVER in scorer mode — they are purely scorecard/result views
+    const isMatchDone = (state.status === 'COMPLETED' || state.isMatchCompleted === true);
+    if (isMatchDone) {
+        return false;
+    }
+
+    // 2. Explicit spectator/viewer mode requested in query parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const modeParam = (urlParams.get('mode') || '').toLowerCase().trim();
+    if (modeParam === 'view' || modeParam === 'spectator') {
+        return false;
+    }
+
+    // 3. Match metadata permissions check
+    if (currentMatchMeta) {
+        if (currentMatchMeta.isScorer || currentMatchMeta.isCaptain || currentMatchMeta.isCreator) {
+            return true;
+        }
+        if (currentUserId && state.scorerUserId && String(currentUserId).trim().toLowerCase() === String(state.scorerUserId).trim().toLowerCase()) {
+            return true;
+        }
+        return false;
+    }
+
+    // Fallback if match metadata failed to load:
+    if (currentUserId && state.scorerUserId && String(currentUserId).trim().toLowerCase() === String(state.scorerUserId).trim().toLowerCase()) {
+        return true;
+    }
+
+    return Boolean(state.authorizedScorer || state.isAuthorizedScorer);
+}
+
 async function loadScoringDashboardState() {
     hideScoringAlert();
     try {
-        const state = await ApiService.get(`/matches/${encodeURIComponent(currentMatchId)}/scoring`);
-        scoringState = state;
-        renderScoringDashboard(state);
-        populateTossOptions(state.teamA, state.teamB);
+        const [stateRes, matchRes, userRes] = await Promise.allSettled([
+            ApiService.get(`/matches/${encodeURIComponent(currentMatchId)}/scoring`),
+            ApiService.get(`/matches/${encodeURIComponent(currentMatchId)}`),
+            ApiService.get('/profile/me')
+        ]);
+
+        if (stateRes.status === 'fulfilled') {
+            scoringState = stateRes.value;
+        } else {
+            throw stateRes.reason;
+        }
+
+        if (matchRes.status === 'fulfilled') {
+            currentMatchMeta = matchRes.value;
+        }
+
+        if (userRes.status === 'fulfilled' && userRes.value) {
+            currentUserId = userRes.value.userId;
+        }
+
+        renderScoringDashboard(scoringState);
+        populateTossOptions(scoringState.teamA, scoringState.teamB);
 
         // Mark existing celebration as processed to avoid replaying on refresh / reload
-        if (window.CelebrationManager && state && state.latestCelebrationId) {
-            CelebrationManager.markProcessed(state.latestCelebrationId);
+        if (window.CelebrationManager && scoringState && scoringState.latestCelebrationId) {
+            CelebrationManager.markProcessed(scoringState.latestCelebrationId);
         }
     } catch (err) {
         console.error('Failed to load scoring dashboard state:', err);
@@ -1123,7 +1184,8 @@ function renderScoringDashboard(state) {
     const overs = state.overs || 20;
     const status = state.status || 'SCHEDULED';
     const scorerName = state.scorerName || 'Not Assigned';
-    const isAuthorized = state.authorizedScorer === true;
+
+    const isScorerMode = checkIsScorerMode(state);
 
     const teamA = state.teamA || {};
     const teamB = state.teamB || {};
@@ -1133,7 +1195,9 @@ function renderScoringDashboard(state) {
     const isInningsBreak = (status === 'INNINGS_BREAK' || state.isInningsBreak === true);
     const isMatchDone = (status === 'COMPLETED' || state.isMatchCompleted === true);
 
-    if (document.getElementById('sc-match-title')) document.getElementById('sc-match-title').textContent = `${teamA.name || 'Team A'} vs ${teamB.name || 'Team B'}`;
+    if (document.getElementById('sc-match-title')) {
+        document.getElementById('sc-match-title').textContent = `${teamA.name || 'Team A'} vs ${teamB.name || 'Team B'}`;
+    }
     if (document.getElementById('sc-status-badge')) {
         const badge = document.getElementById('sc-status-badge');
         if (isPaused) {
@@ -1166,28 +1230,60 @@ function renderScoringDashboard(state) {
     if (document.getElementById('sc-match-teams')) document.getElementById('sc-match-teams').textContent = `${teamA.name || 'Team A'} vs ${teamB.name || 'Team B'}`;
     if (document.getElementById('sc-match-venue')) document.getElementById('sc-match-venue').textContent = `📍 ${venue} \u2022 ${dateStr} \u2022 ${timeStr}`;
 
-    // Pause / Resume Buttons & Banner
+    // Header Scorer Action Controls
+    const headerActions = document.getElementById('sc-header-actions') || document.querySelector('.sc-header-actions');
     const pauseBtn = document.getElementById('btn-pause-match');
     const resumeBtn = document.getElementById('btn-resume-match');
+    const retireBtn = document.getElementById('btn-open-retire-modal');
+    const keeperBtn = document.getElementById('btn-open-keeper-modal');
+    const celebBtn = document.getElementById('btn-open-celeb-settings');
+    const settingsBtn = document.getElementById('btn-open-settings');
     const btnBannerResume = document.getElementById('btn-banner-resume');
     const pauseBanner = document.getElementById('sc-pause-banner');
     const pauseReasonText = document.getElementById('sc-pause-reason-text');
 
-    if (isPaused) {
-        if (pauseBtn) pauseBtn.style.display = 'none';
-        if (resumeBtn) resumeBtn.style.display = isAuthorized ? 'inline-flex' : 'none';
-        if (btnBannerResume) btnBannerResume.style.display = isAuthorized ? 'inline-flex' : 'none';
-        if (pauseBanner) {
-            pauseBanner.style.display = 'flex';
-            if (pauseReasonText) pauseReasonText.textContent = `Reason: ${state.pauseReason || 'Match Paused'}`;
+    if (isScorerMode) {
+        if (headerActions) headerActions.style.display = 'flex';
+        if (retireBtn) retireBtn.style.display = 'inline-flex';
+        if (keeperBtn) keeperBtn.style.display = 'inline-flex';
+        if (celebBtn) celebBtn.style.display = 'inline-flex';
+        if (settingsBtn) settingsBtn.style.display = 'inline-flex';
+
+        if (isPaused) {
+            if (pauseBtn) pauseBtn.style.display = 'none';
+            if (resumeBtn) resumeBtn.style.display = 'inline-flex';
+            if (btnBannerResume) btnBannerResume.style.display = 'inline-flex';
+            if (pauseBanner) {
+                pauseBanner.style.display = 'flex';
+                if (pauseReasonText) pauseReasonText.textContent = `Reason: ${state.pauseReason || 'Match Paused'}`;
+            }
+            disableScoringControls(true);
+        } else {
+            if (pauseBtn) pauseBtn.style.display = 'inline-flex';
+            if (resumeBtn) resumeBtn.style.display = 'none';
+            if (btnBannerResume) btnBannerResume.style.display = 'none';
+            if (pauseBanner) pauseBanner.style.display = 'none';
+            disableScoringControls(false);
         }
-        disableScoringControls(true);
     } else {
-        if (pauseBtn) pauseBtn.style.display = (isAuthorized && !isMatchDone) ? 'inline-flex' : 'none';
+        if (headerActions) headerActions.style.display = 'none';
+        if (retireBtn) retireBtn.style.display = 'none';
+        if (keeperBtn) keeperBtn.style.display = 'none';
+        if (celebBtn) celebBtn.style.display = 'none';
+        if (settingsBtn) settingsBtn.style.display = 'none';
+        if (pauseBtn) pauseBtn.style.display = 'none';
         if (resumeBtn) resumeBtn.style.display = 'none';
         if (btnBannerResume) btnBannerResume.style.display = 'none';
-        if (pauseBanner) pauseBanner.style.display = 'none';
-        disableScoringControls(!isAuthorized);
+
+        if (isPaused && !isMatchDone) {
+            if (pauseBanner) {
+                pauseBanner.style.display = 'flex';
+                if (pauseReasonText) pauseReasonText.textContent = `Reason: ${state.pauseReason || 'Match Paused'}`;
+            }
+        } else {
+            if (pauseBanner) pauseBanner.style.display = 'none';
+        }
+        disableScoringControls(true);
     }
 
     // 4 Top Score Pills
@@ -1206,10 +1302,10 @@ function renderScoringDashboard(state) {
         if (document.getElementById('sc-pill-target')) document.getElementById('sc-pill-target').textContent = state.targetRuns;
     }
 
-    // Read-only banner check
+    // Read-only banner check (only show during ongoing/live match if user is in spectator view)
     const readonlyBanner = document.getElementById('sc-readonly-banner');
     if (readonlyBanner) {
-        if (!isAuthorized) {
+        if (!isScorerMode && !isMatchDone) {
             readonlyBanner.style.display = 'block';
             const assignedNameEl = document.getElementById('sc-assigned-scorer-name');
             if (assignedNameEl) assignedNameEl.textContent = scorerName;
@@ -1265,7 +1361,7 @@ function renderScoringDashboard(state) {
         if (viewCompleted) viewCompleted.style.display = 'none';
         if (viewWorkspace) viewWorkspace.style.display = 'none';
 
-        renderInningsBreak(state, isAuthorized);
+        renderInningsBreak(state, isScorerMode);
 
     } else {
         if (viewPreMatch) viewPreMatch.style.display = 'none';
@@ -1278,7 +1374,7 @@ function renderScoringDashboard(state) {
         renderScoringWorkspace(state);
 
         // Check if Over Completed -> Trigger Next Bowler Modal
-        if (state.isOverCompleted && isAuthorized) {
+        if (state.isOverCompleted && isScorerMode) {
             openNextBowlerModal(state.availableBowlers, state.previousBowlerUserId);
         }
     }
