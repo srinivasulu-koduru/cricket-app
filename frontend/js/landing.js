@@ -2,7 +2,7 @@
  * Cricket App - Central Application Version Definition
  * Single source of truth for the application version.
  */
-const APP_VERSION = "1.0.0";
+const APP_VERSION = "1.0.1";
 window.APP_VERSION = APP_VERSION;
 
 function init() {
