@@ -8,6 +8,20 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/style.css">
+    
+    <!-- Central API & Persistent Auth Session Check -->
+    <script src="../js/api.js"></script>
+    <script>
+        (function() {
+            try {
+                if (typeof ApiService !== 'undefined' && ApiService.getToken()) {
+                    window.location.replace('dashboard.html');
+                }
+            } catch (e) {
+                console.error('Session restoration check error:', e);
+            }
+        })();
+    </script>
 </head>
 <body>
     <div class="auth-split-container">

@@ -221,6 +221,11 @@ function initLoginForm() {
     const form = document.getElementById('login-form');
     if (!form) return;
 
+    if (typeof ApiService !== 'undefined' && ApiService.getToken()) {
+        window.location.replace('dashboard.html');
+        return;
+    }
+
     // Password visibility toggle handler
     const toggleBtn = document.getElementById('toggle-password-btn');
     const passwordInput = document.getElementById('password');
@@ -314,9 +319,11 @@ async function initDashboard() {
         if (document.getElementById('header-user-name')) document.getElementById('header-user-name').textContent = user.name;
         if (document.getElementById('header-user-id')) document.getElementById('header-user-id').textContent = user.userId;
     } catch (err) {
-        console.error('Session expired:', err.message);
-        ApiService.clearToken();
-        window.location.href = 'login.html';
+        console.error('Failed to load dashboard data:', err.message);
+        if (err.status === 401) {
+            ApiService.clearToken();
+            window.location.href = 'login.html';
+        }
     }
 
     const btnLogout = document.getElementById('btn-logout');

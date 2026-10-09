@@ -2753,5 +2753,17 @@ public class MatchService {
                 .map(xi -> buildPlayerSummary(xi.getUser()))
                 .collect(java.util.stream.Collectors.toList());
     }
+
+    @Transactional(readOnly = true)
+    public ScoringDashboardStateDto getPublicScorecard(String matchId) {
+        Match match = findMatchByMatchId(matchId);
+        if (match.getStatus() != MatchStatus.COMPLETED) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                org.springframework.http.HttpStatus.CONFLICT,
+                "Match is not completed. Public sharing is only allowed for completed matches."
+            );
+        }
+        return getScoringDashboardState(null, matchId);
+    }
 }
 

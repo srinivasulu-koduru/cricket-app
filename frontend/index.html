@@ -14,6 +14,21 @@
     <!-- Stylesheets -->
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/landing.css">
+
+    <!-- Central API & Persistent Auth Session Check -->
+    <script src="js/api.js"></script>
+    <script>
+        (function() {
+            try {
+                // If the user already has a valid session token, immediately restore to dashboard
+                if (typeof ApiService !== 'undefined' && ApiService.getToken()) {
+                    window.location.replace('pages/dashboard.html');
+                }
+            } catch (e) {
+                console.error('Session restoration check error:', e);
+            }
+        })();
+    </script>
 </head>
 <body class="landing-body">
 

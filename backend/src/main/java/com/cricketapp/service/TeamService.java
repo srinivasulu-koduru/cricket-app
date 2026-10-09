@@ -66,12 +66,8 @@ public class TeamService {
     public TeamResponseDto createTeam(String email, CreateTeamRequestDto request) {
         User creator = findUserByEmail(email);
 
-        // A player can belong to ONLY ONE team at a time
-        List<TeamMember> creatorActiveMemberships = memberRepository.findByUser_EmailAndStatus(creator.getEmail(), MemberStatus.ACTIVE);
-        if (!creatorActiveMemberships.isEmpty()) {
-            Team existingTeam = creatorActiveMemberships.get(0).getTeam();
-            throw new AuthException("You are already a member of team '" + existingTeam.getName() + "'. A player can only belong to one team at a time.");
-        }
+        // A player can belong to MULTIPLE teams.
+        // We only need to check if they are already in THIS team, which is handled naturally since it's a new team.
 
         if (!StringUtils.hasText(request.getName())) {
             throw new AuthException("Team name cannot be blank");
@@ -259,14 +255,11 @@ public class TeamService {
         User targetUser = userRepository.findByUserId(normalizedUserId)
                 .orElseThrow(() -> new AuthException("Player not found with Cricket User ID: " + normalizedUserId));
 
-        // Check if target player is already an active member of ANY team
+        // Check if target player is already an active member of THIS team
         List<TeamMember> activeMemberships = memberRepository.findByUser_UserIdAndStatus(normalizedUserId, MemberStatus.ACTIVE);
-        if (!activeMemberships.isEmpty()) {
-            Team currentTeamOfTarget = activeMemberships.get(0).getTeam();
-            if (currentTeamOfTarget.getId().equals(team.getId())) {
+        for (TeamMember membership : activeMemberships) {
+            if (membership.getTeam().getId().equals(team.getId())) {
                 throw new AuthException("Player " + targetUser.getName() + " (" + normalizedUserId + ") is already an active member of this team.");
-            } else {
-                throw new AuthException("Player " + targetUser.getName() + " (" + normalizedUserId + ") is already a member of team '" + currentTeamOfTarget.getName() + "'. A player can only belong to one team.");
             }
         }
 
@@ -319,11 +312,11 @@ public class TeamService {
 
         Team team = invitation.getTeam();
 
-        // Check if user is already an active member of another team
+        // Check if user is already an active member of THIS team
         List<TeamMember> userActiveMemberships = memberRepository.findByUser_EmailAndStatus(user.getEmail(), MemberStatus.ACTIVE);
         for (TeamMember m : userActiveMemberships) {
-            if (!m.getTeam().getId().equals(team.getId())) {
-                throw new AuthException("You are already an active member of team '" + m.getTeam().getName() + "'. A player can only belong to one team at a time. Please leave your current team before joining a new team.");
+            if (m.getTeam().getId().equals(team.getId())) {
+                throw new AuthException("You are already an active member of team '" + m.getTeam().getName() + "'.");
             }
         }
 
@@ -531,11 +524,11 @@ public class TeamService {
         Team team = teamRepository.findByJoinToken(joinToken.trim())
                 .orElseThrow(() -> new AuthException("Invalid or expired shareable team join link"));
 
-        // Check if user is already an active member of another team
+        // Check if user is already an active member of THIS team
         List<TeamMember> userActiveMemberships = memberRepository.findByUser_EmailAndStatus(user.getEmail(), MemberStatus.ACTIVE);
         for (TeamMember m : userActiveMemberships) {
-            if (!m.getTeam().getId().equals(team.getId())) {
-                throw new AuthException("You are already an active member of team '" + m.getTeam().getName() + "'. A player can only belong to one team at a time. Please leave your current team before joining a new team.");
+            if (m.getTeam().getId().equals(team.getId())) {
+                throw new AuthException("You are already an active member of team '" + m.getTeam().getName() + "'.");
             }
         }
 

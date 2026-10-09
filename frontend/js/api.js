@@ -9,16 +9,96 @@ const TOKEN_KEY = 'cricketAppToken';
 
 class ApiService {
 
+    /**
+     * Decode JWT payload safely without external libraries.
+     */
+    static parseJwt(token) {
+        if (!token || typeof token !== 'string') return null;
+        try {
+            const parts = token.split('.');
+            if (parts.length !== 3) return null;
+            let base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+            while (base64.length % 4 !== 0) {
+                base64 += '=';
+            }
+            try {
+                const jsonPayload = decodeURIComponent(
+                    atob(base64)
+                        .split('')
+                        .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+                        .join('')
+                );
+                return JSON.parse(jsonPayload);
+            } catch (e) {
+                return JSON.parse(atob(base64));
+            }
+        } catch (e) {
+            return null;
+        }
+    }
+
+    /**
+     * Check if a JWT token exists and has not expired.
+     * Incorporates a 30-second clock skew tolerance buffer.
+     */
+    static isTokenValid(token = null) {
+        const jwt = token || this.getRawToken();
+        if (!jwt) return false;
+        const payload = this.parseJwt(jwt);
+        if (!payload || typeof payload.exp !== 'number') {
+            return false;
+        }
+        const nowInSeconds = Math.floor(Date.now() / 1000);
+        return payload.exp > (nowInSeconds + 30);
+    }
+
+    /**
+     * Retrieve the raw stored token directly from localStorage.
+     */
+    static getRawToken() {
+        try {
+            return localStorage.getItem(TOKEN_KEY);
+        } catch (e) {
+            return null;
+        }
+    }
+
+    /**
+     * Get valid JWT token. Automatically purges expired or corrupt tokens.
+     */
     static getToken() {
-        return localStorage.getItem(TOKEN_KEY);
+        const token = this.getRawToken();
+        if (!token) return null;
+        if (!this.isTokenValid(token)) {
+            console.warn('[ApiService] Stored JWT is expired or malformed. Purging token.');
+            this.clearToken();
+            return null;
+        }
+        return token;
     }
 
     static setToken(token) {
-        localStorage.setItem(TOKEN_KEY, token);
+        try {
+            localStorage.setItem(TOKEN_KEY, token);
+        } catch (e) {
+            console.error('[ApiService] Failed to save token to localStorage:', e);
+        }
     }
 
     static clearToken() {
-        localStorage.removeItem(TOKEN_KEY);
+        try {
+            localStorage.removeItem(TOKEN_KEY);
+        } catch (e) {
+            console.error('[ApiService] Failed to clear token from localStorage:', e);
+        }
+    }
+
+    /**
+     * Get decoded user payload from stored token if available.
+     */
+    static getUserPayload() {
+        const token = this.getToken();
+        return token ? this.parseJwt(token) : null;
     }
 
     static getImageUrl(path) {
@@ -57,6 +137,23 @@ class ApiService {
         }, 3500);
     }
 
+    static handleUnauthorized(endpoint) {
+        console.warn(`[ApiService] 401 Unauthorized received for ${endpoint}. Session expired.`);
+        this.clearToken();
+        const path = window.location.pathname.toLowerCase();
+        const isAuthOrPublicPage = path.endsWith('login.html') || 
+                                   path.endsWith('register.html') || 
+                                   path.endsWith('verify-otp.html') || 
+                                   path.endsWith('forgot-password.html') || 
+                                   path.endsWith('reset-password.html') || 
+                                   path.endsWith('index.html') || 
+                                   path === '/' || 
+                                   path === '';
+        if (!isAuthOrPublicPage) {
+            window.location.replace('login.html');
+        }
+    }
+
     static async request(endpoint, options = {}) {
         const url = `${API_BASE_URL}${endpoint}`;
         
@@ -88,7 +185,15 @@ class ApiService {
 
             if (!response.ok) {
                 const errorMessage = data.message || `Request failed with status ${response.status}`;
-                throw new Error(errorMessage);
+                const error = new Error(errorMessage);
+                error.status = response.status;
+                error.data = data;
+
+                if (response.status === 401 && token && !options.skipAuth) {
+                    this.handleUnauthorized(endpoint);
+                }
+
+                throw error;
             }
 
             return data;
@@ -142,7 +247,15 @@ class ApiService {
 
             if (!response.ok) {
                 const errorMessage = data.message || `Request failed with status ${response.status}`;
-                throw new Error(errorMessage);
+                const error = new Error(errorMessage);
+                error.status = response.status;
+                error.data = data;
+
+                if (response.status === 401 && token && !options.skipAuth) {
+                    this.handleUnauthorized(endpoint);
+                }
+
+                throw error;
             }
 
             return data;

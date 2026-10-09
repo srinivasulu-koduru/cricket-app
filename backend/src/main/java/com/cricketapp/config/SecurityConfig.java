@@ -55,6 +55,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/players/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/teams/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/matches/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/public/matches/**").permitAll()
                         .requestMatchers("/ws-cricket/**").permitAll()
                         .requestMatchers("/api/dev/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/auth/me").authenticated()

@@ -64,9 +64,11 @@ async function loadUserProfile() {
             const user = await ApiService.get('/auth/me');
             renderProfileInfo(user);
         } catch (authErr) {
-            console.error('Session invalid:', authErr);
-            ApiService.clearToken();
-            window.location.href = 'login.html';
+            console.error('Failed to load profile details:', authErr);
+            if (authErr.status === 401) {
+                ApiService.clearToken();
+                window.location.href = 'login.html';
+            }
         }
     }
 }
