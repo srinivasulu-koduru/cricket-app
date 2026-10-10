@@ -256,11 +256,39 @@ public class MatchService {
     @Transactional(readOnly = true)
     public List<MatchResponseDto> getLiveMatches(String email) {
         User user = StringUtils.hasText(email) ? userRepository.findByEmail(email.toLowerCase().trim()).orElse(null) : null;
-        List<Match> matches = matchRepository.findByStatusOrderByCreatedAtDesc(MatchStatus.LIVE);
+        List<Match> liveMatches = matchRepository.findByStatusOrderByCreatedAtDesc(MatchStatus.LIVE);
+        List<Match> pausedMatches = matchRepository.findByStatusOrderByCreatedAtDesc(MatchStatus.PAUSED);
+        List<Match> breakMatches = matchRepository.findByStatusOrderByCreatedAtDesc(MatchStatus.INNINGS_BREAK);
 
-        return matches.stream()
+        List<Match> allCandidates = new java.util.ArrayList<>();
+        allCandidates.addAll(liveMatches);
+        allCandidates.addAll(pausedMatches);
+        allCandidates.addAll(breakMatches);
+
+        return allCandidates.stream()
+                .filter(this::isGenuinelyLive)
                 .map(m -> mapToMatchResponseDto(m, user))
                 .collect(java.util.stream.Collectors.toList());
+    }
+
+    private boolean isGenuinelyLive(Match match) {
+        if (match == null) {
+            return false;
+        }
+        if (match.getStatus() != MatchStatus.LIVE && match.getStatus() != MatchStatus.PAUSED && match.getStatus() != MatchStatus.INNINGS_BREAK) {
+            return false;
+        }
+        // A match is genuinely live ONLY if toss has been recorded and an innings is in progress or completed
+        Optional<com.cricketapp.entity.MatchToss> tossOpt = matchTossRepository.findByMatch(match);
+        if (tossOpt.isEmpty()) {
+            return false;
+        }
+        Optional<Innings> inn1Opt = inningsRepository.findByMatchAndInningsNumber(match, 1);
+        if (inn1Opt.isEmpty()) {
+            return false;
+        }
+        Innings inn1 = inn1Opt.get();
+        return inn1.getStatus() == InningsStatus.IN_PROGRESS || inn1.getStatus() == InningsStatus.COMPLETED;
     }
 
     @Transactional(readOnly = true)
@@ -938,58 +966,9 @@ public class MatchService {
                 .collect(java.util.stream.Collectors.toList());
     }
 
-    private void autoPopulatePlayingXiIfEmpty(Match match) {
-        if (match == null) return;
-
-        List<MatchPlayingXi> xiA = matchPlayingXiRepository.findByMatchAndTeam(match, match.getTeamA());
-        List<MatchPlayingXi> xiB = matchPlayingXiRepository.findByMatchAndTeam(match, match.getTeamB());
-        if (!xiA.isEmpty() && !xiB.isEmpty()) {
-            return;
-        }
-
-        if (xiA.isEmpty() && match.getTeamA() != null) {
-            List<TeamMember> membersA = teamMemberRepository.findByTeamAndStatus(match.getTeamA(), MemberStatus.ACTIVE);
-            if (membersA.isEmpty()) {
-                membersA = teamMemberRepository.findAll().stream()
-                        .filter(tm -> tm.getTeam().getId().equals(match.getTeamA().getId()))
-                        .collect(java.util.stream.Collectors.toList());
-            }
-            List<MatchPlayingXi> newXiA = new java.util.ArrayList<>();
-            for (int i = 0; i < membersA.size(); i++) {
-                TeamMember tm = membersA.get(i);
-                boolean isCap = (tm.getRole() == TeamRole.CAPTAIN || tm.getRole() == TeamRole.OWNER || i == 0);
-                boolean isWk = (i == membersA.size() - 1);
-                newXiA.add(new MatchPlayingXi(match, match.getTeamA(), tm.getUser(), isCap, isWk));
-            }
-            if (!newXiA.isEmpty()) {
-                matchPlayingXiRepository.saveAll(newXiA);
-            }
-        }
-
-        if (xiB.isEmpty() && match.getTeamB() != null) {
-            List<TeamMember> membersB = teamMemberRepository.findByTeamAndStatus(match.getTeamB(), MemberStatus.ACTIVE);
-            if (membersB.isEmpty()) {
-                membersB = teamMemberRepository.findAll().stream()
-                        .filter(tm -> tm.getTeam().getId().equals(match.getTeamB().getId()))
-                        .collect(java.util.stream.Collectors.toList());
-            }
-            List<MatchPlayingXi> newXiB = new java.util.ArrayList<>();
-            for (int i = 0; i < membersB.size(); i++) {
-                TeamMember tm = membersB.get(i);
-                boolean isCap = (tm.getRole() == TeamRole.CAPTAIN || tm.getRole() == TeamRole.OWNER || i == 0);
-                boolean isWk = (i == membersB.size() - 1);
-                newXiB.add(new MatchPlayingXi(match, match.getTeamB(), tm.getUser(), isCap, isWk));
-            }
-            if (!newXiB.isEmpty()) {
-                matchPlayingXiRepository.saveAll(newXiB);
-            }
-        }
-    }
-
-    @Transactional
+    @Transactional(readOnly = true)
     public MatchChecklistDto getMatchChecklist(String matchId) {
         Match match = findMatchByMatchId(matchId);
-        autoPopulatePlayingXiIfEmpty(match);
 
         MatchChecklistDto dto = new MatchChecklistDto();
 
@@ -1029,7 +1008,16 @@ public class MatchService {
         User user = getRequiredUserByEmail(email);
         Match match = findMatchByMatchId(matchId);
 
-        autoPopulatePlayingXiIfEmpty(match);
+        if (!isAuthorizedToScore(match, user)) {
+            throw new AuthException("Only authorized scorers or team captains can start the match.");
+        }
+
+        // Match can only be set to LIVE if toss has been recorded and an innings is in progress or completed
+        Optional<com.cricketapp.entity.MatchToss> tossOpt = matchTossRepository.findByMatch(match);
+        Optional<Innings> inn1Opt = inningsRepository.findByMatchAndInningsNumber(match, 1);
+        if (tossOpt.isEmpty() || inn1Opt.isEmpty() || inn1Opt.get().getStatus() == InningsStatus.NOT_STARTED) {
+            throw new AuthException("Match cannot be set to LIVE before toss and innings scoring setup have started.");
+        }
 
         match.setStatus(MatchStatus.LIVE);
         Match saved = matchRepository.save(match);
@@ -2024,13 +2012,6 @@ public class MatchService {
     public ScoringDashboardStateDto getScoringDashboardState(String email, String matchId) {
         User user = StringUtils.hasText(email) ? userRepository.findByEmail(email.toLowerCase().trim()).orElse(null) : null;
         Match match = findMatchByMatchId(matchId);
-
-        autoPopulatePlayingXiIfEmpty(match);
-
-        if (match.getStatus() == MatchStatus.SCHEDULED || match.getStatus() == MatchStatus.PENDING_CONFIRMATION) {
-            match.setStatus(MatchStatus.LIVE);
-            match = matchRepository.save(match);
-        }
 
         ScoringDashboardStateDto dto = new ScoringDashboardStateDto();
         dto.setMatchId(match.getMatchId());

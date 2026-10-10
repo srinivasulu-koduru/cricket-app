@@ -163,6 +163,7 @@ function renderLiveState(state, isWebSocketUpdate = false) {
     const isPaused = (state.status === 'PAUSED' || state.isPaused === true);
     const isInningsBreak = (state.status === 'INNINGS_BREAK' || state.isInningsBreak === true);
     const isMatchCompleted = (state.status === 'COMPLETED' || state.isMatchCompleted === true);
+    const isScheduled = (state.status === 'SCHEDULED' || state.status === 'PENDING_CONFIRMATION');
 
     // Update connection status label based on match state
     if (isMatchCompleted) {
@@ -175,6 +176,8 @@ function renderLiveState(state, isWebSocketUpdate = false) {
             clearTimeout(reconnectTimer);
             reconnectTimer = null;
         }
+    } else if (isScheduled) {
+        setConnectionStatus('connecting', 'UPCOMING');
     } else if (isPaused) {
         setConnectionStatus('connecting', '⏸️ PAUSED');
     } else if (isInningsBreak) {
@@ -228,10 +231,17 @@ function renderLiveState(state, isWebSocketUpdate = false) {
     const maxOvers = state.overs || 20;
 
     if (document.getElementById('ls-score-text')) {
-        document.getElementById('ls-score-text').innerHTML = `
-            ${totalRuns} / ${totalWickets} 
-            <span id="ls-overs-text">(${completedOvers}.${currentBalls} / ${maxOvers} Overs)</span>
-        `;
+        if (isScheduled && (!state.inningsStatus || state.inningsStatus === 'NOT_STARTED')) {
+            document.getElementById('ls-score-text').innerHTML = `
+                <span style="font-size: 1.35rem; color: #94a3b8; font-weight: 700;">Match Scheduled</span>
+                <span id="ls-overs-text" style="display: block; font-size: 0.9rem; color: #64748b; margin-top: 0.25rem;">Live scoring will commence after toss and innings setup</span>
+            `;
+        } else {
+            document.getElementById('ls-score-text').innerHTML = `
+                ${totalRuns} / ${totalWickets} 
+                <span id="ls-overs-text">(${completedOvers}.${currentBalls} / ${maxOvers} Overs)</span>
+            `;
+        }
     }
 
     // Toggle widgets: Live Widgets vs Completed Mode Widgets

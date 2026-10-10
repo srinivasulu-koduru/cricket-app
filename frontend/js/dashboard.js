@@ -357,11 +357,40 @@ function renderLiveMatches(matchDataList) {
         const oversFormatted = `${completedOvers}${currentBalls > 0 ? '.' + currentBalls : ''}`;
         
         const battingTeamId = scoring.battingTeamId;
-        const isTeamABatting = battingTeamId ? (battingTeamId === teamA.teamId) : true;
-        const isTeamBBatting = battingTeamId ? (battingTeamId === teamB.teamId) : false;
+        const isSecondInnings = scoring.activeInningsNumber === 2;
+        const isInningsBreak = Boolean(scoring.isInningsBreak);
+        const firstInningsTeamName = scoring.firstInningsTeamName || '';
+        const firstInnRuns = scoring.firstInningsRuns !== undefined ? scoring.firstInningsRuns : 0;
+        const firstInnWickets = scoring.firstInningsWickets !== undefined ? scoring.firstInningsWickets : 0;
+        const firstInnOvers = scoring.firstInningsOvers !== undefined ? scoring.firstInningsOvers : 0;
+        const firstInnBalls = scoring.firstInningsBalls !== undefined ? scoring.firstInningsBalls : 0;
+        const firstInnOversFormatted = `${firstInnOvers}${firstInnBalls > 0 ? '.' + firstInnBalls : ''}`;
+        const firstInnScoreStr = `${firstInnRuns}/${firstInnWickets} (${firstInnOversFormatted})`;
 
-        const scoreAStr = isTeamABatting ? `${totalRuns}/${totalWickets} (${oversFormatted})` : 'Yet to bat';
-        const scoreBStr = isTeamBBatting ? `${totalRuns}/${totalWickets} (${oversFormatted})` : 'Yet to bat';
+        let scoreAStr = 'Yet to bat';
+        let scoreBStr = 'Yet to bat';
+
+        if (isSecondInnings) {
+            if (isTeamABatting) {
+                scoreAStr = `${totalRuns}/${totalWickets} (${oversFormatted})`;
+                scoreBStr = firstInnScoreStr;
+            } else if (isTeamBBatting) {
+                scoreBStr = `${totalRuns}/${totalWickets} (${oversFormatted})`;
+                scoreAStr = firstInnScoreStr;
+            }
+        } else if (isInningsBreak) {
+            const teamANameRaw = teamA.name || 'Team A';
+            if (firstInningsTeamName.toLowerCase() === teamANameRaw.toLowerCase()) {
+                scoreAStr = firstInnScoreStr;
+                scoreBStr = 'Yet to bat';
+            } else {
+                scoreBStr = firstInnScoreStr;
+                scoreAStr = 'Yet to bat';
+            }
+        } else {
+            scoreAStr = isTeamABatting ? `${totalRuns}/${totalWickets} (${oversFormatted})` : 'Yet to bat';
+            scoreBStr = isTeamBBatting ? `${totalRuns}/${totalWickets} (${oversFormatted})` : 'Yet to bat';
+        }
 
         const tossSummary = scoring.tossSummary ? escapeHtml(scoring.tossSummary) : 'Match in progress';
         const equationText = (scoring.activeInningsNumber === 2 && scoring.targetEquation) 

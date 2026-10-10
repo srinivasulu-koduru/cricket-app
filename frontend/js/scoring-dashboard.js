@@ -1343,7 +1343,7 @@ function renderScoringDashboard(state) {
 
         populateTossOptions(teamA, teamB);
 
-    } else if ((status === 'LIVE' || isPaused) && state.tossRecorded && (!state.inningsStatus || state.inningsStatus === 'NOT_STARTED') && !isInningsBreak) {
+    } else if ((status === 'SCHEDULED' || status === 'LIVE' || isPaused) && state.tossRecorded && (!state.inningsStatus || state.inningsStatus === 'NOT_STARTED') && !isInningsBreak) {
         if (viewPreMatch) viewPreMatch.style.display = 'none';
         if (viewToss) viewToss.style.display = 'none';
         if (viewInningsSetup) viewInningsSetup.style.display = 'block';
